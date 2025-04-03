@@ -1,0 +1,16 @@
+{
+  "name": "mezdia-deploy-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Telegram bot that provisions and manages Mezdia Panel workers across a user's Cloudflare accounts.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "kv:create": "wrangler kv namespace create BOT_DB"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

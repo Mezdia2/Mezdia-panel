@@ -1,0 +1,58 @@
+import { setWebhook } from "./lib/telegram.js";
+import { routeMessage, routeCallback } from "./handlers/router.js";
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
+    // One-time (or repeatable) setup endpoint: registers this Worker's own
+    // URL as the Telegram webhook. Protected by ADMIN_SETUP_KEY so random
+    // visitors can't hijack the bot's webhook.
+    if (url.pathname === "/install") {
+      if (!env.ADMIN_SETUP_KEY || url.searchParams.get("key") !== env.ADMIN_SETUP_KEY) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+      const webhookUrl = `${url.origin}/telegram/webhook`;
+      const result = await setWebhook(env, webhookUrl, env.TELEGRAM_WEBHOOK_SECRET);
+      return new Response(JSON.stringify({ webhookUrl, result }, null, 2), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (url.pathname === "/telegram/webhook") {
+      if (request.method !== "POST") {
+        return new Response("Method Not Allowed", { status: 405 });
+      }
+      const secretHeader = request.headers.get("X-Telegram-Bot-Api-Secret-Token");
+      if (env.TELEGRAM_WEBHOOK_SECRET && secretHeader !== env.TELEGRAM_WEBHOOK_SECRET) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      let update;
+      try {
+        update = await request.json();
+      } catch (e) {
+        return new Response("Bad Request", { status: 400 });
+      }
+
+      // Do the actual work in the background and answer Telegram immediately —
+      // Telegram only needs a fast 200 OK; it doesn't wait for our reply.
+      ctx.waitUntil(handleUpdate(env, update));
+      return new Response("OK");
+    }
+
+    return new Response("Mezdia deployment bot is running.", { status: 200 });
+  },
+};
+
+async function handleUpdate(env, update) {
+  try {
+    if (update.message) {
+      await routeMessage(env, update.message);
+    } else if (update.callback_query) {
+      await routeCallback(env, update.callback_query);
+    }
+  } catch (e) {
+    console.error("Unhandled update error", e);
+  }
+}
