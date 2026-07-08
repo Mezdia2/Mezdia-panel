@@ -8,9 +8,12 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "tail": "wrangler tail",
-    "kv:create": "wrangler kv namespace create BOT_DB"
+    "kv:create": "wrangler kv namespace create BOT_DB",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
+    "vitest": "^2.1.9",
     "wrangler": "^3.90.0"
   }
 }
