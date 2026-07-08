@@ -2,6 +2,12 @@ name = "mezdia-deploy-bot"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
+# Treat .md files as raw text so `import changelogText from "./CHANGELOG.md"` works.
+[[rules]]
+type = "Text"
+globs = ["*.md"]
+fallthrough = true
+
 # KV namespace — replace this ID after running `wrangler kv namespace create BOT_DB`
 [[kv_namespaces]]
 binding = "BOT_DB"

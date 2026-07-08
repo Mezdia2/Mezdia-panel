@@ -15,7 +15,7 @@ import {
   setSession,
   clearSession,
 } from "../lib/kv.js";
-import { listCfAccounts } from "../lib/cloudflare.js";
+import { listAccounts as listCfAccounts, CloudflareApiError } from "../lib/cloudflare.js";
 import { shortId } from "../lib/ids.js";
 
 export async function startAddAccount(env, chatId, tgId, messageId) {
