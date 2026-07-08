@@ -2,7 +2,7 @@
 // No external dependency; keeps the Worker bundle small.
 
 function apiUrl(env, method) {
-  return `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/${method}`;
+  return `https://api.telegram.org/bot${(env.TELEGRAM_BOT_TOKEN || "").trim()}/${method}`;
 }
 
 async function call(env, method, payload) {

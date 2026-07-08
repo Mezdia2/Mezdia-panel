@@ -9,11 +9,13 @@ export default {
     // URL as the Telegram webhook. Protected by ADMIN_SETUP_KEY so random
     // visitors can't hijack the bot's webhook.
     if (url.pathname === "/install") {
-      if (!env.ADMIN_SETUP_KEY || url.searchParams.get("key") !== env.ADMIN_SETUP_KEY) {
+      const q = (url.searchParams.get("key") || "").trim();
+      const a = (env.ADMIN_SETUP_KEY || "").trim();
+      if (!a || q !== a) {
         return new Response("Unauthorized", { status: 401 });
       }
       const webhookUrl = `${url.origin}/telegram/webhook`;
-      const result = await setWebhook(env, webhookUrl, env.TELEGRAM_WEBHOOK_SECRET);
+      const result = await setWebhook(env, webhookUrl, (env.TELEGRAM_WEBHOOK_SECRET || "").trim());
       return new Response(JSON.stringify({ webhookUrl, result }, null, 2), {
         headers: { "Content-Type": "application/json" },
       });
@@ -23,8 +25,8 @@ export default {
       if (request.method !== "POST") {
         return new Response("Method Not Allowed", { status: 405 });
       }
-      const secretHeader = request.headers.get("X-Telegram-Bot-Api-Secret-Token");
-      if (env.TELEGRAM_WEBHOOK_SECRET && secretHeader !== env.TELEGRAM_WEBHOOK_SECRET) {
+      const secretHeader = (request.headers.get("X-Telegram-Bot-Api-Secret-Token") || "").trim();
+      if (env.TELEGRAM_WEBHOOK_SECRET && secretHeader !== (env.TELEGRAM_WEBHOOK_SECRET || "").trim()) {
         return new Response("Unauthorized", { status: 401 });
       }
 
