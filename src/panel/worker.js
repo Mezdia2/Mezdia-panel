@@ -1871,7 +1871,7 @@ async function handleTrafficResetApi(request, env, ctx) {
 
 function getDashboardUI(hasDB) {
     return `<!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -1880,196 +1880,373 @@ function getDashboardUI(hasDB) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{color-scheme:dark;--bg:#0a0e14;--panel:#12181f;--panel2:#0d1218;--line:#222b37;--text:#eef2f6;--muted:#8b97a6;--accent:#22d3aa;--accent2:#7c6cf5;--warn:#f5a623;--bad:#ff5470;--radius:14px}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:var(--bg);background-image:radial-gradient(1000px 500px at 100% -10%,rgba(34,211,170,.10),transparent),radial-gradient(900px 460px at -10% 110%,rgba(124,108,245,.10),transparent);color:var(--text);font-family:'Vazirmatn',ui-sans-serif,system-ui,sans-serif;font-size:14.5px;line-height:1.7}
-    header{height:64px;display:flex;align-items:center;gap:14px;padding:0 24px;border-bottom:1px solid var(--line);background:rgba(13,18,24,.75);backdrop-filter:blur(10px);position:sticky;top:0;z-index:5}
-    .logo{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#04120a;flex-shrink:0}
-    h1{font-size:16.5px;margin:0;font-weight:800;letter-spacing:.01em}
-    main{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 64px)}
-    nav{border-left:1px solid var(--line);background:var(--panel2);padding:16px}
-    nav button{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--muted);padding:11px 13px;border-radius:10px;margin-bottom:5px;cursor:pointer;font:inherit;font-weight:650;transition:.15s}
-    nav button svg{flex-shrink:0;opacity:.85}
-    nav button.active,nav button:hover{background:var(--panel);color:var(--text)}
-    nav button.active{box-shadow:inset 3px 0 0 var(--accent)}
-    section{display:none;padding:26px 28px;max-width:1180px}
-    section.active{display:block;animation:fadein .25s ease}
+    :root {
+      --font-display: 'SF Pro Display', 'Vazirmatn', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'SF Pro Text', 'Vazirmatn', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+      --radius-sm: 8px;
+      --radius-md: 11px;
+      --radius-lg: 18px;
+      --radius-pill: 9999px;
+      --space-xxs: 4px;
+      --space-xs: 8px;
+      --space-sm: 12px;
+      --space-md: 17px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --transition: 0.2s ease;
+    }
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #1d1d1f;
+      --bg-secondary: #272729;
+      --surface: #2a2a2c;
+      --border: rgba(255,255,255,0.08);
+      --text: #ffffff;
+      --text-secondary: #cccccc;
+      --text-muted: #999999;
+      --accent: #2997ff;
+      --accent-hover: #4da6ff;
+      --accent-subtle: rgba(41,151,255,0.12);
+      --chart-upload: #2997ff;
+      --chart-download: #30d158;
+      --chart-upload-area: rgba(41,151,255,0.15);
+      --chart-download-area: rgba(48,209,88,0.15);
+      --chart-grid: rgba(255,255,255,0.06);
+      --chart-text: #999999;
+      --meter-bg: rgba(255,255,255,0.06);
+      --nav-bg: #000000;
+      --nav-text: #ffffff;
+      --sidebar-bg: #272729;
+      --sidebar-active-bg: #2a2a2c;
+      --input-bg: #1d1d1f;
+      --code-bg: #000000;
+      --danger: #ff453a;
+      --danger-subtle: rgba(255,69,58,0.12);
+      --danger-border: rgba(255,69,58,0.3);
+      --success: #30d158;
+      --success-subtle: rgba(48,209,88,0.12);
+      --success-border: rgba(48,209,88,0.3);
+      --warn: #ffd60a;
+      --warn-subtle: rgba(255,214,10,0.12);
+      --warn-border: rgba(255,214,10,0.3);
+      --table-stripe: rgba(255,255,255,0.02);
+    }
+    [data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5f7;
+      --bg-secondary: #ffffff;
+      --surface: #ffffff;
+      --border: #e0e0e0;
+      --text: #1d1d1f;
+      --text-secondary: #333333;
+      --text-muted: #7a7a7a;
+      --accent: #0066cc;
+      --accent-hover: #0077e6;
+      --accent-subtle: rgba(0,102,204,0.08);
+      --chart-upload: #0066cc;
+      --chart-download: #34c759;
+      --chart-upload-area: rgba(0,102,204,0.1);
+      --chart-download-area: rgba(52,199,89,0.1);
+      --chart-grid: #e0e0e0;
+      --chart-text: #7a7a7a;
+      --meter-bg: #e8e8ed;
+      --nav-bg: #000000;
+      --nav-text: #ffffff;
+      --sidebar-bg: #ffffff;
+      --sidebar-active-bg: #f5f5f7;
+      --input-bg: #ffffff;
+      --code-bg: #f5f5f7;
+      --danger: #ff3b30;
+      --danger-subtle: rgba(255,59,48,0.08);
+      --danger-border: rgba(255,59,48,0.25);
+      --success: #34c759;
+      --success-subtle: rgba(52,199,89,0.08);
+      --success-border: rgba(52,199,89,0.25);
+      --warn: #ff9500;
+      --warn-subtle: rgba(255,149,0,0.08);
+      --warn-border: rgba(255,149,0,0.25);
+      --table-stripe: rgba(0,0,0,0.02);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:17px;line-height:1.47;letter-spacing:-0.374px;-webkit-font-smoothing:antialiased;transition:background var(--transition),color var(--transition)}
+    header{height:44px;display:flex;align-items:center;gap:var(--space-sm);padding:0 var(--space-lg);background:var(--nav-bg);color:var(--nav-text);position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,255,255,0.08)}
+    .logo{width:28px;height:28px;border-radius:var(--radius-sm);background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+    .brand{font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:-0.01em;color:var(--nav-text)}
+    .header-pills{display:flex;gap:6px;align-items:center}
+    .header-spacer{flex:1}
+    .pill{display:inline-flex;align-items:center;gap:5px;border-radius:var(--radius-pill);padding:3px 10px;font-size:12px;font-weight:600;line-height:1.29;letter-spacing:-0.224px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
+    .pill.ok{color:var(--success);border-color:var(--success-border);background:var(--success-subtle)}
+    .pill.bad{color:var(--danger);border-color:var(--danger-border);background:var(--danger-subtle)}
+    .pill.warn{color:var(--warn);border-color:var(--warn-border);background:var(--warn-subtle)}
+    .theme-toggle{width:32px;height:32px;border-radius:var(--radius-pill);border:none;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background var(--transition);flex-shrink:0}
+    .theme-toggle:hover{background:rgba(255,255,255,0.18)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--radius-pill);padding:8px 18px;font-family:var(--font-body);font-size:14px;font-weight:600;line-height:1.29;letter-spacing:-0.224px;cursor:pointer;transition:all var(--transition);text-decoration:none;white-space:nowrap}
+    .btn:active{transform:scale(0.95)}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{background:var(--accent-hover)}
+    .btn-secondary{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+    .btn-secondary:hover{background:var(--accent-subtle)}
+    .btn-danger{background:var(--danger-subtle);color:var(--danger);border:1px solid var(--danger-border)}
+    .btn-danger:hover{background:rgba(255,69,58,0.2)}
+    .btn-ghost{background:rgba(255,255,255,0.06);color:var(--text-secondary)}
+    [data-theme="light"] .btn-ghost{background:rgba(0,0,0,0.04)}
+    .btn-ghost:hover{background:rgba(255,255,255,0.1)}
+    [data-theme="light"] .btn-ghost:hover{background:rgba(0,0,0,0.07)}
+    main{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 44px)}
+    nav{background:var(--sidebar-bg);border-left:1px solid var(--border);padding:var(--space-sm);position:sticky;top:44px;height:calc(100vh - 44px);overflow-y:auto;transition:background var(--transition),border var(--transition)}
+    nav button{width:100%;display:flex;align-items:center;gap:var(--space-xs);border:none;background:transparent;color:var(--text-muted);padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:2px;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:600;transition:all var(--transition)}
+    nav button svg{flex-shrink:0;opacity:0.6;transition:opacity var(--transition)}
+    nav button:hover{background:var(--sidebar-active-bg);color:var(--text-secondary)}
+    nav button:hover svg{opacity:0.85}
+    nav button.active{background:var(--accent-subtle);color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+    nav button.active svg{opacity:1}
+    .content{padding:var(--space-xl);max-width:1100px;transition:background var(--transition)}
+    section{display:none}
+    section.active{display:block;animation:fadein 0.25s ease}
     @keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+    .page-title{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.14;letter-spacing:0.196px;margin-bottom:var(--space-lg);color:var(--text)}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-lg);transition:background var(--transition),border var(--transition)}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-md)}
     .full{grid-column:1/-1}
-    h2{font-size:21px;margin:0 0 16px;font-weight:800}
-    h3{font-size:13px;margin:0 0 14px;color:#cfd7df;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
-    label{display:block;color:var(--muted);font-size:12.5px;font-weight:650;margin:12px 0 6px}
-    input,select,textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font:inherit;font-family:inherit}
-    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
-    textarea{min-height:90px;resize:vertical}
-    .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-    button.primary,button.secondary,button.danger{border:0;border-radius:9px;padding:10px 16px;font-weight:700;cursor:pointer;font:inherit;transition:.15s}
-    button.primary{background:linear-gradient(135deg,var(--accent),#1bbf99);color:#04120a}
-    button.primary:hover{filter:brightness(1.08)}
-    button.secondary{background:#1c2530;color:var(--text)}
-    button.secondary:hover{background:#232e3b}
-    button.danger{background:rgba(255,84,112,.15);color:var(--bad);border:1px solid rgba(255,84,112,.35)}
-    button.danger:hover{background:rgba(255,84,112,.25)}
-    .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:5px 11px;color:var(--muted);font-size:12px;font-weight:650}
-    .pill.ok{color:var(--accent);border-color:rgba(34,211,170,.35)}
-    .pill.warn{color:var(--warn);border-color:rgba(245,166,35,.35)}
-    .pill.bad{color:var(--bad);border-color:rgba(255,84,112,.35)}
-    code,pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;font-family:ui-monospace,Menlo,Consolas,monospace;direction:ltr;text-align:left;display:block}
-    code{padding:3px 7px;font-size:12.5px;word-break:break-all;display:inline-block}
-    pre{padding:14px;overflow:auto;white-space:pre-wrap;font-size:12.5px;line-height:1.6}
-    .muted{color:var(--muted)}
-    .hidden{display:none!important}
-    #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);background-image:radial-gradient(900px 500px at 50% -10%,rgba(34,211,170,.12),transparent);z-index:10}
-    .login-card{width:min(400px,calc(100vw - 32px));background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:28px;text-align:center}
-    .login-card h2{text-align:center}
-    .login-logo{width:52px;height:52px;margin:0 auto 14px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#04120a}
+    .card-title{font-family:var(--font-display);font-size:13px;font-weight:600;line-height:1.29;letter-spacing:-0.224px;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-md)}
+    label{display:block;font-size:13px;font-weight:600;line-height:1.29;letter-spacing:-0.224px;color:var(--text-muted);margin:var(--space-sm) 0 var(--space-xxs)}
+    label:first-child{margin-top:0}
+    input,select,textarea{width:100%;background:var(--input-bg);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font-body);font-size:14px;line-height:1.43;transition:border var(--transition)}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle)}
+    textarea{min-height:80px;resize:vertical}
+    .row{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-sm)}
+    .actions{display:flex;gap:var(--space-xs);flex-wrap:wrap;margin-top:var(--space-md)}
+    code,pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);direction:ltr;text-align:left;display:block}
+    code{padding:2px 6px;font-size:13px;word-break:break-all;display:inline-block;border-radius:4px}
+    pre{padding:var(--space-md);overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.6}
     table{width:100%;border-collapse:collapse}
-    td,th{border-bottom:1px solid var(--line);padding:10px;text-align:right;font-size:13px}
-    th{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
-    .qr-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-    #qr-img{width:132px;height:132px;border-radius:12px;background:#fff;padding:8px;flex-shrink:0}
-    .copy-btn{position:relative}
-    @media(max-width:820px){main{grid-template-columns:1fr}nav{display:flex;overflow:auto;border-left:0;border-bottom:1px solid var(--line);gap:4px}nav button{white-space:nowrap;width:auto}.grid,.row{grid-template-columns:1fr}section{padding:18px}}
+    td,th{padding:10px 12px;text-align:right;font-size:13px;line-height:1.43;border-bottom:1px solid var(--border)}
+    th{font-weight:600;font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:-0.12px}
+    tr:nth-child(even) td{background:var(--table-stripe)}
+    .qr-wrap{display:flex;align-items:center;gap:var(--space-md);flex-wrap:wrap}
+    #qr-img{width:120px;height:120px;border-radius:var(--radius-md);background:#fff;padding:6px;flex-shrink:0}
+    .chart-container{display:flex;flex-direction:column;align-items:center;gap:var(--space-sm)}
+    .chart-legend{display:flex;gap:var(--space-md);font-size:13px;color:var(--text-secondary)}
+    .chart-legend-item{display:flex;align-items:center;gap:6px}
+    .chart-legend-dot{width:10px;height:10px;border-radius:var(--radius-pill);flex-shrink:0}
+    .meter-group{display:flex;flex-direction:column;gap:var(--space-sm)}
+    .meter{display:flex;flex-direction:column;gap:4px}
+    .meter-header{display:flex;justify-content:space-between;align-items:baseline;font-size:13px}
+    .meter-label{color:var(--text-muted);font-weight:600}
+    .meter-value{color:var(--text-secondary);font-variant-numeric:tabular-nums}
+    .meter-track{height:8px;background:var(--meter-bg);border-radius:var(--radius-pill);overflow:hidden}
+    .meter-fill{height:100%;border-radius:var(--radius-pill);transition:width 0.8s cubic-bezier(0.22,1,0.36,1);width:0%}
+    .meter-fill.upload{background:var(--chart-upload)}
+    .meter-fill.download{background:var(--chart-download)}
+    #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100}
+    .login-card{width:min(380px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl) var(--space-lg);text-align:center}
+    .login-logo{width:56px;height:56px;margin:0 auto var(--space-md);border-radius:var(--radius-md);background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:22px;color:#fff}
+    .login-title{font-family:var(--font-display);font-size:21px;font-weight:600;margin-bottom:var(--space-xs)}
+    .login-desc{font-size:14px;color:var(--text-muted);margin-bottom:var(--space-lg);line-height:1.5}
+    .login-error{display:none;margin-top:var(--space-sm);font-size:13px;color:var(--danger)}
+    .login-error.show{display:block}
+    .muted{color:var(--text-muted)}
+    .text-sm{font-size:14px}
+    .mb-sm{margin-bottom:var(--space-sm)}
+    .flex-between{display:flex;justify-content:space-between;align-items:center}
+    .info-grid{display:grid;grid-template-columns:auto 1fr;gap:4px 12px}
+    @media(max-width:820px){main{grid-template-columns:1fr}nav{position:relative;top:0;height:auto;display:flex;overflow-x:auto;border-left:none;border-bottom:1px solid var(--border);gap:2px;padding:6px;-webkit-overflow-scrolling:touch}nav button{white-space:nowrap;width:auto;flex-shrink:0}.grid,.row{grid-template-columns:1fr}.content{padding:var(--space-md)}.page-title{font-size:24px}}
+    @media(max-width:640px){.content{padding:var(--space-sm)}.qr-wrap{flex-direction:column;align-items:flex-start}}
   </style>
 </head>
 <body>
   <div id="login">
     <div class="login-card">
       <div class="login-logo">M</div>
-      <h2>${BRAND_NAME}</h2>
-      <p class="muted">برای ورود، رمز پنل را وارد کنید. دسترسی برنامه‌نویسی از طریق <code>MEZDIA_API_KEY</code> انجام می‌شود.</p>
-      ${hasDB ? "" : `<p class="pill bad" style="display:block;margin-bottom:10px">پایگاه‌داده (IOT_DB) متصل نیست؛ تنظیمات ذخیره نخواهد شد.</p>`}
+      <div class="login-title">${BRAND_NAME}</div>
+      <p class="login-desc">برای ورود، رمز پنل را وارد کنید.<br>دسترسی برنامه‌نویسی از طریق <code>MEZDIA_API_KEY</code> انجام می‌شود.</p>
+      ${hasDB ? "" : `<p class="pill bad" style="display:block;margin-bottom:12px">پایگاه‌داده (IOT_DB) متصل نیست؛ تنظیمات ذخیره نخواهد شد.</p>`}
       <label for="password">رمز پنل</label>
       <input id="password" type="password" autocomplete="current-password" placeholder="•••••••••">
-      <div class="actions" style="justify-content:center"><button class="primary" onclick="login()">ورود</button></div>
-      <p id="login-error" class="pill bad hidden" style="display:inline-flex;margin-top:12px">ورود ناموفق بود. رمز را بررسی کنید.</p>
+      <div class="actions" style="justify-content:center;margin-top:16px"><button class="btn btn-primary" onclick="login()">ورود</button></div>
+      <p id="login-error" class="login-error">ورود ناموفق بود. رمز را بررسی کنید.</p>
     </div>
   </div>
   <header>
     <div class="logo">M</div>
-    <h1>${BRAND_NAME}</h1>
-    <span class="pill">نسخه ${CURRENT_VERSION}</span>
-    <span class="pill">تک‌کاربره</span>
-    <span id="status-pill" class="pill">در حال بارگذاری</span>
-    <span style="flex:1"></span>
-    <button class="secondary" onclick="logout()">خروج</button>
+    <span class="brand">${BRAND_NAME}</span>
+    <div class="header-pills">
+      <span class="pill">v${CURRENT_VERSION}</span>
+      <span id="status-pill" class="pill">—</span>
+    </div>
+    <div class="header-spacer"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="تغییر پوسته">
+      <svg id="theme-icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="theme-icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="btn btn-ghost" style="color:rgba(255,255,255,0.7);border:none;padding:6px 12px;font-size:13px" onclick="logout()">خروج</button>
   </header>
   <main>
     <nav>
       <button class="active" data-tab="overview" onclick="showTab('overview')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
         نمای کلی
       </button>
       <button data-tab="account" onclick="showTab('account')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
         حساب
       </button>
       <button data-tab="settings" onclick="showTab('settings')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
         تنظیمات
       </button>
       <button data-tab="api" onclick="showTab('api')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         API
       </button>
       <button data-tab="logs" onclick="showTab('logs')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
         گزارش‌ها
       </button>
     </nav>
-    <section id="overview" class="active">
-      <h2>نمای کلی</h2>
-      <div class="grid">
-        <div class="card full">
-          <h3>لینک اشتراک (Subscription)</h3>
-          <div class="qr-wrap">
-            <img id="qr-img" alt="QR">
-            <div style="flex:1;min-width:220px">
-              <code id="sub-url"></code>
-              <div class="actions"><button class="secondary copy-btn" onclick="copyText('sub-url', this)">کپی لینک</button></div>
+    <div class="content">
+      <section id="overview" class="active">
+        <div class="page-title">نمای کلی</div>
+        <div class="grid">
+          <div class="card full">
+            <div class="card-title">لینک اشتراک</div>
+            <div class="qr-wrap">
+              <img id="qr-img" alt="QR">
+              <div style="flex:1;min-width:200px">
+                <code id="sub-url" style="font-size:12px;word-break:break-all;background:transparent;border:none;padding:0;display:block;margin-bottom:10px"></code>
+                <button class="btn btn-secondary" onclick="copyText('sub-url',this)">کپی لینک</button>
+              </div>
             </div>
           </div>
+          <div class="card">
+            <div class="card-title">ترافیک کل</div>
+            <div class="chart-container">
+              <canvas id="chart-total" width="160" height="160"></canvas>
+              <div class="chart-legend">
+                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--chart-upload)"></div><span>آپلود</span></div>
+                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--chart-download)"></div><span>دانلود</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">ترافیک امروز</div>
+            <div class="chart-container">
+              <canvas id="chart-daily" width="160" height="160"></canvas>
+              <div class="chart-legend">
+                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--chart-upload)"></div><span>آپلود</span></div>
+                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--chart-download)"></div><span>دانلود</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">جزئیات ترافیک</div>
+            <div class="meter-group">
+              <div class="meter"><div class="meter-header"><span class="meter-label">آپلود کل</span><span class="meter-value" id="meter-upload-total">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-total-fill"></div></div></div>
+              <div class="meter"><div class="meter-header"><span class="meter-label">دانلود کل</span><span class="meter-value" id="meter-download-total">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-total-fill"></div></div></div>
+              <div class="meter"><div class="meter-header"><span class="meter-label">آپلود امروز</span><span class="meter-value" id="meter-upload-daily">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-daily-fill"></div></div></div>
+              <div class="meter"><div class="meter-header"><span class="meter-label">دانلود امروز</span><span class="meter-value" id="meter-download-daily">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-daily-fill"></div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">اطلاعات اجرا</div>
+            <div id="runtime-info" class="text-sm" style="color:var(--text-secondary)">در حال بارگذاری…</div>
+          </div>
+          <div class="card full">
+            <div class="flex-between mb-sm">
+              <div class="card-title" style="margin-bottom:0">ترافیک لحظه‌ای</div>
+              <span style="font-size:12px;color:var(--text-muted)" id="chart-time-range"></span>
+            </div>
+            <canvas id="chart-session" width="800" height="160" style="width:100%;height:160px"></canvas>
+          </div>
+          <div class="card full">
+            <div class="card-title">وضعیت حساب</div>
+            <div id="account-summary" class="text-sm" style="color:var(--text-secondary)">در حال بارگذاری…</div>
+          </div>
         </div>
-        <div class="card"><h3>ترافیک مصرفی</h3><p id="traffic-summary" class="muted">در حال بارگذاری…</p></div>
-        <div class="card"><h3>اطلاعات اجرا</h3><p id="runtime-summary" class="muted">در حال بارگذاری…</p></div>
-        <div class="card full"><h3>وضعیت حساب</h3><p id="account-summary" class="muted">در حال بارگذاری…</p></div>
-      </div>
-    </section>
-    <section id="account">
-      <h2>حساب</h2>
-      <div class="card">
-        <div class="row">
-          <div><label>نام</label><input id="account-name"></div>
-          <div><label>وضعیت</label><select id="account-status"><option value="active">فعال</option><option value="paused">متوقف</option></select></div>
-        </div>
-        <label>یادداشت</label><textarea id="account-notes"></textarea>
-        <div class="row">
-          <div><label>Clean IP اختصاصی</label><textarea id="account-clean-ip"></textarea></div>
-          <div><label>Proxy IP اختصاصی</label><textarea id="account-proxy-ip"></textarea></div>
-        </div>
-        <div class="row">
-          <div><label>حالت اختصاصی</label><select id="account-mode"><option value="">استفاده از حالت سراسری</option><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="both">Both</option></select></div>
-          <div><label>پورت‌های اختصاصی</label><input id="account-ports" placeholder="443,8443"></div>
-        </div>
-        <label>حداکثر تعداد کانفیگ تولیدی</label><input id="account-max-configs" type="number" min="0" step="1">
-        <div class="actions"><button class="primary" onclick="saveAccount()">ذخیره حساب</button><button class="danger" onclick="resetTraffic()">بازنشانی ترافیک</button></div>
-      </div>
-    </section>
-    <section id="settings">
-      <h2>تنظیمات</h2>
-      <div class="grid">
+      </section>
+      <section id="account">
+        <div class="page-title">حساب</div>
         <div class="card">
-          <h3>هسته</h3>
-          <label>نام پنل</label><input id="cfg-name">
-          <label>مسیر API</label><input id="cfg-apiRoute">
-          <label>رمز پنل</label><input id="cfg-masterKey" type="password">
-          <label>شناسه یکتای دستگاه</label><input id="cfg-deviceId">
-          <label>حالت</label><select id="cfg-mode"><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="both">Both</option></select>
-          <label>پورت‌های سوکت</label><input id="cfg-socketPorts">
-          <label>اثر انگشت کلاینت</label><input id="cfg-agent">
+          <div class="row">
+            <div><label>نام</label><input id="account-name"></div>
+            <div><label>وضعیت</label><select id="account-status"><option value="active">فعال</option><option value="paused">متوقف</option></select></div>
+          </div>
+          <label>یادداشت</label><textarea id="account-notes"></textarea>
+          <div class="row">
+            <div><label>Clean IP اختصاصی</label><textarea id="account-clean-ip"></textarea></div>
+            <div><label>Proxy IP اختصاصی</label><textarea id="account-proxy-ip"></textarea></div>
+          </div>
+          <div class="row">
+            <div><label>حالت اختصاصی</label><select id="account-mode"><option value="">استفاده از حالت سراسری</option><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="both">Both</option></select></div>
+            <div><label>پورت‌های اختصاصی</label><input id="account-ports" placeholder="443,8443"></div>
+          </div>
+          <label>حداکثر تعداد کانفیگ تولیدی</label><input id="account-max-configs" type="number" min="0" step="1">
+          <div class="actions"><button class="btn btn-primary" onclick="saveAccount()">ذخیره حساب</button><button class="btn btn-danger" onclick="resetTraffic()">بازنشانی ترافیک</button></div>
         </div>
+      </section>
+      <section id="settings">
+        <div class="page-title">تنظیمات</div>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">هسته</div>
+            <label>نام پنل</label><input id="cfg-name">
+            <label>مسیر API</label><input id="cfg-apiRoute">
+            <label>رمز پنل</label><input id="cfg-masterKey" type="password">
+            <label>شناسه یکتای دستگاه</label><input id="cfg-deviceId">
+            <label>حالت</label><select id="cfg-mode"><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="both">Both</option></select>
+            <label>پورت‌های سوکت</label><input id="cfg-socketPorts">
+            <label>اثر انگشت کلاینت</label><input id="cfg-agent">
+          </div>
+          <div class="card">
+            <div class="card-title">شبکه</div>
+            <label>میزبان‌های نمایشی</label><textarea id="cfg-maintenanceHost"></textarea>
+            <label>Clean IP ها</label><textarea id="cfg-cleanIps"></textarea>
+            <label>Relay/Proxy IP پشتیبان</label><textarea id="cfg-backupRelay"></textarea>
+            <label>Relay اختصاصی</label><input id="cfg-customRelay">
+            <label>گره‌های Slave</label><textarea id="cfg-slaveNodes"></textarea>
+            <label>آدرس DoH</label><input id="cfg-customDns">
+            <label>گره Metric</label><input id="cfg-metricNode">
+          </div>
+          <div class="card">
+            <div class="card-title">تولید کانفیگ</div>
+            <label>پیشوند نام</label><input id="cfg-namePrefix">
+            <label>استراتژی نام‌گذاری</label><input id="cfg-nameStrategy">
+            <label>فهرست مجاز User-Agent</label><input id="cfg-subUserAgent">
+            <label>آدرس اختصاصی پنل</label><input id="cfg-customPanelUrl">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input id="cfg-enableOpt1" type="checkbox" style="width:auto"> فعال‌سازی TCP Fast Open</label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input id="cfg-enableOpt2" type="checkbox" style="width:auto"> فعال‌سازی ECH</label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input id="cfg-isPaused" type="checkbox" style="width:auto"> توقف کامل ترافیک تانل</label>
+          </div>
+          <div class="card">
+            <div class="card-title">پشتیبان‌گیری</div>
+            <div class="actions" style="margin-top:0;margin-bottom:var(--space-md)">
+              <button class="btn btn-secondary" onclick="exportConfig()">خروجی JSON</button>
+              <button class="btn btn-secondary" onclick="importConfig()">ورودی JSON</button>
+            </div>
+            <label>ویرایش خام تنظیمات (JSON)</label>
+            <textarea id="raw-config" style="min-height:180px;font-family:var(--font-mono);font-size:12px;direction:ltr;text-align:left"></textarea>
+          </div>
+        </div>
+        <div class="actions"><button class="btn btn-primary" onclick="saveSettings()">ذخیره تنظیمات</button></div>
+      </section>
+      <section id="api">
+        <div class="page-title">راهنمای API</div>
         <div class="card">
-          <h3>شبکه</h3>
-          <label>میزبان‌های نمایشی (Maintenance)</label><textarea id="cfg-maintenanceHost"></textarea>
-          <label>Clean IP ها</label><textarea id="cfg-cleanIps"></textarea>
-          <label>Relay/Proxy IP پشتیبان</label><textarea id="cfg-backupRelay"></textarea>
-          <label>Relay اختصاصی</label><input id="cfg-customRelay">
-          <label>گره‌های Slave</label><textarea id="cfg-slaveNodes"></textarea>
-          <label>آدرس DoH</label><input id="cfg-customDns">
-          <label>گره Metric</label><input id="cfg-metricNode">
+          <p class="text-sm muted mb-sm">تمام درخواست‌های API با آدرس ورکر به‌همراه کلید <code>MEZDIA_API_KEY</code> ارسال می‌شوند.</p>
+          <pre id="api-examples"></pre>
         </div>
+      </section>
+      <section id="logs">
+        <div class="page-title">گزارش‌ها</div>
         <div class="card">
-          <h3>تولید کانفیگ</h3>
-          <label>پیشوند نام</label><input id="cfg-namePrefix">
-          <label>استراتژی نام‌گذاری</label><input id="cfg-nameStrategy">
-          <label>فهرست مجاز User-Agent برای اشتراک</label><input id="cfg-subUserAgent">
-          <label>آدرس اختصاصی پنل</label><input id="cfg-customPanelUrl">
-          <label><input id="cfg-enableOpt1" type="checkbox"> فعال‌سازی TCP Fast Open</label>
-          <label><input id="cfg-enableOpt2" type="checkbox"> فعال‌سازی ECH</label>
-          <label><input id="cfg-isPaused" type="checkbox"> توقف کامل ترافیک تانل</label>
+          <table>
+            <thead><tr><th>زمان</th><th>نوع</th><th>جزئیات</th></tr></thead>
+            <tbody id="log-body"></tbody>
+          </table>
         </div>
-        <div class="card">
-          <h3>پشتیبان‌گیری</h3>
-          <div class="actions"><button class="secondary" onclick="exportConfig()">خروجی JSON</button><button class="secondary" onclick="importConfig()">ورودی JSON</button></div>
-          <label>ویرایش خام تنظیمات (JSON)</label><textarea id="raw-config" style="min-height:210px"></textarea>
-        </div>
-      </div>
-      <div class="actions"><button class="primary" onclick="saveSettings()">ذخیره تنظیمات</button></div>
-    </section>
-    <section id="api">
-      <h2>راهنمای API</h2>
-      <div class="card">
-        <p class="muted">تمام درخواست‌های API با آدرس ورکر به‌همراه کلید <code>MEZDIA_API_KEY</code> ارسال می‌شوند.</p>
-        <pre id="api-examples"></pre>
-      </div>
-    </section>
-    <section id="logs">
-      <h2>گزارش‌ها</h2>
-      <div class="card"><table><thead><tr><th>زمان</th><th>نوع</th><th>جزئیات</th></tr></thead><tbody id="log-body"></tbody></table></div>
-    </section>
+      </section>
+    </div>
   </main>
   <script>
     const route = location.pathname.split('/')[1] || 'sync';
@@ -2077,74 +2254,96 @@ function getDashboardUI(hasDB) {
     let sessionKey = localStorage.getItem('mezdia_panel_key') || '';
     let config = null;
     let account = null;
+    let sessionData = [];
+    let refreshTimer = null;
 
-    function headers(){return {'Content-Type':'application/json'};}
-    function showTab(id){document.querySelectorAll('section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='logs')loadLogs();}
-    function copyText(id,btn){
-      navigator.clipboard.writeText(document.getElementById(id).textContent);
-      if(btn){const old=btn.textContent;btn.textContent='کپی شد ✓';setTimeout(()=>{btn.textContent=old;},1500);}
-    }
-    function logout(){localStorage.removeItem('mezdia_panel_key');location.reload();}
+    function getTheme(){return localStorage.getItem('mezdia_theme')||'dark'}
+    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-icon-dark').style.display=t==='dark'?'':'none';document.getElementById('theme-icon-light').style.display=t==='light'?'':'none';if(window._lastRenderData)renderCharts(window._lastRenderData)}
+    function toggleTheme(){var next=getTheme()==='dark'?'light':'dark';localStorage.setItem('mezdia_theme',next);applyTheme(next)}
+    applyTheme(getTheme());
 
-    async function login(silent=false){
-      const key = sessionKey || document.getElementById('password').value;
-      const res = await fetch(baseRoute + '/api/auth',{method:'POST',headers:headers(),body:JSON.stringify({key})});
-      if(!res.ok){if(!silent)document.getElementById('login-error').classList.remove('hidden');return;}
-      const data = await res.json();
-      sessionKey = key;
-      localStorage.setItem('mezdia_panel_key',key);
-      config = data.config;
-      account = data.account;
-      document.getElementById('login').classList.add('hidden');
-      render(data);
-    }
+    function headers(){return {'Content-Type':'application/json'}}
+    function showTab(id){document.querySelectorAll('section').forEach(function(s){s.classList.toggle('active',s.id===id)});document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('active',b.dataset.tab===id)});if(id==='logs')loadLogs()}
+    function copyText(id,btn){navigator.clipboard.writeText(document.getElementById(id).textContent);if(btn){var old=btn.textContent;btn.textContent='کپی شد ✓';setTimeout(function(){btn.textContent=old},1500)}}
+    function logout(){localStorage.removeItem('mezdia_panel_key');location.reload()}
+    function formatBytes(b){if(b===0)return'0 B';var k=1024,sizes=['B','KB','MB','GB','TB'],i=Math.floor(Math.log(b)/Math.log(k));return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+sizes[i]}
+
+    function getChartColors(){var s=getComputedStyle(document.documentElement);return{upload:s.getPropertyValue('--chart-upload').trim(),download:s.getPropertyValue('--chart-download').trim(),uploadArea:s.getPropertyValue('--chart-upload-area').trim(),downloadArea:s.getPropertyValue('--chart-download-area').trim(),grid:s.getPropertyValue('--chart-grid').trim(),text:s.getPropertyValue('--text-secondary').trim(),muted:s.getPropertyValue('--text-muted').trim()}}
+
+    function drawDonut(canvasId,upload,download,totalLabel){
+      var canvas=document.getElementById(canvasId);if(!canvas)return;var ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1,size=160;
+      canvas.width=size*dpr;canvas.height=size*dpr;canvas.style.width=size+'px';canvas.style.height=size+'px';ctx.scale(dpr,dpr);
+      var c=getChartColors(),cx=size/2,cy=size/2,outerR=62,innerR=42,total=upload+download,gap=0.03;
+      ctx.clearRect(0,0,size,size);
+      if(total===0){ctx.beginPath();ctx.arc(cx,cy,outerR,0,Math.PI*2);ctx.arc(cx,cy,innerR,0,Math.PI*2,true);ctx.fillStyle=c.grid;ctx.fill()}
+      else{var upAngle=(upload/total)*Math.PI*2,dnAngle=(download/total)*Math.PI*2,startUp=-Math.PI/2+gap/2,endUp=startUp+upAngle-gap,startDn=endUp+gap,endDn=startDn+dnAngle-gap;
+        if(upload>0){ctx.beginPath();ctx.arc(cx,cy,outerR,startUp,endUp);ctx.arc(cx,cy,innerR,endUp,startUp,true);ctx.closePath();ctx.fillStyle=c.upload;ctx.fill()}
+        if(download>0){ctx.beginPath();ctx.arc(cx,cy,outerR,startDn,endDn);ctx.arc(cx,cy,innerR,endDn,startDn,true);ctx.closePath();ctx.fillStyle=c.download;ctx.fill()}}
+      ctx.fillStyle=c.text;ctx.font='600 20px '+getComputedStyle(document.body).getPropertyValue('--font-display');ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(totalLabel,cx,cy-6);
+      ctx.fillStyle=c.muted;ctx.font='400 11px '+getComputedStyle(document.body).getPropertyValue('--font-body');ctx.fillText('مجموع',cx,cy+14)}
+
+    function drawSessionChart(){
+      var canvas=document.getElementById('chart-session');if(!canvas)return;var ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1,rect=canvas.getBoundingClientRect(),w=rect.width||800,h=160;
+      canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.scale(dpr,dpr);
+      var c=getChartColors(),pad={top:20,right:16,bottom:28,left:50},cw=w-pad.left-pad.right,ch=h-pad.top-pad.bottom;
+      ctx.clearRect(0,0,w,h);
+      if(sessionData.length<2){ctx.fillStyle=c.muted;ctx.font='400 13px '+getComputedStyle(document.body).getPropertyValue('--font-body');ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('داده‌ای ثبت نشده — نمودار پس از چند لحظه به‌روز می‌شود',w/2,h/2);return}
+      var maxVal=1;sessionData.forEach(function(d){if(d.up>maxVal)maxVal=d.up;if(d.down>maxVal)maxVal=d.down});maxVal*=1.15;
+      ctx.strokeStyle=c.grid;ctx.lineWidth=1;
+      for(var i=0;i<=4;i++){var y=pad.top+(ch/4)*i;ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(w-pad.right,y);ctx.stroke();ctx.fillStyle=c.muted;ctx.font='400 10px '+getComputedStyle(document.body).getPropertyValue('--font-body');ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(formatBytes(maxVal*(1-i/4)),pad.left-6,y)}
+      var step=cw/(sessionData.length-1);
+      function drawLine(data,color,areaColor){ctx.beginPath();data.forEach(function(d,i){var x=pad.left+i*step,y=pad.top+ch-(d/maxVal)*ch;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();ctx.lineTo(pad.left+(data.length-1)*step,pad.top+ch);ctx.lineTo(pad.left,pad.top+ch);ctx.closePath();ctx.fillStyle=areaColor;ctx.fill()}
+      drawLine(sessionData.map(function(d){return d.up}),c.upload,c.uploadArea);drawLine(sessionData.map(function(d){return d.down}),c.download,c.downloadArea);
+      var timeRange=document.getElementById('chart-time-range');if(timeRange&&sessionData.length>1)timeRange.textContent=sessionData[0].t+' — '+sessionData[sessionData.length-1].t}
+
+    function renderCharts(data){
+      var s=data.account.usage;
+      drawDonut('chart-total',s.uploadBytes||0,s.downloadBytes||0,s.totalGB+' GB');
+      drawDonut('chart-daily',s.dailyUploadBytes||0,s.dailyDownloadBytes||0,s.dailyGB+' GB');
+      var totalMax=Math.max(s.uploadBytes||1,s.downloadBytes||1,1),dailyMax=Math.max(s.dailyUploadBytes||1,s.dailyDownloadBytes||1,1);
+      document.getElementById('meter-upload-total').textContent=formatBytes(s.uploadBytes||0);
+      document.getElementById('meter-download-total').textContent=formatBytes(s.downloadBytes||0);
+      document.getElementById('meter-upload-daily').textContent=formatBytes(s.dailyUploadBytes||0);
+      document.getElementById('meter-download-daily').textContent=formatBytes(s.dailyDownloadBytes||0);
+      setTimeout(function(){
+        document.getElementById('meter-upload-total-fill').style.width=((s.uploadBytes||0)/totalMax*100)+'%';
+        document.getElementById('meter-download-total-fill').style.width=((s.downloadBytes||0)/totalMax*100)+'%';
+        document.getElementById('meter-upload-daily-fill').style.width=((s.dailyUploadBytes||0)/dailyMax*100)+'%';
+        document.getElementById('meter-download-daily-fill').style.width=((s.dailyDownloadBytes||0)/dailyMax*100)+'%'},50);
+      sessionData.push({t:new Date().toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'}),up:s.dailyUploadBytes||0,down:s.dailyDownloadBytes||0});
+      if(sessionData.length>60)sessionData.shift();drawSessionChart()}
+
+    async function login(silent){
+      var key=sessionKey||document.getElementById('password').value;
+      var res=await fetch(baseRoute+'/api/auth',{method:'POST',headers:headers(),body:JSON.stringify({key:key})});
+      if(!res.ok){if(!silent)document.getElementById('login-error').classList.add('show');return}
+      var data=await res.json();sessionKey=key;localStorage.setItem('mezdia_panel_key',key);config=data.config;account=data.account;
+      document.getElementById('login').style.display='none';render(data)}
 
     function render(data){
-      const stats = data.account.usage;
-      const isPaused = data.account.status === 'paused';
-      const statusPill = document.getElementById('status-pill');
-      statusPill.textContent = isPaused ? 'متوقف' : 'فعال';
-      statusPill.className = 'pill ' + (isPaused ? 'bad' : 'ok');
-      document.getElementById('sub-url').textContent = data.account.subscriptionUrl;
-      document.getElementById('qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' + encodeURIComponent(data.account.subscriptionUrl);
-      document.getElementById('traffic-summary').textContent = stats.totalGB + ' گیگابایت مصرف‌شده (کل) — امروز: ' + stats.dailyGB + ' گیگابایت.';
-      document.getElementById('runtime-summary').textContent = 'شناسه دستگاه: ' + data.deviceId + ' — نسخه: ' + data.version + '.';
-      document.getElementById('account-summary').textContent = (data.account.name || 'حساب پیش‌فرض') + ' اکنون ' + (isPaused ? 'متوقف' : 'فعال') + ' است. هیچ محدودیت ترافیک یا انقضایی روی این حساب اعمال نمی‌شود.';
-      fillSettings();
-      fillAccount();
-      document.getElementById('api-examples').textContent = 'curl -H "Authorization: Bearer $MEZDIA_API_KEY" ' + location.origin + baseRoute + '/api/config\\n\\n' +
-        'curl -X PATCH -H "Authorization: Bearer $MEZDIA_API_KEY" -H "Content-Type: application/json" -d \\'{"mode":"both","isPaused":false}\\' ' + location.origin + baseRoute + '/api/config\\n\\n' +
-        'curl -X PATCH -H "Authorization: Bearer $MEZDIA_API_KEY" -H "Content-Type: application/json" -d \\'{"account":{"name":"Primary","status":"active"}}\\' ' + location.origin + baseRoute + '/api/account';
-    }
+      window._lastRenderData=data;var s=data.account.usage,isPaused=data.account.status==='paused';
+      var statusPill=document.getElementById('status-pill');statusPill.textContent=isPaused?'متوقف':'فعال';statusPill.className='pill '+(isPaused?'bad':'ok');
+      document.getElementById('sub-url').textContent=data.account.subscriptionUrl;
+      document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(data.account.subscriptionUrl);
+      document.getElementById('runtime-info').innerHTML='<div class="info-grid"><span class="muted">شناسه دستگاه</span><span>'+data.deviceId+'</span><span class="muted">نسخه</span><span>'+data.version+'</span><span class="muted">درخواست‌ها (کل)</span><span>'+(s.totalRequests||0).toLocaleString()+'</span><span class="muted">درخواست‌ها (امروز)</span><span>'+(s.dailyRequests||0).toLocaleString()+'</span></div>';
+      document.getElementById('account-summary').innerHTML='<div class="info-grid"><span class="muted">نام</span><span>'+(data.account.name||'حساب پیش‌فرض')+'</span><span class="muted">وضعیت</span><span>'+(isPaused?'متوقف':'فعال')+'</span><span class="muted">محدودیت ترافیک</span><span>ندارد</span><span class="muted">انقضا</span><span>ندارد</span></div>';
+      renderCharts(data);fillSettings();fillAccount();
+      document.getElementById('api-examples').textContent='curl -H "Authorization: Bearer $MEZDIA_API_KEY" '+location.origin+baseRoute+'/api/config\\n\\n'+'curl -X PATCH -H "Authorization: Bearer $MEZDIA_API_KEY" -H "Content-Type: application/json" -d \\'{"mode":"both","isPaused":false}\\' '+location.origin+baseRoute+'/api/config\\n\\n'+'curl -X PATCH -H "Authorization: Bearer $MEZDIA_API_KEY" -H "Content-Type: application/json" -d \\'{"account":{"name":"Primary","status":"active"}}\\' '+location.origin+baseRoute+'/api/account';
+      if(refreshTimer)clearInterval(refreshTimer);refreshTimer=setInterval(async function(){try{var r=await fetch(baseRoute+'/api/auth',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey})});if(r.ok){var d=await r.json();config=d.config;account=d.account;window._lastRenderData=d;renderCharts(d)}}catch(e){}},60000)}
 
-    function setValue(id,value){const el=document.getElementById(id);if(!el)return;if(el.type==='checkbox')el.checked=!!value;else el.value=value ?? '';}
-    function getValue(id){const el=document.getElementById(id);return el.type==='checkbox'?el.checked:el.value;}
-    function fillSettings(){
-      ['name','apiRoute','masterKey','deviceId','mode','socketPorts','agent','maintenanceHost','cleanIps','backupRelay','customRelay','slaveNodes','customDns','metricNode','namePrefix','nameStrategy','subUserAgent','customPanelUrl','enableOpt1','enableOpt2','isPaused'].forEach(k=>setValue('cfg-'+k,config[k]));
-      document.getElementById('raw-config').value = JSON.stringify(config,null,2);
-    }
-    function fillAccount(){
-      setValue('account-name',account.name);setValue('account-status',account.status);setValue('account-notes',account.notes);
-      setValue('account-clean-ip',account.cleanIp);setValue('account-proxy-ip',account.proxyIp);setValue('account-mode',account.userMode || '');
-      setValue('account-ports',account.userPorts);setValue('account-max-configs',account.maxConfigs);
-    }
-    async function saveSettings(){
-      const patch={};
-      ['name','apiRoute','masterKey','deviceId','mode','socketPorts','agent','maintenanceHost','cleanIps','backupRelay','customRelay','slaveNodes','customDns','metricNode','namePrefix','nameStrategy','subUserAgent','customPanelUrl','enableOpt1','enableOpt2','isPaused'].forEach(k=>patch[k]=getValue('cfg-'+k));
-      const res = await fetch(baseRoute + '/api/sync',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey,config:patch})});
-      if(res.ok){alert('تنظیمات ذخیره شد. اگر مسیر API را تغییر دادید، آدرس /' + patch.apiRoute + '/dash را باز کنید.');location.reload();}else alert('ذخیره‌سازی ناموفق بود.');
-    }
-    async function saveAccount(){
-      const patch={account:{name:getValue('account-name'),status:getValue('account-status'),notes:getValue('account-notes'),cleanIp:getValue('account-clean-ip')||null,proxyIp:getValue('account-proxy-ip')||null,userMode:getValue('account-mode')||null,userPorts:getValue('account-ports')||null,maxConfigs:getValue('account-max-configs')||null}};
-      const res = await fetch(baseRoute + '/api/sync',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey,config:patch})});
-      if(res.ok){alert('حساب ذخیره شد.');location.reload();}else alert('ذخیره‌سازی ناموفق بود.');
-    }
-    async function resetTraffic(){if(!confirm('شمارنده‌های ترافیک این حساب بازنشانی شود؟'))return;const res=await fetch(baseRoute + '/api/sync',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey,resetTraffic:true})});if(res.ok)location.reload();}
-    function exportConfig(){document.getElementById('raw-config').value=JSON.stringify(config,null,2);}
-    async function importConfig(){try{const next=JSON.parse(document.getElementById('raw-config').value);const res=await fetch(baseRoute + '/api/sync',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey,config:next})});if(res.ok)location.reload();else alert('وارد کردن ناموفق بود.');}catch(e){alert('JSON نامعتبر است.');}}
-    async function loadLogs(){const res=await fetch(baseRoute + '/api/logs',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey})});if(!res.ok)return;const data=await res.json();document.getElementById('log-body').innerHTML=(data.logs||[]).map(l=>'<tr><td>'+l.ts+'</td><td>'+l.type+'</td><td>'+l.detail+'</td></tr>').join('') || '<tr><td colspan="3" class="muted">هنوز گزارشی ثبت نشده است.</td></tr>';}
-    document.getElementById('password').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
-    if(sessionKey){document.getElementById('password').value=sessionKey;login(true);}
+    function setValue(id,value){var el=document.getElementById(id);if(!el)return;if(el.type==='checkbox')el.checked=!!value;else el.value=value??''}
+    function getValue(id){var el=document.getElementById(id);return el.type==='checkbox'?el.checked:el.value}
+    function fillSettings(){['name','apiRoute','masterKey','deviceId','mode','socketPorts','agent','maintenanceHost','cleanIps','backupRelay','customRelay','slaveNodes','customDns','metricNode','namePrefix','nameStrategy','subUserAgent','customPanelUrl','enableOpt1','enableOpt2','isPaused'].forEach(function(k){setValue('cfg-'+k,config[k])});document.getElementById('raw-config').value=JSON.stringify(config,null,2)}
+    function fillAccount(){setValue('account-name',account.name);setValue('account-status',account.status);setValue('account-notes',account.notes);setValue('account-clean-ip',account.cleanIp);setValue('account-proxy-ip',account.proxyIp);setValue('account-mode',account.userMode||'');setValue('account-ports',account.userPorts);setValue('account-max-configs',account.maxConfigs)}
+    async function saveSettings(){var patch={};['name','apiRoute','masterKey','deviceId','mode','socketPorts','agent','maintenanceHost','cleanIps','backupRelay','customRelay','slaveNodes','customDns','metricNode','namePrefix','nameStrategy','subUserAgent','customPanelUrl','enableOpt1','enableOpt2','isPaused'].forEach(function(k){patch[k]=getValue('cfg-'+k)});var res=await fetch(baseRoute+'/api/sync',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey,config:patch})});if(res.ok){alert('تنظیمات ذخیره شد. اگر مسیر API را تغییر دادید، آدرس /'+patch.apiRoute+'/dash را باز کنید.');location.reload()}else alert('ذخیره‌سازی ناموفق بود.')}
+    async function saveAccount(){var patch={account:{name:getValue('account-name'),status:getValue('account-status'),notes:getValue('account-notes'),cleanIp:getValue('account-clean-ip')||null,proxyIp:getValue('account-proxy-ip')||null,userMode:getValue('account-mode')||null,userPorts:getValue('account-ports')||null,maxConfigs:getValue('account-max-configs')||null}};var res=await fetch(baseRoute+'/api/sync',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey,config:patch})});if(res.ok){alert('حساب ذخیره شد.');location.reload()}else alert('ذخیره‌سازی ناموفق بود.')}
+    async function resetTraffic(){if(!confirm('شمارنده‌های ترافیک این حساب بازنشانی شود؟'))return;var res=await fetch(baseRoute+'/api/sync',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey,resetTraffic:true})});if(res.ok)location.reload()}
+    function exportConfig(){document.getElementById('raw-config').value=JSON.stringify(config,null,2)}
+    async function importConfig(){try{var next=JSON.parse(document.getElementById('raw-config').value);var res=await fetch(baseRoute+'/api/sync',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey,config:next})});if(res.ok)location.reload();else alert('وارد کردن ناموفق بود.')}catch(e){alert('JSON نامعتبر است.')}}
+    async function loadLogs(){var res=await fetch(baseRoute+'/api/logs',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey})});if(!res.ok)return;var data=await res.json();document.getElementById('log-body').innerHTML=(data.logs||[]).map(function(l){return'<tr><td>'+l.ts+'</td><td>'+l.type+'</td><td>'+l.detail+'</td></tr>'}).join('')||'<tr><td colspan="3" class="muted">هنوز گزارشی ثبت نشده است.</td></tr>'}
+    document.getElementById('password').addEventListener('keydown',function(e){if(e.key==='Enter')login()});
+    window.addEventListener('resize',function(){if(window._lastRenderData)drawSessionChart()});
+    if(sessionKey){document.getElementById('password').value=sessionKey;login(true)}
   </script>
 </body>
 </html>`;

@@ -1,8 +1,29 @@
+import changelogText from "../../CHANGELOG.md";
+
 export function formatDate(ts) {
   if (!ts) return "-";
   const d = new Date(ts);
   const pad = (n) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// Parse changelog for a specific version
+export function parseChangelog(targetVersion) {
+  const lines = changelogText.split("\n");
+  let currentVersion = null;
+  let entry = [];
+
+  for (const line of lines) {
+    if (line.startsWith("## ")) {
+      if (currentVersion === targetVersion && entry.length) break;
+      currentVersion = line.slice(3).trim();
+      entry = [];
+    } else if (currentVersion === targetVersion && line.trim() && !line.startsWith("#")) {
+      entry.push(line.trim());
+    }
+  }
+
+  return entry.length ? entry.join("\n") : "تغییرات جدید اعمال شده است.";
 }
 
 export const T = {
@@ -142,4 +163,19 @@ export const T = {
   unknownCallback: "این گزینه دیگر معتبر نیست.",
   genericError: "⚠️ خطایی رخ داد. لطفاً دوباره تلاش کنید.",
   notFound: "یافت نشد — شاید قبلاً حذف شده باشد.",
+
+  // ---- Update notification texts ----
+
+  updateNotification: (version, changelog) =>
+    `🔄 <b>نسخه جدید پنل Mezdia (${version}) منتشر شد!</b>\n\n` +
+    `📝 <b>تغییرات:</b>\n${changelog}\n\n` +
+    `برای بروزرسانی ورکرهای خود، یکی از گزینه‌های زیر را انتخاب کنید:`,
+
+  updateSelectPrompt: "حساب‌هایی که می‌خواهید بروزرسانی شوند را انتخاب کنید:",
+  updateStarted: (count) => `⏳ بروزرسانی ${count} ورکر آغاز شد…`,
+  updateComplete: (success, failed) =>
+    `✅ بروزرسانی تمام شد!\n\n` +
+    `• موفق: ${success}\n` +
+    (failed > 0 ? `• ناموفق: ${failed}\n` : "") +
+    `\nآخرین نسخه پنل روی ورکرهای انتخاب‌شده فعال شد.`,
 };

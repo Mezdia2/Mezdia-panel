@@ -131,7 +131,7 @@ describe("index.js (Worker entry point)", () => {
       expect(routeMessage).toHaveBeenCalled();
     });
 
-    it("handles callback_query updates", async () => {
+    it("ignores callback_query updates (migrated to reply keyboards)", async () => {
       const update = {
         callback_query: { id: "cb-1", data: "menu:main", from: { id: 123 }, message: { chat: { id: 123 }, message_id: 1 } },
       };
@@ -146,8 +146,8 @@ describe("index.js (Worker entry point)", () => {
       const res = await worker.fetch(req, env, ctx);
       expect(res.status).toBe(200);
       await Promise.all(ctx._waiting);
-      const { routeCallback } = await import("../src/handlers/router.js");
-      expect(routeCallback).toHaveBeenCalled();
+      const { routeMessage } = await import("../src/handlers/router.js");
+      expect(routeMessage).not.toHaveBeenCalled();
     });
   });
 

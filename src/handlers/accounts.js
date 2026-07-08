@@ -1,70 +1,109 @@
-import { sendMessage, editMessageText, answerCallbackQuery } from "../lib/telegram.js";
+import { sendMessage, answerCallbackQuery } from "../lib/telegram.js";
 import {
-  askTokenKeyboard,
-  pickCfAccountKeyboard,
-  accountsListKeyboard,
-  accountDetailKeyboard,
-  confirmRemoveAccountKeyboard,
-  mainMenuKeyboard,
+  mainMenuKb,
+  accountsListKb,
+  accountDetailKb,
+  confirmRemoveAccountKb,
+  cancelKb,
 } from "../ui/keyboards.js";
 import { T } from "../ui/text.js";
 import {
-  addAccount,
   getAccounts,
+  addAccount,
   getAccount,
   removeAccount,
-  deploymentsForAccount,
-  removeDeployment,
   setSession,
   clearSession,
 } from "../lib/kv.js";
-import { listAccounts as listCfAccounts, CloudflareApiError } from "../lib/cloudflare.js";
-import { destroyPanel } from "../lib/provision.js";
+import { listCfAccounts } from "../lib/cloudflare.js";
 import { shortId } from "../lib/ids.js";
 
 export async function startAddAccount(env, chatId, tgId, messageId) {
   await setSession(env, tgId, "awaiting_cf_token", {});
-  await editMessageText(env, chatId, messageId, T.askToken, { keyboard: askTokenKeyboard() });
+  // Send the URL inline separately, then the cancel keyboard
+  await sendMessage(env, chatId, "🔗 برای ساخت توکن، از دکمه زیر استفاده کنید:", {
+    keyboard: {
+      inline_keyboard: [[{ text: "🔗 صفحه API Tokens کلادفلر", url: "https://dash.cloudflare.com/profile/api-tokens" }]],
+    },
+  });
+  await sendMessage(env, chatId, T.askToken, { keyboard: cancelKb() });
 }
 
-// Called from the text-message router when session.state === "awaiting_cf_token".
 export async function handleTokenMessage(env, chatId, tgId, token) {
-  token = token.trim();
+  const accounts = await getAccounts(env, tgId);
+
   let candidates;
   try {
     candidates = await listCfAccounts(token);
   } catch (e) {
-    await sendMessage(env, chatId, T.tokenInvalid, { keyboard: askTokenKeyboard() });
+    await clearSession(env, tgId);
+    await sendMessage(env, chatId, T.tokenInvalid, { keyboard: mainMenuKb() });
     return;
   }
 
   if (!candidates.length) {
-    await sendMessage(env, chatId, T.tokenNoAccounts, { keyboard: askTokenKeyboard() });
+    await clearSession(env, tgId);
+    await sendMessage(env, chatId, T.tokenNoAccounts, { keyboard: mainMenuKb() });
     return;
   }
 
   if (candidates.length === 1) {
+    const existing = accounts.find((a) => a.cfAccountId === candidates[0].id);
+    if (existing) {
+      await clearSession(env, tgId);
+      await sendMessage(env, chatId, `این حساب قبلاً با نام «${existing.cfAccountName}» اضافه شده است.`, {
+        keyboard: mainMenuKb(),
+      });
+      return;
+    }
     await finalizeAccount(env, chatId, tgId, token, candidates[0]);
     return;
   }
 
-  await setSession(env, tgId, "awaiting_cf_account_choice", { token, candidates });
-  await sendMessage(env, chatId, T.pickCfAccount, { keyboard: pickCfAccountKeyboard(candidates) });
+  // Multiple candidates — ask user to pick
+  await setSession(env, tgId, "awaiting_cf_account_pick", { token, candidates });
+  const pickText = T.pickCfAccount;
+  // Build a keyboard with account names
+  const rows = candidates.map((c) => [{ text: `☁️ ${c.name}` }]);
+  rows.push([{ text: "✖️ لغو" }]);
+  await sendMessage(env, chatId, pickText, {
+    keyboard: { keyboard: rows, resize_keyboard: true },
+  });
 }
 
-// Called from the callback router for "acct:pick:{cfAccountId}".
 export async function handleAccountPick(env, chatId, tgId, messageId, cfAccountId, session) {
-  const candidate = (session?.data?.candidates || []).find((c) => c.id === cfAccountId);
   const token = session?.data?.token;
-  if (!candidate || !token) {
-    await editMessageText(env, chatId, messageId, T.genericError, { keyboard: mainMenuKeyboard() });
+  const candidates = session?.data?.candidates || [];
+  const pick = candidates.find((c) => c.id === cfAccountId);
+  await clearSession(env, tgId);
+  if (!pick || !token) {
+    await sendMessage(env, chatId, T.notFound, { keyboard: mainMenuKb() });
     return;
   }
-  await finalizeAccount(env, chatId, tgId, token, candidate, messageId);
+  await finalizeAccount(env, chatId, tgId, token, pick);
 }
 
-async function finalizeAccount(env, chatId, tgId, token, cfAccount, messageId = null) {
+// Reply-keyboard variant: the user taps an account name (not an inline callback),
+// so we match by name against the candidates stored in the session.
+export async function handleAccountPickReply(env, chatId, tgId, text, session) {
+  const token = session?.data?.token;
+  const candidates = session?.data?.candidates || [];
   await clearSession(env, tgId);
+  if (!token || !candidates.length) {
+    await sendMessage(env, chatId, T.notFound, { keyboard: mainMenuKb() });
+    return;
+  }
+  const clean = text.replace(/^[☁️✅✖️]\s*/, "").trim();
+  const pick = candidates.find((c) => c.name === clean || text.includes(c.name));
+  if (!pick) {
+    await sendMessage(env, chatId, T.notFound, { keyboard: mainMenuKb() });
+    return;
+  }
+  await finalizeAccount(env, chatId, tgId, token, pick);
+}
+
+async function finalizeAccount(env, chatId, tgId, token, cfAccount) {
+  const accounts = await getAccounts(env, tgId);
   const account = {
     id: shortId(),
     cfAccountId: cfAccount.id,
@@ -72,70 +111,67 @@ async function finalizeAccount(env, chatId, tgId, token, cfAccount, messageId = 
     token,
     addedAt: Date.now(),
   };
+  accounts.push(account);
   await addAccount(env, tgId, account);
-  const text = T.accountAdded(cfAccount.name);
-  if (messageId) {
-    await editMessageText(env, chatId, messageId, text, { keyboard: accountDetailKeyboard(account.id) });
-  } else {
-    await sendMessage(env, chatId, text, { keyboard: accountDetailKeyboard(account.id) });
-  }
+  await clearSession(env, tgId);
+  await sendMessage(env, chatId, T.accountAdded(cfAccount.name), { keyboard: mainMenuKb() });
 }
 
 export async function listAccountsScreen(env, chatId, tgId, messageId) {
   const accounts = await getAccounts(env, tgId);
-  if (!accounts.length) {
-    await editMessageText(env, chatId, messageId, T.accountsListEmpty, {
-      keyboard: accountsListKeyboard(accounts),
-    });
-    return;
-  }
-  await editMessageText(env, chatId, messageId, T.accountsListHeader, {
-    keyboard: accountsListKeyboard(accounts),
-  });
+  const text = accounts.length ? T.accountsListHeader : T.accountsListEmpty;
+  await setSession(env, tgId, "kb_accounts_list", {});
+  await sendMessage(env, chatId, text, { keyboard: accountsListKb(accounts) });
 }
 
 export async function showAccountDetail(env, chatId, tgId, messageId, accountId) {
   const account = await getAccount(env, tgId, accountId);
   if (!account) {
-    await editMessageText(env, chatId, messageId, T.notFound, { keyboard: mainMenuKeyboard() });
+    await sendMessage(env, chatId, T.notFound, { keyboard: mainMenuKb() });
     return;
   }
-  const deployments = await deploymentsForAccount(env, tgId, accountId);
-  await editMessageText(env, chatId, messageId, T.accountDetail(account, deployments.length), {
-    keyboard: accountDetailKeyboard(accountId),
-  });
+  // Count deployments for this account
+  const { deploymentsForAccount } = await import("../lib/kv.js");
+  const deps = await deploymentsForAccount(env, tgId, accountId);
+  const text = T.accountDetail(account, deps.length);
+  await setSession(env, tgId, "kb_account_detail", { accountId });
+  await sendMessage(env, chatId, text, { keyboard: accountDetailKb() });
 }
 
 export async function confirmRemoveAccountScreen(env, chatId, tgId, messageId, accountId) {
   const account = await getAccount(env, tgId, accountId);
   if (!account) {
-    await editMessageText(env, chatId, messageId, T.notFound, { keyboard: mainMenuKeyboard() });
+    await sendMessage(env, chatId, T.notFound, { keyboard: mainMenuKb() });
     return;
   }
-  const deployments = await deploymentsForAccount(env, tgId, accountId);
-  await editMessageText(env, chatId, messageId, T.confirmRemoveAccount(account, deployments.length), {
-    keyboard: confirmRemoveAccountKeyboard(accountId),
+  const { deploymentsForAccount } = await import("../lib/kv.js");
+  const deps = await deploymentsForAccount(env, tgId, accountId);
+  await setSession(env, tgId, "kb_confirm_remove_account", { accountId });
+  await sendMessage(env, chatId, T.confirmRemoveAccount(account, deps.length), {
+    keyboard: confirmRemoveAccountKb(),
   });
 }
 
 export async function removeAccountConfirmed(env, chatId, tgId, messageId, accountId, callbackQueryId) {
   const account = await getAccount(env, tgId, accountId);
   if (!account) {
-    await editMessageText(env, chatId, messageId, T.notFound, { keyboard: mainMenuKeyboard() });
+    await sendMessage(env, chatId, T.notFound, { keyboard: mainMenuKb() });
     return;
   }
-  const deployments = await deploymentsForAccount(env, tgId, accountId);
-  for (const dep of deployments) {
+  // Remove all deployments for this account
+  const { deploymentsForAccount, removeDeployment } = await import("../lib/kv.js");
+  const { destroyPanel } = await import("../lib/provision.js");
+  const deps = await deploymentsForAccount(env, tgId, accountId);
+  for (const dep of deps) {
     try {
       await destroyPanel(account, dep);
     } catch (e) {
-      // Continue cleanup even if one resource is already gone.
+      // Best-effort cleanup
     }
     await removeDeployment(env, tgId, dep.id);
   }
   await removeAccount(env, tgId, accountId);
   if (callbackQueryId) await answerCallbackQuery(env, callbackQueryId);
-  await editMessageText(env, chatId, messageId, T.accountRemoved, { keyboard: mainMenuKeyboard() });
+  await clearSession(env, tgId);
+  await sendMessage(env, chatId, T.accountRemoved, { keyboard: mainMenuKb() });
 }
-
-export { CloudflareApiError };

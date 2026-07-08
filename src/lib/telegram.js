@@ -90,3 +90,21 @@ export function btn(text, callback_data) {
 export function urlBtn(text, url) {
   return { text, url };
 }
+
+// ---- Reply keyboard builders ----
+
+export function replyKb(rows, opts = {}) {
+  return {
+    keyboard: rows,
+    resize_keyboard: true,
+    one_time_keyboard: !!opts.oneTime,
+  };
+}
+
+export function replyBtn(text) {
+  return { text };
+}
+
+export function removeKb() {
+  return { remove_keyboard: true };
+}

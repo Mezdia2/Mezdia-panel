@@ -102,6 +102,9 @@ export async function removeDeployment(env, tgId, deploymentId) {
 
 export async function deploymentsForAccount(env, tgId, accountId) {
   const deployments = await getDeployments(env, tgId);
+  // `null` / `undefined` means "all deployments for this user" (used by the
+  // auto-update broadcast and the "update all" action).
+  if (accountId === null || accountId === undefined) return deployments;
   return deployments.filter((d) => d.accountId === accountId);
 }
 
@@ -121,4 +124,29 @@ export async function setSession(env, tgId, state, data = {}) {
 
 export async function clearSession(env, tgId) {
   await env.BOT_DB.delete(`session:${tgId}`);
+}
+
+// ---- User registry (for update notifications) ----
+
+export async function registerUser(env, tgId) {
+  const key = "all_users";
+  const users = await getJson(env, key, []);
+  if (!users.includes(tgId)) {
+    users.push(tgId);
+    await putJson(env, key, users);
+  }
+}
+
+export async function getAllUserIds(env) {
+  return getJson(env, "all_users", []);
+}
+
+// ---- Version tracking (for auto-update) ----
+
+export async function getUserVersion(env, tgId) {
+  return getJson(env, `user_version:${tgId}`, null);
+}
+
+export async function setUserVersion(env, tgId, version) {
+  await putJson(env, `user_version:${tgId}`, { version, notifiedAt: Date.now() });
 }

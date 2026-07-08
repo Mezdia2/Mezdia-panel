@@ -19,3 +19,7 @@ export const DEPLOY_INIT_RETRIES = 6;
 export const DEPLOY_INIT_RETRY_DELAY_MS = 2000;
 
 export const SCRIPT_NAME_PREFIX = "mz-";
+
+// Current panel version — bump this when deploying a new panel worker template.
+// Used for auto-update notifications to users.
+export const PANEL_VERSION = "2.0.0";

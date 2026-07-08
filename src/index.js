@@ -1,5 +1,5 @@
 import { setWebhook } from "./lib/telegram.js";
-import { routeMessage, routeCallback } from "./handlers/router.js";
+import { routeMessage } from "./handlers/router.js";
 
 export default {
   async fetch(request, env, ctx) {
@@ -39,7 +39,7 @@ export default {
 
       // Do the actual work in the background and answer Telegram immediately —
       // Telegram only needs a fast 200 OK; it doesn't wait for our reply.
-      ctx.waitUntil(handleUpdate(env, update));
+      ctx.waitUntil(handleUpdate(env, update, ctx));
       return new Response("OK");
     }
 
@@ -47,12 +47,10 @@ export default {
   },
 };
 
-async function handleUpdate(env, update) {
+async function handleUpdate(env, update, ctx) {
   try {
     if (update.message) {
-      await routeMessage(env, update.message);
-    } else if (update.callback_query) {
-      await routeCallback(env, update.callback_query);
+      await routeMessage(env, update.message, ctx);
     }
   } catch (e) {
     console.error("Unhandled update error", e);
