@@ -78,6 +78,21 @@ describe("deployments.js", () => {
       const text = editMessageText.mock.calls[0][3];
       expect(text).toContain("یافت نشد");
     });
+
+    it("rejects deploy when account already has a worker", async () => {
+      await env.BOT_DB.put(
+        "accounts:12345",
+        JSON.stringify([{ id: "a1", cfAccountName: "Test", token: "tok" }])
+      );
+      await env.BOT_DB.put(
+        "deployments:12345",
+        JSON.stringify([{ id: "d1", accountId: "a1", scriptName: "mz-1" }])
+      );
+      await startDeploy(env, 12345, 12345, 1, "a1");
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      const text = sendMessage.mock.calls[0][2];
+      expect(text).toContain("هر حساب کلادفلر فقط");
+    });
   });
 
   describe("handleLabelMessage", () => {

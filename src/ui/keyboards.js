@@ -21,9 +21,9 @@ export const accountsListKb = (accounts) =>
     [replyBtn("🔙 بازگشت به منوی اصلی")],
   ]);
 
-export const accountDetailKb = () =>
+export const accountDetailKb = (hasWorker) =>
   replyKb([
-    [replyBtn("🚀 دیپلوی ورکر جدید")],
+    ...(hasWorker ? [] : [[replyBtn("🚀 دیپلوی ورکر جدید")]]),
     [replyBtn("📋 ورکرهای این حساب")],
     [replyBtn("🗑 حذف این حساب")],
     [replyBtn("🔙 بازگشت به لیست حساب‌ها")],
@@ -38,7 +38,7 @@ export const confirmRemoveAccountKb = () =>
 export const deploymentsListKb = (deployments) =>
   replyKb([
     ...deployments.map((d) => [replyBtn(`⚙️ ${d.label || d.scriptName}`)]),
-    [replyBtn("🚀 دیپلوی ورکر جدید")],
+    ...(deployments.length === 0 ? [[replyBtn("🚀 دیپلوی ورکر جدید")]] : []),
     [replyBtn("🔙 بازگشت به حساب")],
   ]);
 

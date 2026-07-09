@@ -29,6 +29,7 @@ describe("text.js", () => {
     it("has welcome message", () => {
       expect(T.welcome).toContain("Mezdia");
       expect(T.welcome).toContain("خوش آمدید");
+      expect(T.welcome).toContain("در هر حساب یک ورکر");
     });
 
     it("has help text with commands", () => {

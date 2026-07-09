@@ -134,8 +134,9 @@ export async function showAccountDetail(env, chatId, tgId, messageId, accountId)
   const { deploymentsForAccount } = await import("../lib/kv.js");
   const deps = await deploymentsForAccount(env, tgId, accountId);
   const text = T.accountDetail(account, deps.length);
-  await setSession(env, tgId, "kb_account_detail", { accountId });
-  await sendMessage(env, chatId, text, { keyboard: accountDetailKb() });
+  const hasWorker = deps.length > 0;
+  await setSession(env, tgId, "kb_account_detail", { accountId, hasWorker });
+  await sendMessage(env, chatId, text, { keyboard: accountDetailKb(hasWorker) });
 }
 
 export async function confirmRemoveAccountScreen(env, chatId, tgId, messageId, accountId) {

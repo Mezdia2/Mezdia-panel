@@ -61,13 +61,20 @@ describe("keyboards.js", () => {
   });
 
   describe("accountDetailKb", () => {
-    it("has deploy, deployments list, remove, and back buttons", () => {
-      const kb = accountDetailKb();
+    it("shows deploy button when hasWorker is false", () => {
+      const kb = accountDetailKb(false);
       const texts = kb.keyboard.flat().map((b) => b.text);
       expect(texts).toContain("🚀 دیپلوی ورکر جدید");
       expect(texts).toContain("📋 ورکرهای این حساب");
       expect(texts).toContain("🗑 حذف این حساب");
       expect(texts).toContain("🔙 بازگشت به لیست حساب‌ها");
+    });
+
+    it("hides deploy button when hasWorker is true", () => {
+      const kb = accountDetailKb(true);
+      const texts = kb.keyboard.flat().map((b) => b.text);
+      expect(texts).not.toContain("🚀 دیپلوی ورکر جدید");
+      expect(texts).toContain("📋 ورکرهای این حساب");
     });
   });
 
@@ -91,7 +98,17 @@ describe("keyboards.js", () => {
       expect(kb.keyboard[1][0].text).toBe("⚙️ mz-2");
     });
 
-    it("appends deploy and back buttons", () => {
+    it("omits deploy button when deployments exist", () => {
+      const deployments = [
+        { id: "d1", label: "Panel 1", scriptName: "mz-1" },
+      ];
+      const kb = deploymentsListKb(deployments);
+      const texts = kb.keyboard.flat().map((b) => b.text);
+      expect(texts).not.toContain("🚀 دیپلوی ورکر جدید");
+      expect(texts).toContain("🔙 بازگشت به حساب");
+    });
+
+    it("shows deploy button when no deployments", () => {
       const kb = deploymentsListKb([]);
       const texts = kb.keyboard.flat().map((b) => b.text);
       expect(texts).toContain("🚀 دیپلوی ورکر جدید");

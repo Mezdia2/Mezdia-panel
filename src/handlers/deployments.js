@@ -27,6 +27,11 @@ export async function startDeploy(env, chatId, tgId, messageId, accountId) {
     await sendMessage(env, chatId, T.notFound, { keyboard: mainMenuKb() });
     return;
   }
+  const existing = await deploymentsForAccount(env, tgId, accountId);
+  if (existing.length > 0) {
+    await sendMessage(env, chatId, T.oneWorkerPerAccount, { keyboard: mainMenuKb() });
+    return;
+  }
   await setSession(env, tgId, "awaiting_deploy_label", { accountId });
   await sendMessage(env, chatId, T.askDeployLabel, { keyboard: cancelKb() });
 }
