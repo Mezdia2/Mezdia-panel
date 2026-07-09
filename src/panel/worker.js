@@ -5,7 +5,7 @@ import { connect } from "cloudflare:sockets";
 
 /* ---- src/config.js ---- */
 const BRAND_NAME = "Mezdia Panel";
-const CURRENT_VERSION = "3.2.0";
+const CURRENT_VERSION = "3.2.1";
 
 const SYSTEM_DEFAULTS = {
     name: "Mezdia Panel",
@@ -1878,212 +1878,194 @@ function getDashboardUI(hasDB) {
   <title>${BRAND_NAME}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --font-display: 'Vazirmatn', system-ui, -apple-system, sans-serif;
       --font-body: 'Vazirmatn', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-      --radius-xs: 6px;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
       --radius-sm: 8px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --radius-pill: 9999px;
-      --space-xxs: 4px;
-      --space-xs: 8px;
-      --space-sm: 12px;
-      --space-md: 17px;
-      --space-lg: 24px;
-      --space-xl: 32px;
-      --transition: 0.15s ease;
-      --chassis-bg: #000000;
-      --chassis-border: rgba(255,255,255,0.12);
-      --chassis-text: rgba(255,255,255,0.55);
-      --chassis-text-active: #fcfdff;
-      --destructive: #e01e2c;
-      --destructive-foreground: #ffffff;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --accent-grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      --accent-color: #8b5cf6;
     }
     [data-theme="dark"] {
       color-scheme: dark;
-      --bg: #000000;
-      --surface: #000000;
-      --surface-raised: #0a0a0b;
-      --border: rgba(255,255,255,0.14);
-      --border-strong: rgba(255,255,255,0.3);
-      --text: #fcfdff;
-      --text-secondary: #c8c8cb;
-      --text-muted: #717171;
-      --invert-bg: #fcfdff;
-      --invert-text: #000000;
-      --ring: #fcfdff;
-      --ring-subtle: rgba(252,253,255,0.16);
-      --accent-subtle: rgba(252,253,255,0.08);
-      --chart-upload: #fcfdff;
-      --chart-download: #9a9a9e;
-      --chart-upload-area: rgba(252,253,255,0.14);
-      --chart-download-area: rgba(154,154,158,0.18);
-      --chart-grid: rgba(255,255,255,0.08);
-      --meter-bg: rgba(255,255,255,0.08);
-      --input-bg: #000000;
-      --code-bg: #0a0a0b;
-      --destructive-subtle: rgba(224,30,44,0.14);
-      --destructive-border: rgba(224,30,44,0.4);
-      --success: #33d17a;
-      --success-subtle: rgba(51,209,122,0.12);
-      --success-border: rgba(51,209,122,0.35);
-      --warn: #f2c14e;
-      --warn-subtle: rgba(242,193,78,0.12);
-      --warn-border: rgba(242,193,78,0.35);
-      --table-stripe: rgba(255,255,255,0.025);
-      --grain-opacity: 0.05;
+      --bg: #0a0a0f;
+      --surface: rgba(20, 20, 30, 0.6);
+      --surface-solid: #14141e;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.15);
+      --text: #ffffff;
+      --text-secondary: #a1a1b5;
+      --text-muted: #6b6b80;
+      --invert-bg: #ffffff;
+      --invert-text: #0a0a0f;
+      --ring: rgba(139, 92, 246, 0.5);
+      --chart-upload: #8b5cf6;
+      --chart-download: #ec4899;
+      --chart-upload-area: rgba(139, 92, 246, 0.15);
+      --chart-download-area: rgba(236, 72, 153, 0.15);
+      --chart-grid: rgba(255, 255, 255, 0.05);
+      --meter-bg: rgba(255, 255, 255, 0.06);
+      --input-bg: rgba(0, 0, 0, 0.2);
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --destructive: #ef4444;
+      --success: #10b981;
+      --warn: #f59e0b;
     }
     [data-theme="light"] {
       color-scheme: light;
-      --bg: #ffffff;
-      --surface: #ffffff;
-      --surface-raised: #fafafa;
-      --border: #e5e5e5;
-      --border-strong: #cccccc;
-      --text: #0a0a0a;
-      --text-secondary: #45454a;
-      --text-muted: #767676;
-      --invert-bg: #0a0a0a;
+      --bg: #f8fafc;
+      --surface: rgba(255, 255, 255, 0.7);
+      --surface-solid: #ffffff;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.15);
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --invert-bg: #0f172a;
       --invert-text: #ffffff;
-      --ring: #0a0a0a;
-      --ring-subtle: rgba(10,10,10,0.12);
-      --accent-subtle: rgba(10,10,10,0.05);
-      --chart-upload: #0a0a0a;
-      --chart-download: #8a8a8e;
-      --chart-upload-area: rgba(10,10,10,0.08);
-      --chart-download-area: rgba(138,138,142,0.14);
-      --chart-grid: #ececec;
-      --meter-bg: #ececec;
-      --input-bg: #ffffff;
-      --code-bg: #f6f6f7;
-      --destructive-subtle: rgba(224,30,44,0.08);
-      --destructive-border: rgba(224,30,44,0.3);
-      --success: #158a43;
-      --success-subtle: rgba(21,138,67,0.08);
-      --success-border: rgba(21,138,67,0.3);
-      --warn: #a15c07;
-      --warn-subtle: rgba(161,92,7,0.08);
-      --warn-border: rgba(161,92,7,0.3);
-      --table-stripe: rgba(0,0,0,0.02);
-      --grain-opacity: 0;
+      --ring: rgba(139, 92, 246, 0.3);
+      --chart-upload: #8b5cf6;
+      --chart-download: #ec4899;
+      --chart-upload-area: rgba(139, 92, 246, 0.1);
+      --chart-download-area: rgba(236, 72, 153, 0.1);
+      --chart-grid: rgba(0, 0, 0, 0.05);
+      --meter-bg: rgba(0, 0, 0, 0.04);
+      --input-bg: rgba(255, 255, 255, 0.8);
+      --code-bg: #f1f5f9;
+      --destructive: #dc2626;
+      --success: #059669;
+      --warn: #d97706;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    html{scrollbar-color:var(--border-strong) transparent}
-    body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.5;letter-spacing:-0.1px;-webkit-font-smoothing:antialiased;transition:background var(--transition),color var(--transition);background-image:radial-gradient(color-mix(in srgb, var(--text) 35%, transparent) 0.5px, transparent 0.5px);background-size:22px 22px;background-attachment:fixed;background-position:-6px -6px}
-    [data-theme="light"] body{opacity:1}
-    body::before{content:none}
-    :focus-visible{outline:2px solid var(--text);outline-offset:2px}
-    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ring);outline-offset:1px}
-    header{height:52px;display:flex;align-items:center;gap:var(--space-sm);padding:0 var(--space-lg);background:var(--chassis-bg);color:var(--chassis-text-active);position:sticky;top:0;z-index:50;border-bottom:1px solid var(--chassis-border)}
-    .logo{width:30px;height:30px;border-radius:var(--radius-xs);border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;color:#fcfdff;flex-shrink:0;background:rgba(255,255,255,0.04)}
-    .brand{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:-0.01em;color:#fcfdff}
-    .header-pills{display:flex;gap:6px;align-items:center}
+    body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background 0.4s ease,color 0.4s ease;overflow-x:hidden}
+    
+    /* Decorative Blobs */
+    body::before, body::after {
+      content: ''; position: fixed; z-index: -1; filter: blur(100px); opacity: 0.4; pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    body::before { width: 400px; height: 400px; background: #8b5cf6; top: -100px; right: -100px; }
+    body::after { width: 500px; height: 500px; background: #ec4899; bottom: -150px; left: -150px; }
+    [data-theme="light"] body::before, [data-theme="light"] body::after { opacity: 0.15; }
+
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px}
+
+    :focus-visible{outline:none;box-shadow:0 0 0 3px var(--ring)}
+    
+    /* Header */
+    header{position:sticky;top:0;z-index:50;padding:16px 32px;display:flex;align-items:center;gap:16px;backdrop-filter:blur(20px);background:var(--surface);border-bottom:1px solid var(--border)}
+    .logo{width:40px;height:40px;border-radius:12px;background:var(--accent-grad);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:800;font-size:18px;color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.4)}
+    .brand{font-family:var(--font-display);font-size:18px;font-weight:800;letter-spacing:-0.02em;background:var(--accent-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .header-spacer{flex:1}
-    .pill{position:relative;display:inline-flex;align-items:center;gap:7px;border-radius:var(--radius-xs);padding:4px 10px 4px 10px;font-size:11px;font-weight:600;line-height:1.3;letter-spacing:0.02em;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.65);font-family:var(--font-mono);text-transform:uppercase}
-    .pill.ok{color:var(--success);border-color:var(--success-border);background:var(--success-subtle)}
-    .pill.bad{color:var(--destructive);border-color:var(--destructive-border);background:var(--destructive-subtle)}
-    .pill.warn{color:var(--warn);border-color:var(--warn-border);background:var(--warn-subtle)}
-    .pill.ok::before,.pill.bad::before,.pill.warn::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
-    .pill.ok::before{background:var(--success);animation:pulse-ring 2.2s infinite}
-    .pill.bad::before{background:var(--destructive)}
-    .pill.warn::before{background:var(--warn)}
-    @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(51,209,122,0.5)}70%{box-shadow:0 0 0 6px rgba(51,209,122,0)}100%{box-shadow:0 0 0 0 rgba(51,209,122,0)}}
-    .theme-toggle{width:32px;height:32px;border-radius:var(--radius-xs);border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.75);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--transition);flex-shrink:0}
-    .theme-toggle:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.28)}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid transparent;border-radius:var(--radius-sm);padding:9px 16px;font-family:var(--font-body);font-size:13px;font-weight:600;line-height:1.3;letter-spacing:-0.1px;cursor:pointer;transition:all var(--transition);text-decoration:none;white-space:nowrap}
-    .btn:active{transform:scale(0.97)}
-    .btn-primary{background:var(--invert-bg);color:var(--invert-text);border-color:var(--invert-bg)}
-    .btn-primary:hover{opacity:0.82}
-    .btn-secondary{background:transparent;color:var(--text);border-color:var(--border-strong)}
-    .btn-secondary:hover{border-color:var(--text);background:var(--accent-subtle)}
-    .btn-danger{background:var(--destructive-subtle);color:var(--destructive);border-color:var(--destructive-border)}
-    .btn-danger:hover{background:var(--destructive);color:var(--destructive-foreground);border-color:var(--destructive)}
-    .btn-ghost{background:transparent;color:var(--text-secondary);border-color:transparent}
-    .btn-ghost:hover{border-color:var(--border);background:var(--accent-subtle)}
-    main{display:grid;grid-template-columns:236px 1fr;min-height:calc(100vh - 52px)}
-    nav{background:var(--chassis-bg);border-left:1px solid var(--chassis-border);padding:var(--space-md) var(--space-sm);position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;display:flex;flex-direction:column}
-    .nav-group{display:flex;flex-direction:column;gap:1px;flex:1}
-    .nav-label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.32);padding:0 12px;margin-bottom:var(--space-xs)}
-    nav button{width:100%;display:flex;align-items:center;gap:11px;border:none;border-right:2px solid transparent;background:transparent;color:var(--chassis-text);padding:10px 11px;border-radius:var(--radius-xs);cursor:pointer;font-family:var(--font-body);font-size:13.5px;font-weight:600;transition:all var(--transition)}
-    nav button svg{flex-shrink:0;opacity:0.7;transition:opacity var(--transition)}
-    nav button:hover{background:rgba(255,255,255,0.055);color:rgba(255,255,255,0.85)}
-    nav button:hover svg{opacity:0.9}
-    nav button.active{background:rgba(255,255,255,0.07);color:var(--chassis-text-active);border-right-color:#fcfdff}
-    nav button.active svg{opacity:1}
-    .nav-footer{border-top:1px solid var(--chassis-border);margin-top:var(--space-sm);padding:var(--space-sm) 12px 2px;font-family:var(--font-mono);font-size:10.5px;color:rgba(255,255,255,0.3);letter-spacing:0.02em}
-    .content{padding:var(--space-xl);max-width:1180px}
-    section{display:none}
-    section.active{display:block;animation:fadein 0.2s ease}
-    @keyframes fadein{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
-    .page-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-md);margin-bottom:var(--space-lg);padding-bottom:var(--space-md);border-bottom:1px solid var(--border)}
-    .page-title{font-family:var(--font-display);font-size:24px;font-weight:800;letter-spacing:-0.01em;color:var(--text)}
-    .page-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);letter-spacing:0.03em}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-lg);transition:border var(--transition)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--space-md)}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--font-mono);border:1px solid var(--border);background:var(--surface);color:var(--text-secondary)}
+    .pill.ok{color:var(--success);border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.1)}
+    .pill.bad{color:var(--destructive);border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.1)}
+    .pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+    .pill.ok::before{animation:pulse 2s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)}70%{box-shadow:0 0 0 6px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+    
+    .icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+    .icon-btn:hover{color:var(--text);border-color:var(--border-strong);transform:translateY(-2px)}
+
+    /* Layout */
+    main{display:grid;grid-template-columns:240px 1fr;gap:24px;padding:24px 32px;max-width:1400px;margin:0 auto}
+    nav{position:sticky;top:90px;height:fit-content;background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-xl);padding:16px;display:flex;flex-direction:column;gap:4px}
+    .nav-label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);padding:0 12px;margin:8px 0 4px}
+    nav button{width:100%;display:flex;align-items:center;gap:12px;border:none;background:transparent;color:var(--text-secondary);padding:12px 14px;border-radius:var(--radius-md);cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:600;transition:var(--transition);text-align:right}
+    nav button svg{width:18px;height:18px;stroke-width:2}
+    nav button:hover{background:var(--border);color:var(--text)}
+    nav button.active{background:var(--accent-grad);color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+    .nav-footer{margin-top:auto;padding:12px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:center;border-top:1px solid var(--border);margin-top:16px}
+
+    .content{min-width:0}
+    section{display:none;animation:fadein 0.4s ease}
+    section.active{display:block}
+    @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+    .page-head{margin-bottom:28px}
+    .page-title{font-family:var(--font-display);font-size:28px;font-weight:800;margin-bottom:4px}
+    .page-sub{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+
+    /* Components */
+    .card{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:var(--transition);margin-bottom:20px}
+    .card:hover{border-color:var(--border-strong)}
+    .card-title{font-family:var(--font-mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+    .card-title::before{content:'';width:4px;height:16px;background:var(--accent-grad);border-radius:2px}
+
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
     .span-12{grid-column:span 12}
     .span-8{grid-column:span 8}
     .span-6{grid-column:span 6}
     .span-4{grid-column:span 4}
-    .full{grid-column:1/-1}
-    .card-title{position:relative;font-family:var(--font-mono);font-size:11px;font-weight:600;line-height:1.3;letter-spacing:0.09em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-md);padding-right:11px}
-    .card-title::before{content:'';position:absolute;right:0;top:1px;bottom:1px;width:3px;border-radius:2px;background:var(--border-strong)}
-    label{display:block;font-size:12.5px;font-weight:600;line-height:1.3;letter-spacing:0.01em;color:var(--text-muted);margin:var(--space-sm) 0 var(--space-xxs)}
+
+    label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;margin-top:16px}
     label:first-child{margin-top:0}
-    input,select,textarea{width:100%;background:var(--input-bg);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font-body);font-size:13.5px;line-height:1.4;transition:border var(--transition),box-shadow var(--transition)}
-    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--text);box-shadow:0 0 0 3px var(--ring-subtle)}
-    textarea{min-height:80px;resize:vertical}
-    .row{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-sm)}
-    .actions{display:flex;gap:var(--space-xs);flex-wrap:wrap;margin-top:var(--space-md)}
-    code,pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);direction:ltr;text-align:left;display:block;color:var(--text-secondary)}
-    code{padding:3px 7px;font-size:12.5px;word-break:break-all;display:inline-block;border-radius:var(--radius-xs)}
-    pre{padding:var(--space-md);overflow:auto;white-space:pre-wrap;font-size:12.5px;line-height:1.65}
+    input,select,textarea{width:100%;background:var(--input-bg);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;font-family:var(--font-body);font-size:14px;transition:var(--transition)}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent-color);box-shadow:0 0 0 3px var(--ring)}
+    textarea{min-height:90px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:var(--radius-md);padding:12px 24px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:var(--transition);text-decoration:none}
+    .btn:active{transform:scale(0.97)}
+    .btn-primary{background:var(--accent-grad);color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+    .btn-primary:hover{box-shadow:0 8px 25px rgba(139,92,246,0.4);transform:translateY(-2px)}
+    .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border-strong)}
+    .btn-secondary:hover{background:var(--border);border-color:var(--accent-color);color:var(--accent-color)}
+    .btn-danger{background:transparent;color:var(--destructive);border:1px solid rgba(239,68,68,0.3)}
+    .btn-danger:hover{background:var(--destructive);color:#fff}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+
+    code,pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-md);font-family:var(--font-mono);direction:ltr;text-align:left;color:var(--text-secondary)}
+    code{padding:4px 8px;font-size:13px;display:inline-block}
+    pre{padding:16px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.7}
+
     table{width:100%;border-collapse:collapse}
-    td,th{padding:11px 12px;text-align:right;font-size:13px;line-height:1.4;border-bottom:1px solid var(--border)}
-    td:first-child{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);direction:ltr;text-align:right}
-    th{font-weight:600;font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-family:var(--font-mono)}
-    tr:nth-child(even) td{background:var(--table-stripe)}
-    .qr-wrap{display:flex;align-items:center;gap:var(--space-lg);flex-wrap:wrap}
-    .scan-frame{position:relative;width:132px;height:132px;flex-shrink:0;padding:6px}
-    .scan-frame span{position:absolute;width:16px;height:16px;border-color:var(--text-muted);opacity:0.55}
-    .scan-frame .c-tl{top:0;right:0;border-top:2px solid;border-right:2px solid;border-radius:0 var(--radius-xs) 0 0}
-    .scan-frame .c-tr{top:0;left:0;border-top:2px solid;border-left:2px solid;border-radius:var(--radius-xs) 0 0 0}
-    .scan-frame .c-bl{bottom:0;right:0;border-bottom:2px solid;border-right:2px solid;border-radius:0 0 var(--radius-xs) 0}
-    .scan-frame .c-br{bottom:0;left:0;border-bottom:2px solid;border-left:2px solid;border-radius:0 0 0 var(--radius-xs)}
-    #qr-img{width:120px;height:120px;border-radius:var(--radius-sm);background:#fff;padding:6px;flex-shrink:0;display:block}
-    .chart-container{display:flex;flex-direction:column;align-items:center;gap:var(--space-sm)}
-    .chart-legend{display:flex;gap:var(--space-md);font-size:12.5px;color:var(--text-secondary);font-family:var(--font-mono)}
-    .chart-legend-item{display:flex;align-items:center;gap:6px}
-    .chart-legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-    .meter-group{display:flex;flex-direction:column;gap:var(--space-md)}
-    .meter{display:flex;flex-direction:column;gap:5px}
-    .meter-header{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px}
-    .meter-label{color:var(--text-muted);font-weight:600}
-    .meter-value{color:var(--text-secondary);font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:12px}
-    .meter-track{height:6px;background:var(--meter-bg);border-radius:var(--radius-xs);overflow:hidden}
-    .meter-fill{height:100%;border-radius:var(--radius-xs);transition:width 0.8s cubic-bezier(0.22,1,0.36,1);width:0%}
+    td,th{padding:14px 16px;text-align:right;font-size:14px;border-bottom:1px solid var(--border)}
+    th{font-weight:700;font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+    tr:last-child td{border-bottom:none}
+
+    /* Login */
+    #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100;padding:16px}
+    .login-card{width:min(420px,calc(100vw - 32px));background:var(--surface);backdrop-filter:blur(30px);border:1px solid var(--border-strong);border-radius:var(--radius-xl);padding:40px 32px;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25)}
+    .login-logo{width:64px;height:64px;margin:0 auto 20px;border-radius:20px;background:var(--accent-grad);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:800;font-size:28px;color:#fff;box-shadow:0 10px 30px rgba(139,92,246,0.3)}
+    .login-title{font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:8px}
+    .login-desc{font-size:14px;color:var(--text-muted);margin-bottom:24px;line-height:1.6}
+    .login-error{display:none;margin-top:16px;font-size:13px;color:var(--destructive);padding:10px;background:rgba(239,68,68,0.1);border-radius:var(--radius-sm)}
+    .login-error.show{display:block}
+
+    /* Overview Specifics */
+    .qr-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .scan-frame{position:relative;width:140px;height:140px;flex-shrink:0;padding:8px;background:var(--code-bg);border-radius:var(--radius-md)}
+    #qr-img{width:100%;height:100%;border-radius:8px;display:block}
+    .meter-group{display:flex;flex-direction:column;gap:20px;margin-top:8px}
+    .meter-track{height:8px;background:var(--meter-bg);border-radius:10px;overflow:hidden}
+    .meter-fill{height:100%;border-radius:10px;transition:width 0.8s cubic-bezier(0.22,1,0.36,1);width:0%}
     .meter-fill.upload{background:var(--chart-upload)}
     .meter-fill.download{background:var(--chart-download)}
-    #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100;padding:16px}
-    .login-card{width:min(380px,calc(100vw - 32px));background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl) var(--space-lg);text-align:center}
-    .login-logo{width:52px;height:52px;margin:0 auto var(--space-md);border-radius:var(--radius-md);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:19px;color:var(--text)}
-    .login-title{font-family:var(--font-display);font-size:19px;font-weight:800;margin-bottom:var(--space-xs)}
-    .login-desc{font-size:13.5px;color:var(--text-muted);margin-bottom:var(--space-lg);line-height:1.6}
-    .login-error{display:none;margin-top:var(--space-sm);font-size:12.5px;color:var(--destructive)}
-    .login-error.show{display:block}
-    .muted{color:var(--text-muted)}
-    .text-sm{font-size:13.5px}
-    .mb-sm{margin-bottom:var(--space-sm)}
-    .flex-between{display:flex;justify-content:space-between;align-items:center}
-    .info-grid{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:13.5px}
-    .info-grid .muted{font-size:12px}
-    .info-grid span:nth-child(2n){font-family:var(--font-mono);font-weight:600;color:var(--text)}
-    @media(max-width:820px){main{grid-template-columns:1fr}nav{position:relative;top:0;height:auto;flex-direction:row;overflow-x:auto;border-left:none;border-bottom:1px solid var(--chassis-border);gap:2px;padding:8px;-webkit-overflow-scrolling:touch}.nav-group{flex-direction:row}.nav-label,.nav-footer{display:none}nav button{white-space:nowrap;width:auto;flex-shrink:0;border-right:none;border-bottom:2px solid transparent}nav button.active{border-bottom-color:#fcfdff}.grid,.row{grid-template-columns:1fr}.span-4,.span-6,.span-8,.span-12{grid-column:1/-1}.content{padding:var(--space-md)}.page-title{font-size:21px}}
-    @media(max-width:640px){.content{padding:var(--space-sm)}.qr-wrap{flex-direction:column;align-items:flex-start}}
-    @media(prefers-reduced-motion:reduce){*{animation-duration:0.001ms!important;animation-iteration-count:1!important;transition-duration:0.001ms!important}}
+    .chart-container{display:flex;flex-direction:column;align-items:center;gap:16px}
+    .chart-legend{display:flex;gap:20px;font-size:13px}
+    .info-grid{display:grid;grid-template-columns:auto 1fr;gap:12px 16px;font-size:14px}
+    .info-grid .muted{font-size:13px}
+    .info-grid span:nth-child(2n){font-family:var(--font-mono);font-weight:600}
+
+    @media(max-width:900px){
+      main{grid-template-columns:1fr;padding:16px}
+      nav{position:relative;top:0;flex-direction:row;overflow-x:auto;border-radius:var(--radius-lg);padding:8px}
+      .nav-label,.nav-footer{display:none}
+      nav button{white-space:nowrap;width:auto}
+      .grid,.row{grid-template-columns:1fr}
+      .span-4,.span-6,.span-8,.span-12{grid-column:1/-1}
+      header{padding:12px 16px}
+      .brand{display:none}
+    }
   </style>
 </head>
 <body>
@@ -2092,13 +2074,14 @@ function getDashboardUI(hasDB) {
       <div class="login-logo">M</div>
       <div class="login-title">${BRAND_NAME}</div>
       <p class="login-desc">برای ورود، رمز پنل را وارد کنید.<br>دسترسی برنامه‌نویسی از طریق <code>MEZDIA_API_KEY</code> انجام می‌شود.</p>
-      ${hasDB ? "" : `<p class="pill bad" style="display:flex;width:fit-content;margin:0 auto 14px">پایگاه‌داده (IOT_DB) متصل نیست؛ تنظیمات ذخیره نخواهد شد.</p>`}
+      ${hasDB ? "" : `<p class="pill bad" style="display:flex;width:fit-content;margin:0 auto 20px">پایگاه‌داده (IOT_DB) متصل نیست؛ تنظیمات ذخیره نخواهد شد.</p>`}
       <label for="password">رمز پنل</label>
       <input id="password" type="password" autocomplete="current-password" placeholder="•••••••••">
-      <div class="actions" style="justify-content:center;margin-top:16px"><button class="btn btn-primary" onclick="login()">ورود</button></div>
+      <div class="actions" style="justify-content:center"><button class="btn btn-primary" onclick="login()">ورود به پنل</button></div>
       <p id="login-error" class="login-error">ورود ناموفق بود. رمز را بررسی کنید.</p>
     </div>
   </div>
+
   <header>
     <div class="logo">M</div>
     <span class="brand">${BRAND_NAME}</span>
@@ -2107,55 +2090,52 @@ function getDashboardUI(hasDB) {
       <span id="status-pill" class="pill">—</span>
     </div>
     <div class="header-spacer"></div>
-    <button class="theme-toggle" onclick="toggleTheme()" title="تغییر پوسته">
-      <svg id="theme-icon-dark" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg id="theme-icon-light" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <button class="icon-btn" onclick="toggleTheme()" title="تغییر پوسته">
+      <svg id="theme-icon-dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="theme-icon-light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </button>
-    <button class="btn btn-ghost" style="color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.14);padding:7px 13px;font-size:12.5px" onclick="logout()">خروج</button>
+    <button class="btn btn-secondary" style="padding:8px 16px" onclick="logout()">خروج</button>
   </header>
+
   <main>
     <nav>
-      <div class="nav-group">
-        <div class="nav-label">پنل</div>
-        <button class="active" data-tab="overview" onclick="showTab('overview')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
-          نمای کلی
-        </button>
-        <button data-tab="account" onclick="showTab('account')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
-          حساب
-        </button>
-        <button data-tab="settings" onclick="showTab('settings')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
-          تنظیمات
-        </button>
-        <button data-tab="api" onclick="showTab('api')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          API
-        </button>
-        <button data-tab="logs" onclick="showTab('logs')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-          گزارش‌ها
-        </button>
-      </div>
-      <div class="nav-footer" id="runtime-footer">MEZDIA · TUNNEL NODE</div>
+      <div class="nav-label">منو اصلی</div>
+      <button class="active" data-tab="overview" onclick="showTab('overview')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        نمای کلی
+      </button>
+      <button data-tab="account" onclick="showTab('account')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+        حساب کاربری
+      </button>
+      <button data-tab="settings" onclick="showTab('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
+        تنظیمات
+      </button>
+      <button data-tab="api" onclick="showTab('api')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        راهنمای API
+      </button>
+      <button data-tab="logs" onclick="showTab('logs')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        گزارش‌ها
+      </button>
+      <div class="nav-footer">MEZDIA • TUNNEL NODE</div>
     </nav>
+
     <div class="content">
       <section id="overview" class="active">
         <div class="page-head">
           <div class="page-title">نمای کلی</div>
-          <div class="page-sub">OVERVIEW</div>
+          <div class="page-sub">OVERVIEW & STATISTICS</div>
         </div>
         <div class="grid">
           <div class="card span-12">
-            <div class="card-title">لینک اشتراک</div>
+            <div class="card-title">لینک اشتراک (Subscription)</div>
             <div class="qr-wrap">
-              <div class="scan-frame">
-                <span class="c-tl"></span><span class="c-tr"></span><span class="c-bl"></span><span class="c-br"></span>
-                <img id="qr-img" alt="QR">
-              </div>
+              <div class="scan-frame"><img id="qr-img" alt="QR"></div>
               <div style="flex:1;min-width:200px">
-                <code id="sub-url" style="font-size:12px;word-break:break-all;background:transparent;border:none;padding:0;display:block;margin-bottom:12px"></code>
+                <code id="sub-url" style="font-size:12px;word-break:break-all;background:transparent;border:none;padding:0;display:block;margin-bottom:16px;color:var(--text-secondary)"></code>
                 <button class="btn btn-secondary" onclick="copyText('sub-url',this)">کپی لینک</button>
               </div>
             </div>
@@ -2165,8 +2145,8 @@ function getDashboardUI(hasDB) {
             <div class="chart-container">
               <canvas id="chart-total" width="160" height="160"></canvas>
               <div class="chart-legend">
-                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--chart-upload)"></div><span>آپلود</span></div>
-                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--chart-download)"></div><span>دانلود</span></div>
+                <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--chart-upload)"></div>آپلود</div>
+                <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--chart-download)"></div>دانلود</div>
               </div>
             </div>
           </div>
@@ -2175,18 +2155,18 @@ function getDashboardUI(hasDB) {
             <div class="chart-container">
               <canvas id="chart-daily" width="160" height="160"></canvas>
               <div class="chart-legend">
-                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--chart-upload)"></div><span>آپلود</span></div>
-                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--chart-download)"></div><span>دانلود</span></div>
+                <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--chart-upload)"></div>آپلود</div>
+                <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--chart-download)"></div>دانلود</div>
               </div>
             </div>
           </div>
           <div class="card span-4">
-            <div class="card-title">جزئیات ترافیک</div>
+            <div class="card-title">جزئیات مصرف</div>
             <div class="meter-group">
-              <div class="meter"><div class="meter-header"><span class="meter-label">آپلود کل</span><span class="meter-value" id="meter-upload-total">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-total-fill"></div></div></div>
-              <div class="meter"><div class="meter-header"><span class="meter-label">دانلود کل</span><span class="meter-value" id="meter-download-total">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-total-fill"></div></div></div>
-              <div class="meter"><div class="meter-header"><span class="meter-label">آپلود امروز</span><span class="meter-value" id="meter-upload-daily">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-daily-fill"></div></div></div>
-              <div class="meter"><div class="meter-header"><span class="meter-label">دانلود امروز</span><span class="meter-value" id="meter-download-daily">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-daily-fill"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>آپلود کل</span><span id="meter-upload-total" style="font-family:var(--font-mono)">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-total-fill"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>دانلود کل</span><span id="meter-download-total" style="font-family:var(--font-mono)">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-total-fill"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>آپلود امروز</span><span id="meter-upload-daily" style="font-family:var(--font-mono)">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-daily-fill"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>دانلود امروز</span><span id="meter-download-daily" style="font-family:var(--font-mono)">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-daily-fill"></div></div></div>
             </div>
           </div>
           <div class="card span-6">
@@ -2198,101 +2178,108 @@ function getDashboardUI(hasDB) {
             <div id="account-summary" class="text-sm" style="color:var(--text-secondary)">در حال بارگذاری…</div>
           </div>
           <div class="card span-12">
-            <div class="flex-between mb-sm">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
               <div class="card-title" style="margin-bottom:0">ترافیک لحظه‌ای</div>
               <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted)" id="chart-time-range"></span>
             </div>
-            <canvas id="chart-session" width="800" height="160" style="width:100%;height:160px"></canvas>
+            <canvas id="chart-session" width="800" height="180" style="width:100%;height:180px"></canvas>
           </div>
         </div>
       </section>
+
       <section id="account">
         <div class="page-head">
-          <div class="page-title">حساب</div>
-          <div class="page-sub">ACCOUNT</div>
+          <div class="page-title">مدیریت حساب</div>
+          <div class="page-sub">ACCOUNT SETTINGS</div>
         </div>
         <div class="card">
           <div class="row">
-            <div><label>نام</label><input id="account-name"></div>
-            <div><label>وضعیت</label><select id="account-status"><option value="active">فعال</option><option value="paused">متوقف</option></select></div>
+            <div><label>نام حساب</label><input id="account-name" placeholder="حساب اصلی"></div>
+            <div><label>وضعیت</label><select id="account-status"><option value="active">فعال</option><option value="paused">متوقف شده</option></select></div>
           </div>
-          <label>یادداشت</label><textarea id="account-notes"></textarea>
+          <label>یادداشت‌ها</label><textarea id="account-notes" placeholder="توضیحات در مورد این اکانت..."></textarea>
           <div class="row">
-            <div><label>Clean IP اختصاصی</label><textarea id="account-clean-ip"></textarea></div>
-            <div><label>Proxy IP اختصاصی</label><textarea id="account-proxy-ip"></textarea></div>
+            <div><label>Clean IP اختصاصی</label><textarea id="account-clean-ip" style="min-height:70px" placeholder="161.35.1.5\nlive.mkhd.app"></textarea></div>
+            <div><label>Proxy IP اختصاصی</label><textarea id="account-proxy-ip" style="min-height:70px" placeholder="tr-us.ircf.space:443"></textarea></div>
           </div>
           <div class="row">
-            <div><label>حالت اختصاصی</label><select id="account-mode"><option value="">استفاده از حالت سراسری</option><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="both">Both</option></select></div>
+            <div><label>حالت اختصاصی</label><select id="account-mode"><option value="">پیش‌فرض سراسری</option><option value="alpha">VLESS</option><option value="beta">Trojan</option><option value="both">هر دو</option></select></div>
             <div><label>پورت‌های اختصاصی</label><input id="account-ports" placeholder="443,8443"></div>
           </div>
-          <label>حداکثر تعداد کانفیگ تولیدی</label><input id="account-max-configs" type="number" min="0" step="1">
-          <div class="actions"><button class="btn btn-primary" onclick="saveAccount()">ذخیره حساب</button><button class="btn btn-danger" onclick="resetTraffic()">بازنشانی ترافیک</button></div>
+          <label>حداکثر تعداد کانفیگ تولیدی</label><input id="account-max-configs" type="number" min="0" step="1" placeholder="بدون محدودیت">
+          <div class="actions">
+            <button class="btn btn-primary" onclick="saveAccount()">ذخیره تغییرات</button>
+            <button class="btn btn-danger" onclick="resetTraffic()">بازنشانی ترافیک</button>
+          </div>
         </div>
       </section>
+
       <section id="settings">
         <div class="page-head">
-          <div class="page-title">تنظیمات</div>
-          <div class="page-sub">SETTINGS</div>
+          <div class="page-title">تنظیمات سیستم</div>
+          <div class="page-sub">SYSTEM CONFIGURATION</div>
         </div>
         <div class="grid">
           <div class="card span-6">
-            <div class="card-title">هسته</div>
+            <div class="card-title">هسته و پروتکل</div>
             <label>نام پنل</label><input id="cfg-name">
-            <label>مسیر API</label><input id="cfg-apiRoute">
-            <label>رمز پنل</label><input id="cfg-masterKey" type="password">
-            <label>شناسه یکتای دستگاه</label><input id="cfg-deviceId">
-            <label>حالت</label><select id="cfg-mode"><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="both">Both</option></select>
+            <label>مسیر API (Route)</label><input id="cfg-apiRoute">
+            <label>رمز عبور پنل</label><input id="cfg-masterKey" type="password">
+            <label>شناسه یکتای دستگاه (UUID)</label><input id="cfg-deviceId">
+            <label>حالت تولید کانفیگ</label><select id="cfg-mode"><option value="alpha">VLESS</option><option value="beta">Trojan</option><option value="both">هر دو</option></select>
             <label>پورت‌های سوکت</label><input id="cfg-socketPorts">
-            <label>اثر انگشت کلاینت</label><input id="cfg-agent">
+            <label>اثر انگشت کلاینت (Fingerprint)</label><input id="cfg-agent">
           </div>
           <div class="card span-6">
-            <div class="card-title">شبکه</div>
-            <label>میزبان‌های نمایشی</label><textarea id="cfg-maintenanceHost"></textarea>
+            <div class="card-title">شبکه و مسیریابی</div>
+            <label>میزبان‌های نمایشی (Maintenance Hosts)</label><textarea id="cfg-maintenanceHost"></textarea>
             <label>Clean IP ها</label><textarea id="cfg-cleanIps"></textarea>
             <label>Relay/Proxy IP پشتیبان</label><textarea id="cfg-backupRelay"></textarea>
             <label>Relay اختصاصی</label><input id="cfg-customRelay">
             <label>گره‌های Slave</label><textarea id="cfg-slaveNodes"></textarea>
-            <label>آدرس DoH</label><input id="cfg-customDns">
+            <label>آدرس DNS over HTTPS (DoH)</label><input id="cfg-customDns">
             <label>گره Metric</label><input id="cfg-metricNode">
           </div>
           <div class="card span-6">
-            <div class="card-title">تولید کانفیگ</div>
-            <label>پیشوند نام</label><input id="cfg-namePrefix">
+            <div class="card-title">تولید و نام‌گذاری</div>
+            <label>پیشوند نام کانفیگ‌ها</label><input id="cfg-namePrefix">
             <label>استراتژی نام‌گذاری</label><input id="cfg-nameStrategy">
             <label>فهرست مجاز User-Agent</label><input id="cfg-subUserAgent">
             <label>آدرس اختصاصی پنل</label><input id="cfg-customPanelUrl">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13.5px"><input id="cfg-enableOpt1" type="checkbox" style="width:auto"> فعال‌سازی TCP Fast Open</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13.5px"><input id="cfg-enableOpt2" type="checkbox" style="width:auto"> فعال‌سازی ECH</label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13.5px"><input id="cfg-isPaused" type="checkbox" style="width:auto"> توقف کامل ترافیک تانل</label>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:20px"><input id="cfg-enableOpt1" type="checkbox" style="width:18px;height:18px"> فعال‌سازی TCP Fast Open</label>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer"><input id="cfg-enableOpt2" type="checkbox" style="width:18px;height:18px"> فعال‌سازی ECH</label>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer"><input id="cfg-isPaused" type="checkbox" style="width:18px;height:18px"> توقف کامل ترافیک تانل</label>
           </div>
           <div class="card span-6">
-            <div class="card-title">پشتیبان‌گیری</div>
-            <div class="actions" style="margin-top:0;margin-bottom:var(--space-md)">
-              <button class="btn btn-secondary" onclick="exportConfig()">خروجی JSON</button>
-              <button class="btn btn-secondary" onclick="importConfig()">ورودی JSON</button>
+            <div class="card-title">پشتیبان‌گیری دستی</div>
+            <div class="actions" style="margin-top:0;margin-bottom:16px">
+              <button class="btn btn-secondary" onclick="exportConfig()">دریافت JSON</button>
+              <button class="btn btn-secondary" onclick="importConfig()">اعمال JSON</button>
             </div>
             <label>ویرایش خام تنظیمات (JSON)</label>
             <textarea id="raw-config" style="min-height:180px;font-family:var(--font-mono);font-size:12px;direction:ltr;text-align:left"></textarea>
           </div>
         </div>
-        <div class="actions"><button class="btn btn-primary" onclick="saveSettings()">ذخیره تنظیمات</button></div>
+        <div class="actions"><button class="btn btn-primary" style="padding:14px 32px" onclick="saveSettings()">ذخیره تنظیمات</button></div>
       </section>
+
       <section id="api">
         <div class="page-head">
-          <div class="page-title">راهنمای API</div>
-          <div class="page-sub">API</div>
+          <div class="page-title">راهنمای برنامه‌نویس</div>
+          <div class="page-sub">API DOCUMENTATION</div>
         </div>
         <div class="card">
-          <p class="text-sm muted mb-sm">تمام درخواست‌های API با آدرس ورکر به‌همراه کلید <code>MEZDIA_API_KEY</code> ارسال می‌شوند.</p>
+          <p class="text-sm" style="color:var(--text-secondary);margin-bottom:16px">تمام درخواست‌های API با آدرس ورکر به‌همراه کلید <code>MEZDIA_API_KEY</code> ارسال می‌شوند.</p>
           <pre id="api-examples"></pre>
         </div>
       </section>
+
       <section id="logs">
         <div class="page-head">
-          <div class="page-title">گزارش‌ها</div>
-          <div class="page-sub">LOGS</div>
+          <div class="page-title">گزارش‌های سیستم</div>
+          <div class="page-sub">SYSTEM LOGS</div>
         </div>
-        <div class="card">
+        <div class="card" style="padding:0;overflow:hidden">
           <table>
             <thead><tr><th>زمان</th><th>نوع</th><th>جزئیات</th></tr></thead>
             <tbody id="log-body"></tbody>
@@ -2301,6 +2288,7 @@ function getDashboardUI(hasDB) {
       </section>
     </div>
   </main>
+
   <script>
     const route = location.pathname.split('/')[1] || 'sync';
     const baseRoute = '/' + route;
@@ -2336,7 +2324,7 @@ function getDashboardUI(hasDB) {
       ctx.fillStyle=c.muted;ctx.font='400 11px '+getComputedStyle(document.body).getPropertyValue('--font-body');ctx.fillText('مجموع',cx,cy+14)}
 
     function drawSessionChart(){
-      var canvas=document.getElementById('chart-session');if(!canvas)return;var ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1,rect=canvas.getBoundingClientRect(),w=rect.width||800,h=160;
+      var canvas=document.getElementById('chart-session');if(!canvas)return;var ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1,rect=canvas.getBoundingClientRect(),w=rect.width||800,h=180;
       canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.scale(dpr,dpr);
       var c=getChartColors(),pad={top:20,right:16,bottom:28,left:50},cw=w-pad.left-pad.right,ch=h-pad.top-pad.bottom;
       ctx.clearRect(0,0,w,h);
@@ -2345,7 +2333,7 @@ function getDashboardUI(hasDB) {
       ctx.strokeStyle=c.grid;ctx.lineWidth=1;
       for(var i=0;i<=4;i++){var y=pad.top+(ch/4)*i;ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(w-pad.right,y);ctx.stroke();ctx.fillStyle=c.muted;ctx.font='400 10px '+getComputedStyle(document.body).getPropertyValue('--font-body');ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(formatBytes(maxVal*(1-i/4)),pad.left-6,y)}
       var step=cw/(sessionData.length-1);
-      function drawLine(data,color,areaColor){ctx.beginPath();data.forEach(function(d,i){var x=pad.left+i*step,y=pad.top+ch-(d/maxVal)*ch;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();ctx.lineTo(pad.left+(data.length-1)*step,pad.top+ch);ctx.lineTo(pad.left,pad.top+ch);ctx.closePath();ctx.fillStyle=areaColor;ctx.fill()}
+      function drawLine(data,color,areaColor){ctx.beginPath();data.forEach(function(d,i){var x=pad.left+i*step,y=pad.top+ch-(d/maxVal)*ch;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.stroke();ctx.lineTo(pad.left+(data.length-1)*step,pad.top+ch);ctx.lineTo(pad.left,pad.top+ch);ctx.closePath();ctx.fillStyle=areaColor;ctx.fill()}
       drawLine(sessionData.map(function(d){return d.up}),c.upload,c.uploadArea);drawLine(sessionData.map(function(d){return d.down}),c.download,c.downloadArea);
       var timeRange=document.getElementById('chart-time-range');if(timeRange&&sessionData.length>1)timeRange.textContent=sessionData[0].t+' — '+sessionData[sessionData.length-1].t}
 
