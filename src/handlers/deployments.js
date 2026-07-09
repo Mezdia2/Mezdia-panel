@@ -1,4 +1,4 @@
-import { sendMessage, answerCallbackQuery } from "../lib/telegram.js";
+import { sendMessage, editMessageText, answerCallbackQuery } from "../lib/telegram.js";
 import {
   mainMenuKb,
   cancelKb,
@@ -86,7 +86,13 @@ export async function showDeploymentDetail(env, chatId, tgId, messageId, depId) 
     return;
   }
   await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-  await sendMessage(env, chatId, T.deploymentDetail(dep), { keyboard: deploymentDetailKb(dep) });
+  const text = T.deploymentDetail(dep);
+  const kb = deploymentDetailKb(dep);
+  if (messageId) {
+    await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+  } else {
+    await sendMessage(env, chatId, text, { keyboard: kb });
+  }
 }
 
 async function requireDeployment(env, chatId, tgId, depId) {
@@ -101,18 +107,30 @@ async function requireDeployment(env, chatId, tgId, depId) {
 export async function showStats(env, chatId, tgId, messageId, depId) {
   const dep = await requireDeployment(env, chatId, tgId, depId);
   if (!dep) return;
-  await sendMessage(env, chatId, T.fetchingStats, { keyboard: removeMenuKb() });
+  if (messageId) {
+    await editMessageText(env, chatId, messageId, T.fetchingStats, {});
+  } else {
+    await sendMessage(env, chatId, T.fetchingStats, { keyboard: removeMenuKb() });
+  }
   try {
     const stats = await callPanelApi(dep, "/api/stats");
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.statsResult(dep, stats), {
-      keyboard: deploymentDetailKb(dep),
-    });
+    const text = T.statsResult(dep, stats);
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   } catch (e) {
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.actionFailed(e.message || String(e)), {
-      keyboard: deploymentDetailKb(dep),
-    });
+    const text = T.actionFailed(e.message || String(e));
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   }
 }
 
@@ -120,24 +138,42 @@ export async function showCreds(env, chatId, tgId, messageId, depId) {
   const dep = await requireDeployment(env, chatId, tgId, depId);
   if (!dep) return;
   await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-  await sendMessage(env, chatId, T.showCreds(dep), { keyboard: deploymentDetailKb(dep) });
+  const text = T.showCreds(dep);
+  const kb = deploymentDetailKb(dep);
+  if (messageId) {
+    await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+  } else {
+    await sendMessage(env, chatId, text, { keyboard: kb });
+  }
 }
 
 export async function showLogs(env, chatId, tgId, messageId, depId) {
   const dep = await requireDeployment(env, chatId, tgId, depId);
   if (!dep) return;
-  await sendMessage(env, chatId, T.fetchingLogs, { keyboard: removeMenuKb() });
+  if (messageId) {
+    await editMessageText(env, chatId, messageId, T.fetchingLogs, {});
+  } else {
+    await sendMessage(env, chatId, T.fetchingLogs, { keyboard: removeMenuKb() });
+  }
   try {
     const res = await callPanelApi(dep, "/api/logs", { method: "POST", body: {} });
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.logsResult(dep, res.logs), {
-      keyboard: deploymentDetailKb(dep),
-    });
+    const text = T.logsResult(dep, res.logs);
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   } catch (e) {
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.actionFailed(e.message || String(e)), {
-      keyboard: deploymentDetailKb(dep),
-    });
+    const text = T.actionFailed(e.message || String(e));
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   }
 }
 
@@ -148,12 +184,22 @@ export async function pauseDeployment(env, chatId, tgId, messageId, depId) {
     await callPanelApi(dep, "/api/account", { method: "PATCH", body: { account: { status: "paused" } } });
     const updated = await updateDeployment(env, tgId, depId, { status: "paused" });
     await setSession(env, tgId, "kb_deployment_detail", { depId: updated.id, accountId: updated.accountId });
-    await sendMessage(env, chatId, T.paused, { keyboard: deploymentDetailKb(updated) });
+    const text = T.paused;
+    const kb = deploymentDetailKb(updated);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   } catch (e) {
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.actionFailed(e.message || String(e)), {
-      keyboard: deploymentDetailKb(dep),
-    });
+    const text = T.actionFailed(e.message || String(e));
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   }
 }
 
@@ -164,12 +210,22 @@ export async function resumeDeployment(env, chatId, tgId, messageId, depId) {
     await callPanelApi(dep, "/api/account", { method: "PATCH", body: { account: { status: "active" } } });
     const updated = await updateDeployment(env, tgId, depId, { status: "active" });
     await setSession(env, tgId, "kb_deployment_detail", { depId: updated.id, accountId: updated.accountId });
-    await sendMessage(env, chatId, T.resumed, { keyboard: deploymentDetailKb(updated) });
+    const text = T.resumed;
+    const kb = deploymentDetailKb(updated);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   } catch (e) {
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.actionFailed(e.message || String(e)), {
-      keyboard: deploymentDetailKb(dep),
-    });
+    const text = T.actionFailed(e.message || String(e));
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   }
 }
 
@@ -179,12 +235,22 @@ export async function resetTraffic(env, chatId, tgId, messageId, depId) {
   try {
     await callPanelApi(dep, "/api/sync", { method: "POST", body: { resetTraffic: true } });
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.trafficReset, { keyboard: deploymentDetailKb(dep) });
+    const text = T.trafficReset;
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   } catch (e) {
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.actionFailed(e.message || String(e)), {
-      keyboard: deploymentDetailKb(dep),
-    });
+    const text = T.actionFailed(e.message || String(e));
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   }
 }
 
@@ -197,15 +263,29 @@ export async function updateWorker(env, chatId, tgId, messageId, depId) {
     return;
   }
   try {
-    await sendMessage(env, chatId, "⏳ در حال بروزرسانی ورکر…", { keyboard: removeMenuKb() });
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, "⏳ در حال بروزرسانی ورکر…", {});
+    } else {
+      await sendMessage(env, chatId, "⏳ در حال بروزرسانی ورکر…", { keyboard: removeMenuKb() });
+    }
     await redeployPanel(account, dep);
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.updated, { keyboard: deploymentDetailKb(dep) });
+    const text = T.updated;
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   } catch (e) {
     await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
-    await sendMessage(env, chatId, T.actionFailed(e.message || String(e)), {
-      keyboard: deploymentDetailKb(dep),
-    });
+    const text = T.actionFailed(e.message || String(e));
+    const kb = deploymentDetailKb(dep);
+    if (messageId) {
+      await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+    } else {
+      await sendMessage(env, chatId, text, { keyboard: kb });
+    }
   }
 }
 
@@ -213,9 +293,13 @@ export async function confirmDeleteDeploymentScreen(env, chatId, tgId, messageId
   const dep = await requireDeployment(env, chatId, tgId, depId);
   if (!dep) return;
   await setSession(env, tgId, "kb_confirm_delete", { depId: dep.id, accountId: dep.accountId });
-  await sendMessage(env, chatId, T.confirmDeleteDeployment(dep), {
-    keyboard: confirmDeleteDeploymentKb(),
-  });
+  const text = T.confirmDeleteDeployment(dep);
+  const kb = confirmDeleteDeploymentKb(dep.id);
+  if (messageId) {
+    await editMessageText(env, chatId, messageId, text, { keyboard: kb });
+  } else {
+    await sendMessage(env, chatId, text, { keyboard: kb });
+  }
 }
 
 export async function deleteDeploymentConfirmed(env, chatId, tgId, messageId, depId, callbackQueryId) {

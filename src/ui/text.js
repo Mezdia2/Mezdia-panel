@@ -100,68 +100,126 @@ export const T = {
     `❌ دیپلوی ناموفق بود.\n\nخطا: <code>${msg}</code>\n\nدوباره تلاش کنید یا از /cancel استفاده کنید.`,
 
   deploySuccess: (dep) =>
-    "✅ <b>ورکر با موفقیت دیپلوی شد!</b>\n\n" +
-    `📛 نام: ${dep.label || dep.scriptName}\n\n` +
-    `🔗 <b>لینک اشتراک (Subscription)</b>\n<code>${dep.subscriptionUrl}</code>\n\n` +
-    `🖥 <b>آدرس پنل مدیریت</b>\n<code>${dep.dashboardUrl}</code>\n\n` +
-    `🔑 <b>رمز ورود پنل</b>\n<code>${dep.masterKey}</code>\n\n` +
-    `🗝 <b>کلید API</b>\n<code>${dep.apiKey}</code>\n\n` +
-    `📛 <b>شناسه دستگاه</b>\n<code>${dep.deviceId}</code>\n\n` +
-    "⚠️ این اطلاعات را در جای امنی نگه دارید. رمز پنل و کلید API را هر زمان بخواهید می‌توانید از منوی این ورکر دوباره ببینید یا تغییر دهید.",
+    "✅ <b>ورکر با موفقیت دیپلوی شد!</b>\n" +
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+    `📛 نام: <b>${dep.label || dep.scriptName}</b>\n\n` +
+    `🔗 <b>لینک اشتراک</b>\n` +
+    `<code>${dep.subscriptionUrl}</code>\n\n` +
+    `🖥 <b>آدرس پنل مدیریت</b>\n` +
+    `<code>${dep.dashboardUrl}</code>\n\n` +
+    `🔑 <b>رمز ورود</b>\n` +
+    `<code>${dep.masterKey}</code>\n\n` +
+    `🗝 <b>کلید API</b>\n` +
+    `<code>${dep.apiKey}</code>\n\n` +
+    `━━━━━━━━━━━━━━━━━━━━━\n` +
+    `💡 این اطلاعات را در جای امنی نگه دارید.\n` +
+    `هر زمان بخواهید می‌توانید از منوی ورکر دوباره ببینید.`,
 
   deploymentsListEmpty: "هنوز هیچ ورکری روی این حساب دیپلوی نکرده‌اید.",
   deploymentsListHeader: "📋 ورکرهای این حساب:",
 
-  deploymentDetail: (dep) =>
-    `⚙️ <b>${dep.label || dep.scriptName}</b>\n` +
-    `اسکریپت: <code>${dep.scriptName}</code>\n` +
-    `ساخته‌شده: ${formatDate(dep.createdAt)}`,
+  deploymentDetail: (dep) => {
+    const status = dep.status === "paused" ? "⏸ متوقف" : "✅ فعال";
+    return (
+      `⚙️ <b>${dep.label || dep.scriptName}</b>\n` +
+      `━━━━━━━━━━━━━━━━━━━━━\n` +
+      `📛 نام اسکریپت: <code>${dep.scriptName}</code>\n` +
+      `📊 وضعیت: ${status}\n` +
+      `📅 تاریخ ساخت: ${formatDate(dep.createdAt)}\n` +
+      `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `از دکمه‌های زیر برای مدیریت استفاده کنید:`
+    );
+  },
 
   fetchingStats: "⏳ در حال دریافت آمار…",
 
   statsResult: (dep, s) => {
     const usage = s.stats?.traffic || {};
     const acc = s.stats?.account || {};
-    const status = acc.status === "paused" ? "متوقف ⏸" : "فعال ✅";
+    const status = acc.status === "paused" ? "⏸ متوقف" : "✅ فعال";
+    const uptime = Math.floor((s.stats?.system?.uptimeSeconds ?? 0) / 60);
+    const hours = Math.floor(uptime / 60);
+    const mins = uptime % 60;
+    const uptimeStr = hours > 0 ? `${hours} ساعت و ${mins} دقیقه` : `${mins} دقیقه`;
     return (
-      `📊 <b>وضعیت ${dep.label || dep.scriptName}</b>\n\n` +
-      `وضعیت: ${status}\n` +
-      `ترافیک کل: ${usage.totalGB ?? 0} گیگابایت\n` +
-      `ترافیک امروز: ${usage.dailyGB ?? 0} گیگابایت\n` +
-      `اتصالات فعال: ${s.stats?.system?.activeConnections ?? 0}\n` +
-      `آپ‌تایم: ${Math.floor((s.stats?.system?.uptimeSeconds ?? 0) / 60)} دقیقه`
+      `📊 <b>وضعیت ${dep.label || dep.scriptName}</b>\n` +
+      `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `🔄 وضعیت: ${status}\n\n` +
+      `📈 <b>ترافیک</b>\n` +
+      `├ کل: <b>${usage.totalGB ?? 0}</b> گیگابایت\n` +
+      `└ امروز: <b>${usage.dailyGB ?? 0}</b> گیگابایت\n\n` +
+      `🔗 اتصالات فعال: <b>${s.stats?.system?.activeConnections ?? 0}</b>\n` +
+      `⏱ آپ‌تایم: <b>${uptimeStr}</b>`
     );
   },
 
   fetchingLogs: "⏳ در حال دریافت گزارش‌ها…",
   logsResult: (dep, logs) => {
     if (!logs || !logs.length) {
-      return `📜 <b>گزارش‌های ${dep.label || dep.scriptName}</b>\n\nهنوز گزارشی ثبت نشده است.`;
+      return (
+        `📜 <b>گزارش‌های ${dep.label || dep.scriptName}</b>\n` +
+        `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+        `هنوز گزارشی ثبت نشده است.\n` +
+        `گزارش‌ها پس از اتصال کاربران نمایش داده خواهند شد.`
+      );
     }
     const lines = logs
       .slice(0, 15)
       .map((l) => `• ${formatDate(new Date(l.ts).getTime())} — ${l.type}: ${l.detail}`)
       .join("\n");
-    return `📜 <b>گزارش‌های ${dep.label || dep.scriptName}</b>\n\n${lines}`;
+    return (
+      `📜 <b>گزارش‌های ${dep.label || dep.scriptName}</b>\n` +
+      `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `${lines}`
+    );
   },
 
-  actionFailed: (msg) => `❌ عملیات ناموفق بود: <code>${msg}</code>`,
-  paused: "⏸ ورکر متوقف شد. کاربران دیگر نمی‌توانند از تانل استفاده کنند.",
-  resumed: "▶️ ورکر دوباره فعال شد.",
-  trafficReset: "🔁 شمارنده‌های ترافیک بازنشانی شدند.",
-  updated: "🔄 آخرین نسخهٔ ورکر روی کلادفلر بارگذاری شد (تنظیمات و پایگاه‌داده دست‌نخورده باقی ماندند).",
+  actionFailed: (msg) =>
+    `❌ <b>عملیات ناموفق بود</b>\n\n` +
+    `خطا: <code>${msg}</code>\n\n` +
+    `دوباره تلاش کنید اگر مشکل ادامه داشت با پشتیبانی تماس بگیرید.`,
+  paused:
+    "⏸ <b>ورکر متوقف شد</b>\n\n" +
+    "کاربران دیگر نمی‌توانند از تانل استفاده کنند.\n" +
+    "برای فعال‌سازی مجدد، دکمه «▶️ فعال‌سازی» را بزنید.",
+
+  resumed:
+    "▶️ <b>ورکر دوباره فعال شد</b>\n\n" +
+    "اتصالات از سر گرفته شدند و کاربران می‌توانند استفاده کنند.",
+
+  trafficReset:
+    "🔁 <b>ترافیک بازنشانی شد</b>\n\n" +
+    "شمارنده‌های ترافیک کل و روزانه صفر شدند.",
+
+  updated:
+    "🔄 <b>ورکر بروزرسانی شد</b>\n\n" +
+    "آخرین نسخه روی کلادفلر بارگذاری شد.\n" +
+    "تنظیمات و پایگاه‌داده دست‌نخورده باقی ماندند.",
 
   confirmDeleteDeployment: (dep) =>
-    `⚠️ ورکر «${dep.label || dep.scriptName}» و پایگاه‌داده‌اش برای همیشه حذف خواهند شد. این کار غیرقابل بازگشت است.\n\nآیا مطمئن هستید؟`,
+    `⚠️ <b>حذف ورکر</b>\n` +
+    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+    `ورکر «<b>${dep.label || dep.scriptName}</b>» و پایگاه‌داده‌اش برای همیشه حذف خواهند شد.\n\n` +
+    `🔴 این عمل <b>غیرقابل بازگشت</b> است!\n\n` +
+    `آیا مطمئن هستید؟`,
 
-  deploymentDeleted: "🗑 ورکر و پایگاه‌داده‌اش حذف شدند.",
+  deploymentDeleted:
+    "🗑 <b>ورکر حذف شد</b>\n\n" +
+    "ورکر و پایگاه‌داده‌اش برای همیشه حذف شدند.",
 
   showCreds: (dep) =>
-    `🔐 <b>اطلاعات دسترسی ${dep.label || dep.scriptName}</b>\n\n` +
-    `🔗 لینک اشتراک:\n<code>${dep.subscriptionUrl}</code>\n\n` +
-    `🖥 آدرس پنل:\n<code>${dep.dashboardUrl}</code>\n\n` +
-    `🔑 رمز پنل:\n<code>${dep.masterKey}</code>\n\n` +
-    `🗝 کلید API:\n<code>${dep.apiKey}</code>`,
+    `🔐 <b>اطلاعات دسترسی ${dep.label || dep.scriptName}</b>\n` +
+    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+    `🔗 <b>لینک اشتراک</b>\n` +
+    `<code>${dep.subscriptionUrl}</code>\n\n` +
+    `🖥 <b>آدرس پنل مدیریت</b>\n` +
+    `<code>${dep.dashboardUrl}</code>\n\n` +
+    `🔑 <b>رمز ورود</b>\n` +
+    `<code>${dep.masterKey}</code>\n\n` +
+    `🗝 <b>کلید API</b>\n` +
+    `<code>${dep.apiKey}</code>\n\n` +
+    `━━━━━━━━━━━━━━━━━━━━━\n` +
+    `💡 برای کپی کردن، روی کد ضربه بزنید`,
 
   cancelled: "عملیات لغو شد.",
   unknownCallback: "این گزینه دیگر معتبر نیست.",

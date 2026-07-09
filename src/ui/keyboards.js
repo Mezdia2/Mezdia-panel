@@ -1,4 +1,4 @@
-import { replyKb, replyBtn, removeKb, kb, urlBtn } from "../lib/telegram.js";
+import { replyKb, replyBtn, removeKb, kb, btn, urlBtn } from "../lib/telegram.js";
 
 // ---- Reply Keyboards ----
 
@@ -43,20 +43,19 @@ export const deploymentsListKb = (deployments) =>
   ]);
 
 export const deploymentDetailKb = (dep) =>
-  replyKb([
-    [replyBtn("📊 وضعیت و مصرف"), replyBtn("🔐 اطلاعات دسترسی")],
-    [replyBtn("📜 گزارش‌ها")],
-    [replyBtn(dep.status === "paused" ? "▶️ فعال‌سازی" : "⏸ توقف")],
-    [replyBtn("🔁 بازنشانی ترافیک")],
-    [replyBtn("🔄 بروزرسانی ورکر")],
-    [replyBtn("🗑 حذف ورکر")],
-    [replyBtn("🔙 بازگشت به حساب")],
+  kb([
+    [btn("📊 وضعیت و مصرف", `stats:${dep.id}`), btn("🔐 اطلاعات دسترسی", `creds:${dep.id}`)],
+    [btn("📜 گزارش‌ها", `logs:${dep.id}`)],
+    [btn(dep.status === "paused" ? "▶️ فعال‌سازی" : "⏸ توقف", dep.status === "paused" ? `resume:${dep.id}` : `pause:${dep.id}`)],
+    [btn("🔁 بازنشانی ترافیک", `reset:${dep.id}`)],
+    [btn("🔄 بروزرسانی ورکر", `update:${dep.id}`)],
+    [btn("🗑 حذف ورکر", `del:${dep.id}`)],
+    [btn("🔙 بازگشت به حساب", `back_dep:${dep.accountId}`)],
   ]);
 
-export const confirmDeleteDeploymentKb = () =>
-  replyKb([
-    [replyBtn("✅ بله، حذف کن")],
-    [replyBtn("✖️ انصراف")],
+export const confirmDeleteDeploymentKb = (depId) =>
+  kb([
+    [btn("✅ بله، حذف کن", `delete_confirmed:${depId}`), btn("✖️ انصراف", `cancel_delete:${depId}`)],
   ]);
 
 export const removeMenuKb = () => removeKb();

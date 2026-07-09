@@ -1,4 +1,4 @@
-import { sendMessage } from "../lib/telegram.js";
+import { sendMessage, answerCallbackQuery } from "../lib/telegram.js";
 import { ensureUser, getSession, clearSession, setSession, getAccounts, getAccount, getDeployment, deploymentsForAccount, getUserVersion, setUserVersion, registerUser, getAllUserIds } from "../lib/kv.js";
 import { T } from "../ui/text.js";
 import { mainMenuKb, cancelKb, removeMenuKb, accountsListKb, accountDetailKb, confirmRemoveAccountKb, deploymentsListKb, deploymentDetailKb, confirmDeleteDeploymentKb, updateNotificationKb, updateSelectKb } from "../ui/keyboards.js";
@@ -462,4 +462,81 @@ async function handleUpdateSelected(env, chatId, tgId, session) {
 async function handleSkipUpdate(env, chatId, tgId) {
   await clearSession(env, tgId);
   await sendMessage(env, chatId, "بروزرسانی رد شد.", { keyboard: mainMenuKb() });
+}
+
+// ---- Callback query router (inline keyboard buttons) ----
+
+export async function routeCallbackQuery(env, callbackQuery, ctx) {
+  const chatId = callbackQuery.message?.chat?.id;
+  const tgId = callbackQuery.from?.id;
+  const data = callbackQuery.data || "";
+  const messageId = callbackQuery.message?.message_id;
+
+  if (!chatId || !tgId) return;
+
+  await ensureUser(env, tgId, { firstName: callbackQuery.from?.first_name, username: callbackQuery.from?.username });
+
+  // Parse callback_data: "action:id"
+  const colonIdx = data.indexOf(":");
+  const action = colonIdx === -1 ? data : data.slice(0, colonIdx);
+  const id = colonIdx === -1 ? "" : data.slice(colonIdx + 1);
+
+  switch (action) {
+    case "stats":
+      await showStats(env, chatId, tgId, messageId, id);
+      break;
+
+    case "creds":
+      await showCreds(env, chatId, tgId, messageId, id);
+      break;
+
+    case "logs":
+      await showLogs(env, chatId, tgId, messageId, id);
+      break;
+
+    case "pause":
+      await pauseDeployment(env, chatId, tgId, messageId, id);
+      break;
+
+    case "resume":
+      await resumeDeployment(env, chatId, tgId, messageId, id);
+      break;
+
+    case "reset":
+      await resetTraffic(env, chatId, tgId, messageId, id);
+      break;
+
+    case "update":
+      await updateWorker(env, chatId, tgId, messageId, id);
+      break;
+
+    case "del":
+      await confirmDeleteDeploymentScreen(env, chatId, tgId, messageId, id);
+      break;
+
+    case "delete_confirmed":
+      await deleteDeploymentConfirmed(env, chatId, tgId, messageId, id, callbackQuery.id);
+      return; // answerCallbackQuery already handled inside deleteDeploymentConfirmed
+
+    case "cancel_delete": {
+      // Go back to deployment detail
+      const dep = await getDeployment(env, tgId, id);
+      if (dep) {
+        await setSession(env, tgId, "kb_deployment_detail", { depId: dep.id, accountId: dep.accountId });
+        await sendMessage(env, chatId, T.deploymentDetail(dep), { keyboard: deploymentDetailKb(dep) });
+      }
+      break;
+    }
+
+    case "back_dep": {
+      // id is accountId
+      await showAccountDetail(env, chatId, tgId, messageId, id);
+      break;
+    }
+
+    default:
+      await sendMessage(env, chatId, T.unknownCallback, { keyboard: mainMenuKb() });
+  }
+
+  await answerCallbackQuery(env, callbackQuery.id);
 }

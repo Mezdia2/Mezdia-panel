@@ -1,5 +1,5 @@
 import { setWebhook } from "./lib/telegram.js";
-import { routeMessage } from "./handlers/router.js";
+import { routeMessage, routeCallbackQuery } from "./handlers/router.js";
 
 export default {
   async fetch(request, env, ctx) {
@@ -49,7 +49,9 @@ export default {
 
 async function handleUpdate(env, update, ctx) {
   try {
-    if (update.message) {
+    if (update.callback_query) {
+      await routeCallbackQuery(env, update.callback_query, ctx);
+    } else if (update.message) {
       await routeMessage(env, update.message, ctx);
     }
   } catch (e) {
