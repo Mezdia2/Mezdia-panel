@@ -4,8 +4,7 @@ import { replyKb, replyBtn, removeKb, kb, btn, urlBtn } from "../lib/telegram.js
 
 export const mainMenuKb = () =>
   replyKb([
-    [replyBtn("➕ افزودن حساب کلادفلر")],
-    [replyBtn("☁️ حساب‌های من")],
+    [replyBtn("➕ افزودن حساب کلادفلر"), replyBtn("☁️ حساب‌های من")],
     [replyBtn("❓ راهنما")],
   ]);
 

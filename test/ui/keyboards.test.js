@@ -12,24 +12,20 @@ import {
 
 describe("keyboards.js", () => {
   describe("mainMenuKb", () => {
-    it("has 3 rows: add account, accounts list, help", () => {
+    it("has 2 rows: [add account, accounts list] and [help]", () => {
       const kb = mainMenuKb();
-      expect(kb.keyboard).toHaveLength(3);
+      expect(kb.keyboard).toHaveLength(2);
     });
 
-    it("first button is 'add cloudflare account'", () => {
+    it("first row has add account and accounts list buttons", () => {
       const kb = mainMenuKb();
       expect(kb.keyboard[0][0].text).toBe("➕ افزودن حساب کلادفلر");
+      expect(kb.keyboard[0][1].text).toBe("☁️ حساب‌های من");
     });
 
-    it("second button navigates to accounts", () => {
+    it("second row has help button", () => {
       const kb = mainMenuKb();
-      expect(kb.keyboard[1][0].text).toBe("☁️ حساب‌های من");
-    });
-
-    it("third button navigates to help", () => {
-      const kb = mainMenuKb();
-      expect(kb.keyboard[2][0].text).toBe("❓ راهنما");
+      expect(kb.keyboard[1][0].text).toBe("❓ راهنما");
     });
   });
 
@@ -120,7 +116,8 @@ describe("keyboards.js", () => {
     it("shows pause button when status is active", () => {
       const dep = { id: "d1", accountId: "a1", status: "active" };
       const kb = deploymentDetailKb(dep);
-      const texts = kb.keyboard.flat().map((b) => b.text);
+      const buttons = kb.inline_keyboard.flat();
+      const texts = buttons.map((b) => b.text);
       expect(texts).toContain("⏸ توقف");
       expect(texts).not.toContain("▶️ فعال‌سازی");
     });
@@ -128,7 +125,8 @@ describe("keyboards.js", () => {
     it("shows resume button when status is paused", () => {
       const dep = { id: "d1", accountId: "a1", status: "paused" };
       const kb = deploymentDetailKb(dep);
-      const texts = kb.keyboard.flat().map((b) => b.text);
+      const buttons = kb.inline_keyboard.flat();
+      const texts = buttons.map((b) => b.text);
       expect(texts).toContain("▶️ فعال‌سازی");
       expect(texts).not.toContain("⏸ توقف");
     });
@@ -136,7 +134,8 @@ describe("keyboards.js", () => {
     it("includes stats, creds, logs, reset, update, delete buttons", () => {
       const dep = { id: "d1", accountId: "a1", status: "active" };
       const kb = deploymentDetailKb(dep);
-      const texts = kb.keyboard.flat().map((b) => b.text);
+      const buttons = kb.inline_keyboard.flat();
+      const texts = buttons.map((b) => b.text);
       expect(texts).toContain("📊 وضعیت و مصرف");
       expect(texts).toContain("🔐 اطلاعات دسترسی");
       expect(texts).toContain("📜 گزارش‌ها");
@@ -144,13 +143,30 @@ describe("keyboards.js", () => {
       expect(texts).toContain("🔄 بروزرسانی ورکر");
       expect(texts).toContain("🗑 حذف ورکر");
     });
+
+    it("has callback_data for each button", () => {
+      const dep = { id: "d1", accountId: "a1", status: "active" };
+      const kb = deploymentDetailKb(dep);
+      const buttons = kb.inline_keyboard.flat();
+      for (const btn of buttons) {
+        expect(btn.callback_data).toBeDefined();
+      }
+    });
   });
 
   describe("confirmDeleteDeploymentKb", () => {
     it("has confirm and cancel buttons", () => {
-      const kb = confirmDeleteDeploymentKb();
-      expect(kb.keyboard[0][0].text).toBe("✅ بله، حذف کن");
-      expect(kb.keyboard[1][0].text).toBe("✖️ انصراف");
+      const kb = confirmDeleteDeploymentKb("d1");
+      const buttons = kb.inline_keyboard.flat();
+      expect(buttons[0].text).toBe("✅ بله، حذف کن");
+      expect(buttons[1].text).toBe("✖️ انصراف");
+    });
+
+    it("has callback_data with depId", () => {
+      const kb = confirmDeleteDeploymentKb("d1");
+      const buttons = kb.inline_keyboard.flat();
+      expect(buttons[0].callback_data).toBe("delete_confirmed:d1");
+      expect(buttons[1].callback_data).toBe("cancel_delete:d1");
     });
   });
 });

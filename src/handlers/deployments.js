@@ -73,8 +73,11 @@ async function runDeploy(env, chatId, tgId, account, label) {
 }
 
 export async function listDeploymentsScreen(env, chatId, tgId, messageId, accountId) {
+  const account = await getAccount(env, tgId, accountId);
   const deployments = await deploymentsForAccount(env, tgId, accountId);
-  const text = deployments.length ? T.deploymentsListHeader : T.deploymentsListEmpty;
+  const text = deployments.length
+    ? T.deploymentsListHeader(account?.cfAccountName || "این حساب")
+    : T.deploymentsListEmpty;
   await setSession(env, tgId, "kb_deployments_list", { accountId });
   await sendMessage(env, chatId, text, { keyboard: deploymentsListKb(deployments) });
 }

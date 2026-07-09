@@ -61,7 +61,7 @@ describe("accounts.js", () => {
       await handleTokenMessage(env, 12345, 12345, "bad-token");
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("عتبر نبود");
+      expect(text).toContain("نامعتبر");
     });
 
     it("shows error when token has no accounts", async () => {
@@ -70,7 +70,7 @@ describe("accounts.js", () => {
       await handleTokenMessage(env, 12345, 12345, "valid-token");
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("هیچ حساب");
+      expect(text).toContain("حسابی یافت نشد");
     });
 
     it("auto-finalizes when token has exactly one account", async () => {
@@ -146,9 +146,9 @@ describe("accounts.js", () => {
   describe("listAccountsScreen", () => {
     it("shows empty message when no accounts", async () => {
       await listAccountsScreen(env, 12345, 12345, 1);
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      const text = editMessageText.mock.calls[0][3];
-      expect(text).toContain("هیچ حساب");
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      const text = sendMessage.mock.calls[0][2];
+      expect(text).toContain("حسابی اضافه نشده");
     });
 
     it("shows accounts list when accounts exist", async () => {
@@ -157,8 +157,8 @@ describe("accounts.js", () => {
         JSON.stringify([{ id: "a1", cfAccountName: "My Account" }])
       );
       await listAccountsScreen(env, 12345, 12345, 1);
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      const text = editMessageText.mock.calls[0][3];
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      const text = sendMessage.mock.calls[0][2];
       expect(text).toContain("حساب‌های کلادفلر");
     });
   });
@@ -179,16 +179,16 @@ describe("accounts.js", () => {
         ])
       );
       await showAccountDetail(env, 12345, 12345, 1, "a1");
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      const text = editMessageText.mock.calls[0][3];
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      const text = sendMessage.mock.calls[0][2];
       expect(text).toContain("Prod");
       expect(text).toContain("2");
     });
 
     it("shows not found when account doesn't exist", async () => {
       await showAccountDetail(env, 12345, 12345, 1, "nonexistent");
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      const text = editMessageText.mock.calls[0][3];
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      const text = sendMessage.mock.calls[0][2];
       expect(text).toContain("یافت نشد");
     });
   });
@@ -204,8 +204,8 @@ describe("accounts.js", () => {
         JSON.stringify([{ id: "d1", accountId: "a1" }])
       );
       await confirmRemoveAccountScreen(env, 12345, 12345, 1, "a1");
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      const text = editMessageText.mock.calls[0][3];
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      const text = sendMessage.mock.calls[0][2];
       expect(text).toContain("To Delete");
       expect(text).toContain("1 ورکر");
     });
@@ -232,8 +232,8 @@ describe("accounts.js", () => {
 
     it("handles missing account gracefully", async () => {
       await removeAccountConfirmed(env, 12345, 12345, 1, "nonexistent", "cb-1");
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      const text = editMessageText.mock.calls[0][3];
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      const text = sendMessage.mock.calls[0][2];
       expect(text).toContain("یافت نشد");
     });
   });

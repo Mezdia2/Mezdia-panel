@@ -28,139 +28,173 @@ export function parseChangelog(targetVersion) {
 
 export const T = {
   welcome:
-    "👋 به ربات مدیریت پنل Mezdia خوش آمدید!\n\n" +
-    "با این ربات می‌توانید حساب‌های کلادفلر خودتان را اضافه کنید و ربات به‌صورت کاملاً خودکار برایتان یک پنل VLESS/Trojan روی همان حساب دیپلوی می‌کند؛ همراه با پایگاه‌داده اختصاصی، لینک اشتراک، و پنل تنظیمات گرافیکی.\n\n" +
-    "می‌توانید چند حساب کلادفلر اضافه کنید و در هر حساب یک ورکر داشته باشید — همه از همینجا قابل مدیریت‌اند.",
+    "🔷 <b>Mezdia Deploy</b>\n" +
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+    "دیپلوی خودکار پنل VLESS/Trojan روی کلادفلر\n" +
+    "با حساب‌های کلادفلرتون مدیریت کنید.",
 
-  mainMenuPrompt: "از منوی زیر یکی را انتخاب کنید:",
+  mainMenuPrompt: "یکی از گزینه‌های زیر را انتخاب کنید:",
+
+  mainMenuSummary: (accountCount, workerCount) =>
+    `📊 <b>خلاصه وضعیت</b>\n` +
+    `├ حساب‌ها: ${accountCount}\n` +
+    `└ ورکرها: ${workerCount}`,
 
   help:
-    "❓ <b>راهنما</b>\n\n" +
-    "۱. از «افزودن حساب کلادفلر» یک API Token با دسترسی‌های لازم بسازید و برای ربات ارسال کنید.\n" +
-    "۲. از داخل همان حساب، گزینه «دیپلوی ورکر جدید» را بزنید — ربات به‌صورت خودکار پایگاه‌داده و ورکر را می‌سازد و به هم متصل می‌کند.\n" +
-    "۳. لینک اشتراک، آدرس پنل و رمز عبور را دریافت می‌کنید.\n" +
-    "۴. از همین ربات می‌توانید ورکر را متوقف/فعال کنید، ترافیک را بازنشانی کنید، یا آن را کاملاً حذف کنید.\n\n" +
-    "دستورها:\n" +
-    "/start — منوی اصلی\n" +
-    "/help — همین راهنما\n" +
-    "/cancel — لغو عملیات جاری",
+    "❓ <b>راهنمای استفاده</b>\n" +
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+    "<b>شروع سریع:</b>\n" +
+    "۱. حساب کلادفلر خود را با API Token اضافه کنید\n" +
+    "۲. ورکر جدید دیپلوی کنید (خودکار!)\n" +
+    "۳. لینک اشتراک و اطلاعات پنل را دریافت کنید\n\n" +
+    "<b>مدیریت ورکر:</b>\n" +
+    "• فعال/متوقف کردن\n" +
+    "• مشاهده آمار و گزارش‌ها\n" +
+    "• بازنشانی ترافیک\n" +
+    "• بروزرسانی و حذف\n\n" +
+    "<b>دستورات:</b>\n" +
+    "<code>/start</code> — منوی اصلی\n" +
+    "<code>/help</code> — این راهنما\n" +
+    "<code>/cancel</code> — لغو عملیات",
 
   askToken:
-    "🔑 یک <b>API Token</b> اختصاصی کلادفلر بسازید و همینجا برای من ارسال کنید.\n\n" +
-    "برای ساخت توکن:\n" +
-    "1️⃣ وارد صفحه API Tokens کلادفلر شوید (دکمه پایین)\n" +
-    "2️⃣ روی «Create Token» بزنید و «Create Custom Token» را انتخاب کنید\n" +
-    "3️⃣ این دسترسی‌ها را اضافه کنید (همه در سطح Account):\n" +
-    "   • <code>Workers Scripts — Edit</code>\n" +
-    "   • <code>D1 — Edit</code>\n" +
-    "   • <code>Account Settings — Read</code>\n" +
-    "4️⃣ در بخش Account Resources، حساب موردنظر (یا All accounts) را انتخاب کنید\n" +
-    "5️⃣ توکن ساخته‌شده را کپی و همینجا ارسال کنید\n\n" +
-    "⚠️ این توکن فقط داخل همین ربات و برای مدیریت ورکرهای شما ذخیره می‌شود.",
+    "🔑 <b>ساخت API Token</b>\n" +
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+    "مرحله ۱: وارد <a href=\"https://dash.cloudflare.com/profile/api-tokens\">صفحه API Tokens</a> شوید\n" +
+    "مرحله ۲: <code>Create Token</code> → <code>Create Custom Token</code>\n" +
+    "مرحله ۳: دسترسی‌های زیر را اضافه کنید:\n" +
+    "   • <code>Workers Scripts: Edit</code>\n" +
+    "   • <code>D1: Edit</code>\n" +
+    "   • <code>Account Settings: Read</code>\n" +
+    "مرحله ۴: حساب موردنظر را انتخاب کنید\n" +
+    "مرحله ۵: توکن را کپی و ارسال کنید\n\n" +
+    "🔒 توکن فقط در این ربات ذخیره می‌شود.",
 
   tokenInvalid:
-    "❌ این توکن معتبر نبود یا دسترسی لازم را ندارد.\n" +
-    "لطفاً از داشتن دسترسی‌های <code>Workers Scripts Edit</code>، <code>D1 Edit</code> و <code>Account Settings Read</code> مطمئن شوید و دوباره ارسال کنید، یا /cancel را بزنید.",
+    "❌ <b>توکن نامعتبر</b>\n\n" +
+    "دسترسی‌های لازم وجود ندارد. مطمئن شوید:\n" +
+    "• <code>Workers Scripts: Edit</code>\n" +
+    "• <code>D1: Edit</code>\n" +
+    "• <code>Account Settings: Read</code>\n\n" +
+    "دوباره تلاش کنید یا <code>/cancel</code> بزنید.",
 
   tokenNoAccounts:
-    "⚠️ با این توکن هیچ حساب کلادفلری پیدا نشد. Account Resources توکن را بررسی کنید و دوباره تلاش کنید، یا /cancel را بزنید.",
+    "⚠️ <b>حسابی یافت نشد</b>\n\n" +
+    "Account Resources توکن را بررسی کنید.\n" +
+    "دوباره تلاش کنید یا <code>/cancel</code> بزنید.",
 
-  pickCfAccount: "این توکن به چند حساب کلادفلر دسترسی دارد. کدام‌یک را اضافه کنم؟",
+  pickCfAccount: "این توکن به چند حساب دسترسی دارد. کدام را اضافه کنم؟",
 
   oneWorkerPerAccount:
-    "⚠️ هر حساب کلادفلر فقط می‌تواند یک ورکر داشته باشد.\n" +
-    "اگر نیاز به ورکر دیگری دارید، یک حساب کلادفلر دیگر اضافه کنید.",
+    "⚠️ <b>محدودیت یک ورکر</b>\n\n" +
+    "هر حساب کلادفلر فقط یک ورکر دارد.\n" +
+    "برای ورکر بیشتر، حساب جدید اضافه کنید.",
 
-  accountAdded: (name) => `✅ حساب «${name}» با موفقیت اضافه شد.`,
+  accountAdded: (name) =>
+    `✅ <b>حساب اضافه شد</b>\n\n` +
+    `«${name}» با موفقیت ثبت شد.`,
 
   accountsListEmpty:
-    "هنوز هیچ حساب کلادفلری اضافه نکرده‌اید.\n\nبرای شروع، یک حساب اضافه کنید:",
+    "📭 <b>هنوز حسابی اضافه نشده</b>\n\n" +
+    "برای شروع، اولین حساب کلادفلر خود را اضافه کنید:",
 
-  accountsListHeader: "☁️ <b>حساب‌های کلادفلر شما</b>\n\nیکی را برای مدیریت انتخاب کنید:",
+  accountsListHeader: "☁️ <b>حساب‌های کلادفلر</b>\n━━━━━━━━━━━━━━━━━━━━━\n\nیکی را انتخاب کنید:",
 
   accountDetail: (acc, depCount) =>
     `☁️ <b>${acc.cfAccountName}</b>\n` +
-    `شناسه حساب: <code>${acc.cfAccountId}</code>\n` +
-    `تعداد ورکر فعال: ${depCount}`,
+    `━━━━━━━━━━━━━━━━━━━━━\n` +
+    `📋 شناسه: <code>${acc.cfAccountId}</code>\n` +
+    `⚙️ ورکرها: ${depCount}\n` +
+    `📅 تاریخ اضافه: ${formatDate(acc.addedAt)}`,
 
   confirmRemoveAccount: (acc, depCount) =>
     depCount > 0
-      ? `⚠️ حذف حساب «${acc.cfAccountName}» باعث حذف ${depCount} ورکر متصل به آن (همراه پایگاه‌داده‌شان) نیز خواهد شد.\n\nآیا مطمئن هستید؟`
-      : `⚠️ حساب «${acc.cfAccountName}» حذف شود؟ (فقط توکن از ربات پاک می‌شود، منابعی روی کلادفلر وجود ندارد که حذف شود.)`,
+      ? `⚠️ <b>حذف حساب</b>\n━━━━━━━━━━━━━━━━━━━━━\n\n` +
+        `حساب «<b>${acc.cfAccountName}</b>» حذف شود?\n\n` +
+        `🔴 <b>${depCount} ورکر</b> متصل هم حذف خواهند شد!`
+      : `⚠️ <b>حذف حساب</b>\n━━━━━━━━━━━━━━━━━━━━━\n\n` +
+        `حساب «<b>${acc.cfAccountName}</b>» حذف شود?\n\n` +
+        `فقط توکن از ربات پاک می‌شود.`,
 
-  accountRemoved: "🗑 حساب و ورکرهای متصل به آن حذف شدند.",
+  accountRemoved: "🗑 <b>حساب حذف شد</b>\n\nتمام ورکرهای متصل هم حذف شدند.",
 
   askDeployLabel:
-    "یک نام دلخواه برای این ورکر بنویسید (فقط برای نمایش در ربات و پنل).\n" +
-    "برای رد شدن و استفاده از نام پیش‌فرض، /skip را بفرستید.",
+    "📝 <b>نام ورکر</b>\n\n" +
+    "یک نام دلخواه بنویسید (یا <code>/skip</code> برای نام پیش‌فرض):",
 
-  deploying: "⏳ در حال ساخت پایگاه‌داده و دیپلوی ورکر روی کلادفلر… این کار معمولاً ۱۰ تا ۳۰ ثانیه طول می‌کشد.",
+  deploying:
+    "⏳ <b>در حال دیپلوی...</b>\n\n" +
+    "ساخت پایگاه‌داده و آپلود ورکر روی کلادفلر\n" +
+    "این کار ۱۰ تا ۳۰ ثانیه طول می‌کشد.",
 
   deployFailed: (msg) =>
-    `❌ دیپلوی ناموفق بود.\n\nخطا: <code>${msg}</code>\n\nدوباره تلاش کنید یا از /cancel استفاده کنید.`,
+    `❌ <b>دیپلوی ناموفق</b>\n` +
+    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+    `خطا: <code>${msg}</code>\n\n` +
+    `دوباره تلاش کنید یا <code>/cancel</code> بزنید.`,
 
   deploySuccess: (dep) =>
-    "✅ <b>ورکر با موفقیت دیپلوی شد!</b>\n" +
+    "✅ <b>دیپلوی موفق!</b>\n" +
     "━━━━━━━━━━━━━━━━━━━━━\n\n" +
-    `📛 نام: <b>${dep.label || dep.scriptName}</b>\n\n` +
-    `🔗 <b>لینک اشتراک</b>\n` +
-    `<code>${dep.subscriptionUrl}</code>\n\n` +
-    `🖥 <b>آدرس پنل مدیریت</b>\n` +
-    `<code>${dep.dashboardUrl}</code>\n\n` +
-    `🔑 <b>رمز ورود</b>\n` +
-    `<code>${dep.masterKey}</code>\n\n` +
-    `🗝 <b>کلید API</b>\n` +
-    `<code>${dep.apiKey}</code>\n\n` +
-    `━━━━━━━━━━━━━━━━━━━━━\n` +
-    `💡 این اطلاعات را در جای امنی نگه دارید.\n` +
-    `هر زمان بخواهید می‌توانید از منوی ورکر دوباره ببینید.`,
+    `📛 <b>${dep.label || dep.scriptName}</b>\n\n` +
+    `🔗 <b>لینک اشتراک</b>\n<code>${dep.subscriptionUrl}</code>\n\n` +
+    `🖥 <b>پنل مدیریت</b>\n<code>${dep.dashboardUrl}</code>\n\n` +
+    `🔑 <b>رمز ورود</b>\n<code>${dep.masterKey}</code>\n\n` +
+    `🗝 <b>کلید API</b>\n<code>${dep.apiKey}</code>\n\n` +
+    "━━━━━━━━━━━━━━━━━━━━━\n" +
+    "💡 اطلاعات را در جای امنی ذخیره کنید.",
 
-  deploymentsListEmpty: "هنوز هیچ ورکری روی این حساب دیپلوی نکرده‌اید.",
-  deploymentsListHeader: "📋 ورکرهای این حساب:",
+  deploymentsListEmpty:
+    "📭 <b>هنوز ورکری دیپلوی نشده</b>\n\n" +
+    "اولین ورکر خود را بسازید:",
+
+  deploymentsListHeader: (accountName) =>
+    `📋 <b>ورکرهای ${accountName}</b>\n━━━━━━━━━━━━━━━━━━━━━`,
 
   deploymentDetail: (dep) => {
-    const status = dep.status === "paused" ? "⏸ متوقف" : "✅ فعال";
+    const statusIcon = dep.status === "paused" ? "⏸" : "🟢";
+    const statusText = dep.status === "paused" ? "متوقف" : "فعال";
     return (
       `⚙️ <b>${dep.label || dep.scriptName}</b>\n` +
-      `━━━━━━━━━━━━━━━━━━━━━\n` +
-      `📛 نام اسکریپت: <code>${dep.scriptName}</code>\n` +
-      `📊 وضعیت: ${status}\n` +
-      `📅 تاریخ ساخت: ${formatDate(dep.createdAt)}\n` +
-      `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `از دکمه‌های زیر برای مدیریت استفاده کنید:`
+      "━━━━━━━━━━━━━━━━━━━━━\n" +
+      `📛 <code>${dep.scriptName}</code>\n` +
+      `${statusIcon} وضعیت: <b>${statusText}</b>\n` +
+      `📅 ساخت: ${formatDate(dep.createdAt)}\n` +
+      "━━━━━━━━━━━━━━━━━━━━━"
     );
   },
 
-  fetchingStats: "⏳ در حال دریافت آمار…",
+  fetchingStats: "⏳ دریافت آمار...",
 
   statsResult: (dep, s) => {
     const usage = s.stats?.traffic || {};
     const acc = s.stats?.account || {};
-    const status = acc.status === "paused" ? "⏸ متوقف" : "✅ فعال";
+    const statusIcon = acc.status === "paused" ? "⏸" : "🟢";
+    const statusText = acc.status === "paused" ? "متوقف" : "فعال";
     const uptime = Math.floor((s.stats?.system?.uptimeSeconds ?? 0) / 60);
     const hours = Math.floor(uptime / 60);
     const mins = uptime % 60;
-    const uptimeStr = hours > 0 ? `${hours} ساعت و ${mins} دقیقه` : `${mins} دقیقه`;
+    const uptimeStr = hours > 0 ? `${hours}ساعت ${mins}دقیقه` : `${mins} دقیقه`;
     return (
       `📊 <b>وضعیت ${dep.label || dep.scriptName}</b>\n` +
-      `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `🔄 وضعیت: ${status}\n\n` +
+      "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+      `${statusIcon} وضعیت: <b>${statusText}</b>\n\n` +
       `📈 <b>ترافیک</b>\n` +
-      `├ کل: <b>${usage.totalGB ?? 0}</b> گیگابایت\n` +
-      `└ امروز: <b>${usage.dailyGB ?? 0}</b> گیگابایت\n\n` +
-      `🔗 اتصالات فعال: <b>${s.stats?.system?.activeConnections ?? 0}</b>\n` +
+      `├ کل: <b>${usage.totalGB ?? 0}</b> GB\n` +
+      `└ امروز: <b>${usage.dailyGB ?? 0}</b> GB\n\n` +
+      `🔗 اتصالات: <b>${s.stats?.system?.activeConnections ?? 0}</b>\n` +
       `⏱ آپ‌تایم: <b>${uptimeStr}</b>`
     );
   },
 
-  fetchingLogs: "⏳ در حال دریافت گزارش‌ها…",
+  fetchingLogs: "⏳ دریافت گزارش‌ها...",
   logsResult: (dep, logs) => {
     if (!logs || !logs.length) {
       return (
         `📜 <b>گزارش‌های ${dep.label || dep.scriptName}</b>\n` +
-        `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-        `هنوز گزارشی ثبت نشده است.\n` +
-        `گزارش‌ها پس از اتصال کاربران نمایش داده خواهند شد.`
+        "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+        "هنوز گزارشی ثبت نشده.\n" +
+        "پس از اتصال کاربران نمایش داده می‌شود."
       );
     }
     const lines = logs
@@ -169,75 +203,74 @@ export const T = {
       .join("\n");
     return (
       `📜 <b>گزارش‌های ${dep.label || dep.scriptName}</b>\n` +
-      `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `${lines}`
+      "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+      lines
     );
   },
 
   actionFailed: (msg) =>
-    `❌ <b>عملیات ناموفق بود</b>\n\n` +
-    `خطا: <code>${msg}</code>\n\n` +
-    `دوباره تلاش کنید اگر مشکل ادامه داشت با پشتیبانی تماس بگیرید.`,
+    `❌ <b>خطا</b>\n` +
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+    `<code>${msg}</code>\n\n` +
+    `دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.`,
+
   paused:
     "⏸ <b>ورکر متوقف شد</b>\n\n" +
-    "کاربران دیگر نمی‌توانند از تانل استفاده کنند.\n" +
-    "برای فعال‌سازی مجدد، دکمه «▶️ فعال‌سازی» را بزنید.",
+    "اتصالات قطع شدند.\n" +
+    "برای فعال‌سازی، «▶️ فعال‌سازی» را بزنید.",
 
   resumed:
-    "▶️ <b>ورکر دوباره فعال شد</b>\n\n" +
-    "اتصالات از سر گرفته شدند و کاربران می‌توانند استفاده کنند.",
+    "▶️ <b>ورکر فعال شد</b>\n\n" +
+    "اتصالات از سر گرفته شدند.",
 
   trafficReset:
     "🔁 <b>ترافیک بازنشانی شد</b>\n\n" +
-    "شمارنده‌های ترافیک کل و روزانه صفر شدند.",
+    "شمارنده‌ها صفر شدند.",
 
   updated:
     "🔄 <b>ورکر بروزرسانی شد</b>\n\n" +
-    "آخرین نسخه روی کلادفلر بارگذاری شد.\n" +
-    "تنظیمات و پایگاه‌داده دست‌نخورده باقی ماندند.",
+    "آخرین نسخه بارگذاری شد.\n" +
+    "تنظیمات و پایگاه‌داده دست‌نخورده.",
 
   confirmDeleteDeployment: (dep) =>
     `⚠️ <b>حذف ورکر</b>\n` +
-    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-    `ورکر «<b>${dep.label || dep.scriptName}</b>» و پایگاه‌داده‌اش برای همیشه حذف خواهند شد.\n\n` +
-    `🔴 این عمل <b>غیرقابل بازگشت</b> است!\n\n` +
-    `آیا مطمئن هستید؟`,
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+    `«<b>${dep.label || dep.scriptName}</b>» و پایگاه‌داده‌اش حذف شود?\n\n` +
+    "🔴 <b>غیرقابل بازگشت!</b>",
 
   deploymentDeleted:
     "🗑 <b>ورکر حذف شد</b>\n\n" +
-    "ورکر و پایگاه‌داده‌اش برای همیشه حذف شدند.",
+    "ورکر و پایگاه‌داده برای همیشه حذف شدند.",
 
   showCreds: (dep) =>
-    `🔐 <b>اطلاعات دسترسی ${dep.label || dep.scriptName}</b>\n` +
-    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-    `🔗 <b>لینک اشتراک</b>\n` +
-    `<code>${dep.subscriptionUrl}</code>\n\n` +
-    `🖥 <b>آدرس پنل مدیریت</b>\n` +
-    `<code>${dep.dashboardUrl}</code>\n\n` +
-    `🔑 <b>رمز ورود</b>\n` +
-    `<code>${dep.masterKey}</code>\n\n` +
-    `🗝 <b>کلید API</b>\n` +
-    `<code>${dep.apiKey}</code>\n\n` +
-    `━━━━━━━━━━━━━━━━━━━━━\n` +
-    `💡 برای کپی کردن، روی کد ضربه بزنید`,
+    `🔐 <b>اطلاعات ${dep.label || dep.scriptName}</b>\n` +
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
+    `🔗 <b>لینک اشتراک</b>\n<code>${dep.subscriptionUrl}</code>\n\n` +
+    `🖥 <b>پنل مدیریت</b>\n<code>${dep.dashboardUrl}</code>\n\n` +
+    `🔑 <b>رمز ورود</b>\n<code>${dep.masterKey}</code>\n\n` +
+    `🗝 <b>کلید API</b>\n<code>${dep.apiKey}</code>\n\n` +
+    "━━━━━━━━━━━━━━━━━━━━━\n" +
+    "💡 برای کپی، روی کد ضربه بزنید",
 
   cancelled: "عملیات لغو شد.",
-  unknownCallback: "این گزینه دیگر معتبر نیست.",
-  genericError: "⚠️ خطایی رخ داد. لطفاً دوباره تلاش کنید.",
-  notFound: "یافت نشد — شاید قبلاً حذف شده باشد.",
+  unknownCallback: "⚠️ این گزینه دیگر معتبر نیست.",
+  genericError: "⚠️ خطایی رخ داد. دوباره تلاش کنید.",
+  notFound: "یافت نشد — شاید قبلاً حذف شده.",
 
   // ---- Update notification texts ----
 
   updateNotification: (version, changelog) =>
-    `🔄 <b>نسخه جدید پنل Mezdia (${version}) منتشر شد!</b>\n\n` +
+    `🔄 <b>نسخه جدید (${version})</b>\n` +
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
     `📝 <b>تغییرات:</b>\n${changelog}\n\n` +
-    `برای بروزرسانی ورکرهای خود، یکی از گزینه‌های زیر را انتخاب کنید:`,
+    "ورکرهای خود را بروزرسانی کنید:",
 
-  updateSelectPrompt: "حساب‌هایی که می‌خواهید بروزرسانی شوند را انتخاب کنید:",
-  updateStarted: (count) => `⏳ بروزرسانی ${count} ورکر آغاز شد…`,
+  updateSelectPrompt: "حساب‌های موردنظر را انتخاب کنید:",
+  updateStarted: (count) => `⏳ بروزرسانی ${count} ورکر...`,
   updateComplete: (success, failed) =>
-    `✅ بروزرسانی تمام شد!\n\n` +
+    `✅ <b>بروزرسانی تمام شد</b>\n` +
+    "━━━━━━━━━━━━━━━━━━━━━\n\n" +
     `• موفق: ${success}\n` +
     (failed > 0 ? `• ناموفق: ${failed}\n` : "") +
-    `\nآخرین نسخه پنل روی ورکرهای انتخاب‌شده فعال شد.`,
+    `\nآخرین نسخه فعال شد.`,
 };

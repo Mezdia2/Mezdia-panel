@@ -28,8 +28,7 @@ describe("text.js", () => {
   describe("T (text constants)", () => {
     it("has welcome message", () => {
       expect(T.welcome).toContain("Mezdia");
-      expect(T.welcome).toContain("خوش آمدید");
-      expect(T.welcome).toContain("در هر حساب یک ورکر");
+      expect(T.welcome).toContain("دیپلوی خودکار");
     });
 
     it("has help text with commands", () => {
@@ -40,11 +39,10 @@ describe("text.js", () => {
 
     it("has askToken instruction", () => {
       expect(T.askToken).toContain("API Token");
-      expect(T.askToken).toContain("کلادفلر");
     });
 
     it("has tokenInvalid error", () => {
-      expect(T.tokenInvalid).toContain("عتبر نبود");
+      expect(T.tokenInvalid).toContain("نامعتبر");
     });
 
     it("has deploying message", () => {
@@ -62,7 +60,7 @@ describe("text.js", () => {
         deviceId: "device-789",
       };
       const text = T.deploySuccess(dep);
-      expect(text).toContain("موفقیت");
+      expect(text).toContain("دیپلوی موفق");
       expect(text).toContain("Test Panel");
       expect(text).toContain("secret123");
       expect(text).toContain("key456");
@@ -144,7 +142,6 @@ describe("text.js", () => {
       const acc = { cfAccountName: "My Account" };
       const text = T.confirmRemoveAccount(acc, 3);
       expect(text).toContain("3 ورکر");
-      expect(text).toContain("مطمئن");
     });
 
     it("confirmRemoveAccount shows no-deployment message", () => {
@@ -157,7 +154,7 @@ describe("text.js", () => {
     it("accountAdded includes account name", () => {
       const text = T.accountAdded("Production");
       expect(text).toContain("Production");
-      expect(text).toContain("موفقیت");
+      expect(text).toContain("اضافه شد");
     });
 
     it("accountDetail shows account info", () => {

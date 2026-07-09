@@ -1,11 +1,29 @@
 import { sendMessage } from "../lib/telegram.js";
 import { mainMenuKb, removeMenuKb } from "../ui/keyboards.js";
 import { T } from "../ui/text.js";
-import { clearSession, setSession } from "../lib/kv.js";
+import { clearSession, setSession, getAccounts, deploymentsForAccount } from "../lib/kv.js";
 
 export async function showMainMenu(env, chatId, tgId, greet = false) {
-  const text = greet ? `${T.welcome}\n\n${T.mainMenuPrompt}` : T.mainMenuPrompt;
   if (tgId) await setSession(env, tgId, "kb_main", {});
+
+  let text;
+  if (greet) {
+    text = `${T.welcome}\n\n${T.mainMenuPrompt}`;
+  } else {
+    // Show summary when returning to main menu
+    try {
+      const accounts = await getAccounts(env, tgId);
+      let totalWorkers = 0;
+      for (const acc of accounts) {
+        const deps = await deploymentsForAccount(env, tgId, acc.id);
+        totalWorkers += deps.length;
+      }
+      text = `${T.mainMenuSummary(accounts.length, totalWorkers)}\n\n${T.mainMenuPrompt}`;
+    } catch (e) {
+      text = T.mainMenuPrompt;
+    }
+  }
+
   return sendMessage(env, chatId, text, { keyboard: mainMenuKb() });
 }
 
