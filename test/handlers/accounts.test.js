@@ -159,7 +159,7 @@ describe("accounts.js", () => {
       await listAccountsScreen(env, 12345, 12345, 1);
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("حساب‌های کلادفلر");
+      expect(text).toContain("حساب‌های Cloudflare");
     });
   });
 
@@ -189,7 +189,7 @@ describe("accounts.js", () => {
       await showAccountDetail(env, 12345, 12345, 1, "nonexistent");
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("یافت نشد");
+      expect(text).toContain("موردی پیدا نشد");
     });
   });
 
@@ -207,7 +207,7 @@ describe("accounts.js", () => {
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
       expect(text).toContain("To Delete");
-      expect(text).toContain("1 ورکر");
+      expect(text).toContain("ورکر متصل");
     });
   });
 
@@ -234,7 +234,7 @@ describe("accounts.js", () => {
       await removeAccountConfirmed(env, 12345, 12345, 1, "nonexistent", "cb-1");
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("یافت نشد");
+      expect(text).toContain("موردی پیدا نشد");
     });
   });
 });

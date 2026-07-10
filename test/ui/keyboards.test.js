@@ -12,20 +12,24 @@ import {
 
 describe("keyboards.js", () => {
   describe("mainMenuKb", () => {
-    it("has 2 rows: [add account, accounts list] and [help]", () => {
+    it("has 3 simple rows for primary actions", () => {
       const kb = mainMenuKb();
-      expect(kb.keyboard).toHaveLength(2);
+      expect(kb.keyboard).toHaveLength(3);
     });
 
-    it("first row has add account and accounts list buttons", () => {
+    it("first row has add account button", () => {
       const kb = mainMenuKb();
-      expect(kb.keyboard[0][0].text).toBe("➕ افزودن حساب کلادفلر");
-      expect(kb.keyboard[0][1].text).toBe("☁️ حساب‌های من");
+      expect(kb.keyboard[0][0].text).toBe("➕ افزودن حساب Cloudflare");
     });
 
-    it("second row has help button", () => {
+    it("second row has accounts and workers button", () => {
       const kb = mainMenuKb();
-      expect(kb.keyboard[1][0].text).toBe("❓ راهنما");
+      expect(kb.keyboard[1][0].text).toBe("☁️ حساب‌ها و ورکرها");
+    });
+
+    it("third row has help button", () => {
+      const kb = mainMenuKb();
+      expect(kb.keyboard[2][0].text).toBe("❓ راهنما");
     });
   });
 
@@ -51,7 +55,7 @@ describe("keyboards.js", () => {
     it("appends 'add new' and 'back' buttons", () => {
       const kb = accountsListKb([]);
       const texts = kb.keyboard.flat().map((b) => b.text);
-      expect(texts).toContain("➕ افزودن حساب جدید");
+      expect(texts).toContain("➕ افزودن حساب جدید (یک ورکر بیشتر)");
       expect(texts).toContain("🔙 بازگشت به منوی اصلی");
     });
   });
@@ -60,8 +64,8 @@ describe("keyboards.js", () => {
     it("shows deploy button when hasWorker is false", () => {
       const kb = accountDetailKb(false);
       const texts = kb.keyboard.flat().map((b) => b.text);
-      expect(texts).toContain("🚀 دیپلوی ورکر جدید");
-      expect(texts).toContain("📋 ورکرهای این حساب");
+      expect(texts).toContain("🚀 ساخت ورکر این حساب");
+      expect(texts).toContain("📋 ورکر این حساب");
       expect(texts).toContain("🗑 حذف این حساب");
       expect(texts).toContain("🔙 بازگشت به لیست حساب‌ها");
     });
@@ -69,8 +73,8 @@ describe("keyboards.js", () => {
     it("hides deploy button when hasWorker is true", () => {
       const kb = accountDetailKb(true);
       const texts = kb.keyboard.flat().map((b) => b.text);
-      expect(texts).not.toContain("🚀 دیپلوی ورکر جدید");
-      expect(texts).toContain("📋 ورکرهای این حساب");
+      expect(texts).not.toContain("🚀 ساخت ورکر این حساب");
+      expect(texts).toContain("📋 ورکر این حساب");
     });
   });
 
@@ -100,14 +104,14 @@ describe("keyboards.js", () => {
       ];
       const kb = deploymentsListKb(deployments);
       const texts = kb.keyboard.flat().map((b) => b.text);
-      expect(texts).not.toContain("🚀 دیپلوی ورکر جدید");
+      expect(texts).not.toContain("🚀 ساخت ورکر این حساب");
       expect(texts).toContain("🔙 بازگشت به حساب");
     });
 
     it("shows deploy button when no deployments", () => {
       const kb = deploymentsListKb([]);
       const texts = kb.keyboard.flat().map((b) => b.text);
-      expect(texts).toContain("🚀 دیپلوی ورکر جدید");
+      expect(texts).toContain("🚀 ساخت ورکر این حساب");
       expect(texts).toContain("🔙 بازگشت به حساب");
     });
   });
@@ -137,7 +141,7 @@ describe("keyboards.js", () => {
       const buttons = kb.inline_keyboard.flat();
       const texts = buttons.map((b) => b.text);
       expect(texts).toContain("📊 وضعیت و مصرف");
-      expect(texts).toContain("🔐 اطلاعات دسترسی");
+      expect(texts).toContain("🔐 لینک‌ها و رمزها");
       expect(texts).toContain("📜 گزارش‌ها");
       expect(texts).toContain("🔁 بازنشانی ترافیک");
       expect(texts).toContain("🔄 بروزرسانی ورکر");

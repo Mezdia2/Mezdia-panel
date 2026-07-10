@@ -4,7 +4,8 @@ import { replyKb, replyBtn, removeKb, kb, btn, urlBtn } from "../lib/telegram.js
 
 export const mainMenuKb = () =>
   replyKb([
-    [replyBtn("➕ افزودن حساب کلادفلر"), replyBtn("☁️ حساب‌های من")],
+    [replyBtn("➕ افزودن حساب Cloudflare")],
+    [replyBtn("☁️ حساب‌ها و ورکرها")],
     [replyBtn("❓ راهنما")],
   ]);
 
@@ -16,14 +17,14 @@ export const cancelKb = () =>
 export const accountsListKb = (accounts) =>
   replyKb([
     ...accounts.map((a) => [replyBtn(`☁️ ${a.cfAccountName}`)]),
-    [replyBtn("➕ افزودن حساب جدید")],
+    [replyBtn("➕ افزودن حساب جدید (یک ورکر بیشتر)")],
     [replyBtn("🔙 بازگشت به منوی اصلی")],
   ]);
 
 export const accountDetailKb = (hasWorker) =>
   replyKb([
-    ...(hasWorker ? [] : [[replyBtn("🚀 دیپلوی ورکر جدید")]]),
-    [replyBtn("📋 ورکرهای این حساب")],
+    ...(hasWorker ? [] : [[replyBtn("🚀 ساخت ورکر این حساب")]]),
+    [replyBtn("📋 ورکر این حساب")],
     [replyBtn("🗑 حذف این حساب")],
     [replyBtn("🔙 بازگشت به لیست حساب‌ها")],
   ]);
@@ -37,14 +38,14 @@ export const confirmRemoveAccountKb = () =>
 export const deploymentsListKb = (deployments) =>
   replyKb([
     ...deployments.map((d) => [replyBtn(`⚙️ ${d.label || d.scriptName}`)]),
-    ...(deployments.length === 0 ? [[replyBtn("🚀 دیپلوی ورکر جدید")]] : []),
+    ...(deployments.length === 0 ? [[replyBtn("🚀 ساخت ورکر این حساب")]] : []),
     [replyBtn("🔙 بازگشت به حساب")],
   ]);
 
 export const deploymentDetailKb = (dep) =>
   kb([
-    [btn("📊 وضعیت و مصرف", `stats:${dep.id}`), btn("🔐 اطلاعات دسترسی", `creds:${dep.id}`)],
-    [btn("📜 گزارش‌ها", `logs:${dep.id}`)],
+    [btn("🔐 لینک‌ها و رمزها", `creds:${dep.id}`)],
+    [btn("📊 وضعیت و مصرف", `stats:${dep.id}`), btn("📜 گزارش‌ها", `logs:${dep.id}`)],
     [btn(dep.status === "paused" ? "▶️ فعال‌سازی" : "⏸ توقف", dep.status === "paused" ? `resume:${dep.id}` : `pause:${dep.id}`)],
     [btn("🔁 بازنشانی ترافیک", `reset:${dep.id}`)],
     [btn("🔄 بروزرسانی ورکر", `update:${dep.id}`)],

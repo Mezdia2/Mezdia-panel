@@ -35,16 +35,21 @@ import { parseChangelog } from "../ui/text.js";
 
 const BUTTON_ACTIONS = {
   "➕ افزودن حساب کلادفلر": "addAccount",
+  "➕ افزودن حساب Cloudflare": "addAccount",
   "☁️ حساب‌های من": "listAccounts",
+  "☁️ حساب‌ها و ورکرها": "listAccounts",
   "❓ راهنما": "help",
   "🔙 بازگشت به منوی اصلی": "mainMenu",
   "✖️ لغو": "cancel",
   "🚀 دیپلوی ورکر جدید": "deploy",
+  "🚀 ساخت ورکر این حساب": "deploy",
   "📋 ورکرهای این حساب": "listDeployments",
+  "📋 ورکر این حساب": "listDeployments",
   "🗑 حذف این حساب": "confirmRemoveAccount",
   "🔙 بازگشت به لیست حساب‌ها": "listAccounts",
   "📊 وضعیت و مصرف": "stats",
   "🔐 اطلاعات دسترسی": "creds",
+  "🔐 لینک‌ها و رمزها": "creds",
   "📜 گزارش‌ها": "logs",
   "⏸ توقف": "pause",
   "▶️ فعال‌سازی": "resume",
@@ -60,6 +65,7 @@ const BUTTON_ACTIONS = {
   "🔄 بروزرسانی انتخاب شده": "updateSelected",
   "✖️ رد کردن": "skipUpdate",
   "➕ افزودن حساب جدید": "addAccount",
+  "➕ افزودن حساب جدید (یک ورکر بیشتر)": "addAccount",
 };
 
 // ---- Version check for auto-update notifications ----
@@ -186,7 +192,7 @@ export async function routeMessage(env, message, ctx) {
 
   // No session or unrecognized input
   if (!session) {
-    await sendMessage(env, chatId, "برای شروع /start را بفرستید.", { keyboard: mainMenuKb() });
+    await sendMessage(env, chatId, "برای شروع /start را بفرستید یا از دکمه‌های منو استفاده کنید.", { keyboard: mainMenuKb() });
   } else {
     await clearSession(env, tgId);
     await sendMessage(env, chatId, T.genericError, { keyboard: mainMenuKb() });

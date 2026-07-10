@@ -76,7 +76,7 @@ describe("deployments.js", () => {
       await startDeploy(env, 12345, 12345, 1, "nonexistent");
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("یافت نشد");
+      expect(text).toContain("موردی پیدا نشد");
     });
 
     it("rejects deploy when account already has a worker", async () => {
@@ -91,7 +91,7 @@ describe("deployments.js", () => {
       await startDeploy(env, 12345, 12345, 1, "a1");
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("محدودیت یک ورکر");
+      expect(text).toContain("ظرفیت این حساب پر است");
     });
   });
 
@@ -155,7 +155,7 @@ describe("deployments.js", () => {
       });
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("یافت نشد");
+      expect(text).toContain("موردی پیدا نشد");
     });
   });
 
@@ -179,7 +179,7 @@ describe("deployments.js", () => {
       await listDeploymentsScreen(env, 12345, 12345, 1, "a1");
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("ورکرهای");
+      expect(text).toContain("ورکر حساب");
     });
   });
 
@@ -201,7 +201,7 @@ describe("deployments.js", () => {
       await showDeploymentDetail(env, 12345, 12345, 1, "nonexistent");
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("یافت نشد");
+      expect(text).toContain("موردی پیدا نشد");
     });
   });
 

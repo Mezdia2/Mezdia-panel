@@ -36,7 +36,7 @@ describe("start.js", () => {
       await showMainMenu(env, 12345, null, false);
       const { sendMessage } = await import("../../src/lib/telegram.js");
       const text = sendMessage.mock.calls[0][2];
-      expect(text).toContain("یکی از گزینه‌های زیر");
+      expect(text).toContain("ساده‌ترین مسیر");
     });
 
     it("edits message when messageId is provided", async () => {

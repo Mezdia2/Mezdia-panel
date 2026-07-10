@@ -28,7 +28,7 @@ describe("text.js", () => {
   describe("T (text constants)", () => {
     it("has welcome message", () => {
       expect(T.welcome).toContain("Mezdia");
-      expect(T.welcome).toContain("دیپلوی خودکار");
+      expect(T.welcome).toContain("راه‌اندازی");
     });
 
     it("has help text with commands", () => {
@@ -141,7 +141,8 @@ describe("text.js", () => {
     it("confirmRemoveAccount shows warning with deployments", () => {
       const acc = { cfAccountName: "My Account" };
       const text = T.confirmRemoveAccount(acc, 3);
-      expect(text).toContain("3 ورکر");
+      expect(text).toContain("ورکر متصل");
+      expect(text).toContain("قابل بازگشت نیست");
     });
 
     it("confirmRemoveAccount shows no-deployment message", () => {

@@ -11,6 +11,7 @@ import {
   getAccounts,
   addAccount,
   getAccount,
+  deploymentsForAccount,
   removeAccount,
   setSession,
   clearSession,
@@ -21,7 +22,7 @@ import { shortId } from "../lib/ids.js";
 export async function startAddAccount(env, chatId, tgId, messageId) {
   await setSession(env, tgId, "awaiting_cf_token", {});
   // Send the URL inline separately, then the cancel keyboard
-  await sendMessage(env, chatId, "🔗 برای ساخت توکن، از دکمه زیر استفاده کنید:", {
+  await sendMessage(env, chatId, "🔗 برای ساخت API Token، از دکمه زیر استفاده کنید:", {
     keyboard: {
       inline_keyboard: [[{ text: "🔗 صفحه API Tokens کلادفلر", url: "https://dash.cloudflare.com/profile/api-tokens" }]],
     },
@@ -51,7 +52,7 @@ export async function handleTokenMessage(env, chatId, tgId, token) {
     const existing = accounts.find((a) => a.cfAccountId === candidates[0].id);
     if (existing) {
       await clearSession(env, tgId);
-      await sendMessage(env, chatId, `این حساب قبلاً با نام «${existing.cfAccountName}» اضافه شده است.`, {
+      await sendMessage(env, chatId, `این حساب قبلاً با نام «${existing.cfAccountName}» اضافه شده است. هر حساب فقط ظرفیت یک ورکر دارد.`, {
         keyboard: mainMenuKb(),
       });
       return;
@@ -119,7 +120,12 @@ async function finalizeAccount(env, chatId, tgId, token, cfAccount) {
 
 export async function listAccountsScreen(env, chatId, tgId, messageId) {
   const accounts = await getAccounts(env, tgId);
-  const text = accounts.length ? T.accountsListHeader : T.accountsListEmpty;
+  let workerCount = 0;
+  for (const account of accounts) {
+    const deps = await deploymentsForAccount(env, tgId, account.id);
+    workerCount += deps.length;
+  }
+  const text = accounts.length ? T.accountsListHeader(accounts.length, workerCount) : T.accountsListEmpty;
   await setSession(env, tgId, "kb_accounts_list", {});
   await sendMessage(env, chatId, text, { keyboard: accountsListKb(accounts) });
 }
@@ -131,7 +137,6 @@ export async function showAccountDetail(env, chatId, tgId, messageId, accountId)
     return;
   }
   // Count deployments for this account
-  const { deploymentsForAccount } = await import("../lib/kv.js");
   const deps = await deploymentsForAccount(env, tgId, accountId);
   const text = T.accountDetail(account, deps.length);
   const hasWorker = deps.length > 0;
@@ -145,7 +150,6 @@ export async function confirmRemoveAccountScreen(env, chatId, tgId, messageId, a
     await sendMessage(env, chatId, T.notFound, { keyboard: mainMenuKb() });
     return;
   }
-  const { deploymentsForAccount } = await import("../lib/kv.js");
   const deps = await deploymentsForAccount(env, tgId, accountId);
   await setSession(env, tgId, "kb_confirm_remove_account", { accountId });
   await sendMessage(env, chatId, T.confirmRemoveAccount(account, deps.length), {
@@ -160,7 +164,7 @@ export async function removeAccountConfirmed(env, chatId, tgId, messageId, accou
     return;
   }
   // Remove all deployments for this account
-  const { deploymentsForAccount, removeDeployment } = await import("../lib/kv.js");
+  const { removeDeployment } = await import("../lib/kv.js");
   const { destroyPanel } = await import("../lib/provision.js");
   const deps = await deploymentsForAccount(env, tgId, accountId);
   for (const dep of deps) {
