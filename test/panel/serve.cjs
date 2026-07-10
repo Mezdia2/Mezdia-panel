@@ -7,7 +7,7 @@ const WORKER_PATH = path.join(__dirname, "../../src/panel/worker.js");
 // Extract getDashboardUI from worker.js
 const src = fs.readFileSync(WORKER_PATH, "utf-8");
 const lines = src.split("\n");
-const dashboardFn = lines.slice(1871, 2382).join("\n");
+const dashboardFn = lines.slice(1871, 2661).join("\n");
 
 // Set up globals
 const BRAND_NAME = "Mezdia Panel";

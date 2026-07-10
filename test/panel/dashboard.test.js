@@ -12,16 +12,16 @@ beforeAll(() => {
   const src = readFileSync(WORKER_PATH, "utf-8");
   const lines = src.split("\n");
 
-  // Extract getDashboardUI (lines 1872-2466)
-  const dashboardFn = lines.slice(1871, 2466).join("\n");
+  // Extract getDashboardUI (lines 1872-2661)
+  const dashboardFn = lines.slice(1871, 2661).join("\n");
 
-  // Extract serveSubscriptionInfoPage (lines 2489-2495)
-  const subPageFn = lines.slice(2488, 2495).join("\n");
+  // Extract serveSubscriptionInfoPage (lines 2684-2690)
+  const subPageFn = lines.slice(2683, 2690).join("\n");
 
   // Build mock context with all globals the functions need
   const mockContext = {
     BRAND_NAME: "Mezdia Panel",
-    CURRENT_VERSION: "3.2.5",
+    CURRENT_VERSION: "3.3.0",
     accountUsageSnapshot: () => ({
       upload: 0,
       download: 0,
@@ -63,9 +63,9 @@ describe("getDashboardUI", () => {
     expect(html).toContain('dir="rtl"');
   });
 
-  it("includes dark theme by default", () => {
+  it("includes light theme by default", () => {
     const html = getDashboardUI(true);
-    expect(html).toContain('data-theme="dark"');
+    expect(html).toContain('data-theme="light"');
   });
 
   it("includes the brand name in the title", () => {
@@ -82,11 +82,13 @@ describe("getDashboardUI", () => {
 
   it("contains the Horizon UI Chakra color palette", () => {
     const html = getDashboardUI(true);
-    // New Horizon UI Chakra colors
-    expect(html).toContain("#422AFB");
-    expect(html).toContain("#0b1437");
-    expect(html).toContain("#111c44");
-    // No more old blue/pink colors
+    // Blue palette
+    expect(html).toContain("#3965FF");
+    expect(html).toContain("#0a0a0a");
+    expect(html).toContain("#171717");
+    // No more old purple/pink colors
+    expect(html).not.toContain("#422AFB");
+    expect(html).not.toContain("#7551FF");
     expect(html).not.toContain("#8b5cf6");
     expect(html).not.toContain("#ec4899");
   });
@@ -126,7 +128,7 @@ describe("getDashboardUI", () => {
 
   it("includes the version pill", () => {
     const html = getDashboardUI(true);
-    expect(html).toContain("v3.2.5");
+    expect(html).toContain("v3.3.0");
   });
 
   it("has the subscription section with QR code", () => {
@@ -182,8 +184,8 @@ describe("getDashboardUI", () => {
   it("includes theme toggle functionality", () => {
     const html = getDashboardUI(true);
     expect(html).toContain("toggleTheme");
-    expect(html).toContain('id="theme-icon-dark"');
-    expect(html).toContain('id="theme-icon-light"');
+    expect(html).toContain('id="fp-icon-dark"');
+    expect(html).toContain('id="fp-icon-light"');
   });
 
   it("has responsive styles", () => {
@@ -382,10 +384,10 @@ describe("serveSubscriptionInfoPage", () => {
       mockSysConfig
     );
     const html = await res.text();
-    // New Horizon UI Chakra colors
-    expect(html).toContain("#0b1437");
-    expect(html).toContain("#422AFB");
-    expect(html).toContain("#7551FF");
-    expect(html).toContain("#111c44");
+    // Horizon UI Chakra light theme colors (blue palette)
+    expect(html).toContain("#F4F7FE");
+    expect(html).toContain("#3965FF");
+    expect(html).toContain("#4481EB");
+    expect(html).toContain("#ffffff");
   });
 });
