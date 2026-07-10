@@ -1878,183 +1878,219 @@ function getDashboardUI(hasDB) {
   <title>${BRAND_NAME}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Vazirmatn:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --font-display: 'Vazirmatn', system-ui, -apple-system, sans-serif;
-      --font-body: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+      --font-display: 'DM Sans', 'Vazirmatn', system-ui, -apple-system, sans-serif;
+      --font-body: 'DM Sans', 'Vazirmatn', system-ui, -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 16px;
-      --radius-xl: 22px;
-      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      --accent-grad: linear-gradient(135deg, #2563eb, #3b82f6);
-      --accent-color: #3b82f6;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 24px;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --accent-grad: linear-gradient(135deg, #422AFB, #7551FF);
+      --accent-color: #422AFB;
+      --brand: #422AFB;
+      --brand-light: #7551FF;
+      --brand-dark: #3311DB;
+      --brand-surface: #E9E3FF;
+      --secondary-gray-100: #E0E5F2;
+      --secondary-gray-200: #E1E9F8;
+      --secondary-gray-300: #F4F7FE;
+      --secondary-gray-400: #E9EDF7;
+      --secondary-gray-500: #8F9BBA;
+      --secondary-gray-600: #A3AED0;
+      --secondary-gray-700: #707EAE;
+      --secondary-gray-900: #1B2559;
+      --green: #01B574;
+      --red: #EE5D50;
+      --orange: #FFB547;
+      --blue: #3965FF;
     }
     [data-theme="dark"] {
       color-scheme: dark;
-      --bg: #0b1120;
-      --surface: rgba(15, 23, 42, 0.6);
-      --surface-solid: #0f172a;
-      --border: rgba(148, 163, 184, 0.08);
-      --border-strong: rgba(148, 163, 184, 0.15);
-      --text: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #475569;
-      --invert-bg: #f8fafc;
-      --invert-text: #0f172a;
-      --ring: rgba(59, 130, 246, 0.4);
-      --chart-upload: #3b82f6;
-      --chart-download: #06b6d4;
-      --chart-upload-area: rgba(59, 130, 246, 0.12);
-      --chart-download-area: rgba(6, 182, 212, 0.12);
-      --chart-grid: rgba(148, 163, 184, 0.06);
-      --meter-bg: rgba(148, 163, 184, 0.06);
-      --input-bg: rgba(15, 23, 42, 0.5);
-      --code-bg: rgba(15, 23, 42, 0.6);
-      --destructive: #ef4444;
-      --success: #10b981;
-      --warn: #f59e0b;
+      --bg: #0b1437;
+      --surface: #111c44;
+      --surface-solid: #111c44;
+      --surface-elevated: #1B2559;
+      --border: rgba(163, 174, 208, 0.12);
+      --border-strong: rgba(163, 174, 208, 0.2);
+      --text: #ffffff;
+      --text-secondary: #A3AED0;
+      --text-muted: #707EAE;
+      --invert-bg: #F4F7FE;
+      --invert-text: #1B2559;
+      --ring: rgba(117, 81, 255, 0.4);
+      --chart-upload: #7551FF;
+      --chart-download: #6AD2FF;
+      --chart-upload-area: rgba(117, 81, 255, 0.2);
+      --chart-download-area: rgba(106, 210, 255, 0.2);
+      --chart-grid: rgba(163, 174, 208, 0.1);
+      --meter-bg: rgba(163, 174, 208, 0.08);
+      --input-bg: #111c44;
+      --code-bg: #1B2559;
+      --destructive: #EE5D50;
+      --success: #01B574;
+      --warn: #FFB547;
+      --sidebar-bg: #111c44;
+      --card-shadow: 0 3.5px 5.5px rgba(0,0,0,0.07);
+      --navbar-bg: rgba(11, 20, 55, 0.5);
     }
     [data-theme="light"] {
       color-scheme: light;
-      --bg: #f8fafc;
-      --surface: rgba(255, 255, 255, 0.8);
+      --bg: #F4F7FE;
+      --surface: #ffffff;
       --surface-solid: #ffffff;
-      --border: rgba(15, 23, 42, 0.08);
-      --border-strong: rgba(15, 23, 42, 0.14);
-      --text: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #94a3b8;
-      --invert-bg: #0f172a;
-      --invert-text: #f8fafc;
-      --ring: rgba(59, 130, 246, 0.25);
-      --chart-upload: #2563eb;
-      --chart-download: #0891b2;
-      --chart-upload-area: rgba(37, 99, 235, 0.1);
-      --chart-download-area: rgba(8, 145, 178, 0.1);
-      --chart-grid: rgba(15, 23, 42, 0.06);
-      --meter-bg: rgba(15, 23, 42, 0.05);
-      --input-bg: rgba(255, 255, 255, 0.9);
-      --code-bg: #f1f5f9;
-      --destructive: #dc2626;
-      --success: #059669;
-      --warn: #d97706;
+      --surface-elevated: #ffffff;
+      --border: rgba(163, 174, 208, 0.3);
+      --border-strong: rgba(163, 174, 208, 0.5);
+      --text: #1B2559;
+      --text-secondary: #707EAE;
+      --text-muted: #A3AED0;
+      --invert-bg: #111c44;
+      --invert-text: #ffffff;
+      --ring: rgba(66, 42, 251, 0.25);
+      --chart-upload: #422AFB;
+      --chart-download: #39B8FF;
+      --chart-upload-area: rgba(66, 42, 251, 0.15);
+      --chart-download-area: rgba(57, 184, 255, 0.15);
+      --chart-grid: rgba(163, 174, 208, 0.2);
+      --meter-bg: rgba(163, 174, 208, 0.15);
+      --input-bg: #F4F7FE;
+      --code-bg: #F4F7FE;
+      --destructive: #E31A1A;
+      --success: #01B574;
+      --warn: #FFB547;
+      --sidebar-bg: #ffffff;
+      --card-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
+      --navbar-bg: rgba(244, 247, 254, 0.8);
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background 0.3s ease,color 0.3s ease;overflow-x:hidden}
 
     ::-webkit-scrollbar{width:6px;height:6px}
     ::-webkit-scrollbar-track{background:transparent}
-    ::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px}
+    ::-webkit-scrollbar-thumb{background:var(--secondary-gray-600);border-radius:8px}
 
     :focus-visible{outline:none;box-shadow:0 0 0 2px var(--ring)}
 
-    /* Header */
-    header{position:sticky;top:0;z-index:50;padding:0 32px;height:56px;display:flex;align-items:center;gap:14px;backdrop-filter:blur(16px) saturate(1.2);background:var(--surface);border-bottom:1px solid var(--border)}
-    .logo{width:34px;height:34px;border-radius:var(--radius-sm);background:var(--accent-grad);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
-    .brand{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.01em}
+    /* Header / Navbar */
+    header{position:fixed;top:16px;left:16px;right:16px;z-index:50;height:68px;display:flex;align-items:center;gap:14px;padding:0 20px;border-radius:16px;border:1.5px solid var(--border);background:var(--navbar-bg);backdrop-filter:blur(20px);transition:var(--transition)}
+    .logo{width:40px;height:40px;border-radius:var(--radius-md);background:var(--accent-grad);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:800;font-size:18px;color:#fff;flex-shrink:0;box-shadow:0 4px 14px 0 rgba(66, 42, 251, 0.39)}
+    .brand{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--text);letter-spacing:-0.01em}
     .header-spacer{flex:1}
-    .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;font-family:var(--font-mono);border:1px solid var(--border);background:transparent;color:var(--text-muted)}
-    .pill.ok{color:var(--success);border-color:rgba(16,185,129,0.25);background:rgba(16,185,129,0.08)}
-    .pill.bad{color:var(--destructive);border-color:rgba(239,68,68,0.25);background:rgba(239,68,68,0.08)}
-    .pill::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+    .pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;font-family:var(--font-mono);border:1px solid var(--border);background:transparent;color:var(--text-muted)}
+    .pill.ok{color:var(--success);border-color:rgba(1, 181, 116, 0.25);background:rgba(1, 181, 116, 0.08)}
+    .pill.bad{color:var(--destructive);border-color:rgba(238, 93, 80, 0.25);background:rgba(238, 93, 80, 0.08)}
+    .pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
     .pill.ok::before{animation:pulse 2s infinite}
-    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,0.35)}70%{box-shadow:0 0 0 5px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(1, 181, 116, 0.35)}70%{box-shadow:0 0 0 5px rgba(1, 181, 116, 0)}100%{box-shadow:0 0 0 0 rgba(1, 181, 116, 0)}}
 
-    .icon-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
-    .icon-btn:hover{color:var(--text);border-color:var(--border-strong);background:var(--surface)}
+    .icon-btn{width:38px;height:38px;border-radius:var(--radius-md);border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+    .icon-btn:hover{color:var(--brand);border-color:var(--brand);background:var(--brand-surface)}
 
     /* Layout */
-    main{display:grid;grid-template-columns:220px 1fr;gap:24px;padding:24px 32px;max-width:1400px;margin:0 auto}
-    nav{position:sticky;top:80px;height:fit-content;background:var(--surface);backdrop-filter:blur(16px) saturate(1.2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:10px;display:flex;flex-direction:column;gap:2px}
-    .nav-label{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);padding:6px 12px 4px;margin:4px 0 2px}
-    nav button{width:100%;display:flex;align-items:center;gap:10px;border:none;background:transparent;color:var(--text-secondary);padding:10px 12px;border-radius:var(--radius-md);cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;transition:var(--transition);text-align:right}
-    nav button svg{width:17px;height:17px;stroke-width:1.8;flex-shrink:0}
+    main{display:grid;grid-template-columns:290px 1fr;gap:24px;padding:110px 32px 32px;max-width:1600px;margin:0 auto}
+    nav{position:fixed;top:100px;left:32px;width:260px;height:calc(100vh - 132px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--card-shadow)}
+    .nav-label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 14px 4px;margin:8px 0 4px}
+    nav button{width:100%;display:flex;align-items:center;gap:12px;border:none;background:transparent;color:var(--text-secondary);padding:12px 14px;border-radius:var(--radius-md);cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:500;transition:var(--transition);text-align:right}
+    nav button svg{width:18px;height:18px;stroke-width:1.8;flex-shrink:0}
     nav button:hover{background:var(--border);color:var(--text)}
-    nav button.active{background:var(--accent-color);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,0.25)}
-    .nav-footer{margin-top:auto;padding:10px;font-family:var(--font-mono);font-size:9px;color:var(--text-muted);text-align:center;border-top:1px solid var(--border);margin-top:10px;letter-spacing:0.05em}
+    nav button.active{background:var(--accent-grad);color:#fff;box-shadow:0 3.5px 5.5px rgba(66, 42, 251, 0.45)}
+    .nav-footer{margin-top:auto;padding:12px;font-family:var(--font-mono);font-size:9px;color:var(--text-muted);text-align:center;border-top:1px solid var(--border);letter-spacing:0.08em}
 
     .content{min-width:0}
-    section{display:none;animation:fadein 0.3s ease}
+    section{display:none;animation:fadein 0.35s ease}
     section.active{display:block}
-    @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-    .page-head{margin-bottom:24px}
-    .page-title{font-family:var(--font-display);font-size:24px;font-weight:700;margin-bottom:2px;color:var(--text)}
-    .page-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em}
+    .page-head{margin-bottom:28px}
+    .page-title{font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:4px;color:var(--text)}
+    .page-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em}
 
     /* Components */
-    .card{background:var(--surface);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:var(--transition);margin-bottom:16px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:var(--transition);margin-bottom:20px;box-shadow:var(--card-shadow)}
     .card:hover{border-color:var(--border-strong)}
-    .card-title{font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-    .card-title::before{content:'';width:3px;height:14px;background:var(--accent-color);border-radius:2px;flex-shrink:0}
+    .card-title{font-family:var(--font-mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+    .card-title::before{content:'';width:4px;height:16px;background:var(--accent-grad);border-radius:3px;flex-shrink:0}
 
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
     .span-12{grid-column:span 12}
     .span-8{grid-column:span 8}
     .span-6{grid-column:span 6}
     .span-4{grid-column:span 4}
 
-    label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;margin-top:14px}
+    label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;margin-top:16px}
     label:first-child{margin-top:0}
-    input,select,textarea{width:100%;background:var(--input-bg);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;font-family:var(--font-body);font-size:13px;transition:var(--transition)}
-    input:focus,select:focus,textarea:focus{border-color:var(--accent-color);box-shadow:0 0 0 2px var(--ring);outline:none}
-    textarea{min-height:80px;resize:vertical}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    input,select,textarea{width:100%;background:var(--input-bg);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;font-family:var(--font-body);font-size:14px;transition:var(--transition)}
+    input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 2px var(--ring);outline:none}
+    textarea{min-height:90px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--radius-md);padding:10px 20px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:var(--transition);text-decoration:none}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:var(--radius-md);padding:12px 24px;font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition);text-decoration:none}
     .btn:active{transform:scale(0.98)}
-    .btn-primary{background:var(--accent-grad);color:#fff;box-shadow:0 1px 3px rgba(59,130,246,0.3)}
-    .btn-primary:hover{box-shadow:0 4px 12px rgba(59,130,246,0.35);transform:translateY(-1px)}
-    .btn-secondary{background:transparent;color:var(--text-secondary);border:1px solid var(--border-strong)}
-    .btn-secondary:hover{border-color:var(--accent-color);color:var(--accent-color)}
-    .btn-danger{background:transparent;color:var(--destructive);border:1px solid rgba(239,68,68,0.25)}
+    .btn-primary{background:var(--accent-grad);color:#fff;box-shadow:0 3.5px 5.5px rgba(66, 42, 251, 0.39)}
+    .btn-primary:hover{box-shadow:0 6px 16px rgba(66, 42, 251, 0.45);transform:translateY(-1px)}
+    .btn-secondary{background:var(--secondary-gray-300);color:var(--text);border:1px solid var(--border)}
+    .btn-secondary:hover{border-color:var(--brand);color:var(--brand)}
+    .btn-danger{background:transparent;color:var(--destructive);border:1px solid rgba(238, 93, 80, 0.3)}
     .btn-danger:hover{background:var(--destructive);color:#fff}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
 
     code,pre{background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);direction:ltr;text-align:left;color:var(--text-secondary);font-size:12px}
-    code{padding:3px 7px;display:inline-block}
-    pre{padding:14px;overflow:auto;white-space:pre-wrap;line-height:1.6}
+    code{padding:4px 8px;display:inline-block}
+    pre{padding:16px;overflow:auto;white-space:pre-wrap;line-height:1.6}
 
     table{width:100%;border-collapse:collapse}
-    td,th{padding:12px 14px;text-align:right;font-size:13px;border-bottom:1px solid var(--border)}
-    th{font-weight:600;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+    td,th{padding:14px 16px;text-align:right;font-size:13px;border-bottom:1px solid var(--border)}
+    th{font-weight:700;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em}
     tr:last-child td{border-bottom:none}
 
     /* Login */
     #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100;padding:16px}
-    .login-card{width:min(380px,calc(100vw - 32px));background:var(--surface);backdrop-filter:blur(20px) saturate(1.2);border:1px solid var(--border-strong);border-radius:var(--radius-xl);padding:36px 28px;text-align:center;box-shadow:0 20px 40px -12px rgba(0,0,0,0.3)}
-    .login-logo{width:56px;height:56px;margin:0 auto 18px;border-radius:var(--radius-md);background:var(--accent-grad);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:800;font-size:24px;color:#fff}
-    .login-title{font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:6px}
-    .login-desc{font-size:13px;color:var(--text-muted);margin-bottom:22px;line-height:1.7}
-    .login-error{display:none;margin-top:14px;font-size:12px;color:var(--destructive);padding:9px;background:rgba(239,68,68,0.08);border-radius:var(--radius-sm)}
+    .login-card{width:min(420px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-xl);padding:40px 32px;text-align:center;box-shadow:0 20px 50px -12px rgba(0,0,0,0.4)}
+    .login-logo{width:64px;height:64px;margin:0 auto 20px;border-radius:var(--radius-md);background:var(--accent-grad);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:800;font-size:28px;color:#fff;box-shadow:0 8px 24px rgba(66, 42, 251, 0.39)}
+    .login-title{font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:8px}
+    .login-desc{font-size:13px;color:var(--text-muted);margin-bottom:24px;line-height:1.7}
+    .login-error{display:none;margin-top:16px;font-size:12px;color:var(--destructive);padding:12px;background:rgba(238, 93, 80, 0.08);border-radius:var(--radius-md)}
     .login-error.show{display:block}
 
     /* Overview Specifics */
-    .qr-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-    .scan-frame{position:relative;width:130px;height:130px;flex-shrink:0;padding:6px;background:var(--code-bg);border-radius:var(--radius-md);border:1px solid var(--border)}
-    #qr-img{width:100%;height:100%;border-radius:6px;display:block}
-    .meter-group{display:flex;flex-direction:column;gap:16px;margin-top:6px}
-    .meter-track{height:6px;background:var(--meter-bg);border-radius:8px;overflow:hidden}
+    .qr-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .scan-frame{position:relative;width:140px;height:140px;flex-shrink:0;padding:8px;background:var(--code-bg);border-radius:var(--radius-md);border:1px solid var(--border)}
+    #qr-img{width:100%;height:100%;border-radius:8px;display:block}
+    .meter-group{display:flex;flex-direction:column;gap:18px;margin-top:8px}
+    .meter-track{height:8px;background:var(--meter-bg);border-radius:8px;overflow:hidden}
     .meter-fill{height:100%;border-radius:8px;transition:width 0.8s cubic-bezier(0.22,1,0.36,1);width:0%}
-    .meter-fill.upload{background:var(--chart-upload)}
-    .meter-fill.download{background:var(--chart-download)}
-    .chart-container{display:flex;flex-direction:column;align-items:center;gap:14px}
-    .chart-legend{display:flex;gap:18px;font-size:12px;color:var(--text-secondary)}
-    .info-grid{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;font-size:13px}
+    .meter-fill.upload{background:var(--accent-grad)}
+    .meter-fill.download{background:linear-gradient(90deg, #39B8FF, #6AD2FF)}
+    .chart-container{display:flex;flex-direction:column;align-items:center;gap:16px}
+    .chart-legend{display:flex;gap:20px;font-size:13px;color:var(--text-secondary)}
+    .chart-legend div{display:flex;align-items:center;gap:8px}
+    .chart-legend div div{width:12px;height:12px;border-radius:4px}
+    .info-grid{display:grid;grid-template-columns:auto 1fr;gap:12px 16px;font-size:14px}
     .info-grid .muted{font-size:12px;color:var(--text-muted)}
     .info-grid span:nth-child(2n){font-family:var(--font-mono);font-weight:600}
 
-    @media(max-width:900px){
-      main{grid-template-columns:1fr;padding:16px}
-      nav{position:relative;top:0;flex-direction:row;overflow-x:auto;border-radius:var(--radius-md);padding:6px}
+    /* Mini Statistics */
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;display:flex;align-items:center;gap:16px;box-shadow:var(--card-shadow);transition:var(--transition)}
+    .stat-card:hover{border-color:var(--border-strong)}
+    .stat-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .stat-icon svg{width:24px;height:24px}
+    .stat-info{flex:1}
+    .stat-label{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:2px}
+    .stat-value{font-size:24px;font-weight:700;color:var(--text)}
+    .stat-growth{font-size:12px;font-weight:700;color:var(--green)}
+
+    @media(max-width:1024px){
+      main{grid-template-columns:1fr;padding:100px 16px 16px}
+      nav{position:relative;top:0;left:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;border-radius:var(--radius-md);padding:8px}
       .nav-label,.nav-footer{display:none}
-      nav button{white-space:nowrap;width:auto;font-size:12px;padding:8px 10px}
+      nav button{white-space:nowrap;width:auto;font-size:13px;padding:10px 12px}
       .grid,.row{grid-template-columns:1fr}
       .span-4,.span-6,.span-8,.span-12{grid-column:1/-1}
-      header{padding:0 16px}
+      header{left:8px;right:8px;top:8px}
       .brand{display:none}
     }
   </style>
@@ -2076,7 +2112,7 @@ function getDashboardUI(hasDB) {
   <header>
     <div class="logo">M</div>
     <span class="brand">${BRAND_NAME}</span>
-    <div class="header-pills">
+    <div class="header-pills" style="display:flex;gap:8px">
       <span class="pill">v${CURRENT_VERSION}</span>
       <span id="status-pill" class="pill">—</span>
     </div>
@@ -2111,7 +2147,7 @@ function getDashboardUI(hasDB) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
         گزارش‌ها
       </button>
-      <div class="nav-footer">MEZDIA • TUNNEL NODE</div>
+      <div class="nav-footer">MEZDIA PANEL • v${CURRENT_VERSION}</div>
     </nav>
 
     <div class="content">
@@ -2120,6 +2156,47 @@ function getDashboardUI(hasDB) {
           <div class="page-title">نمای کلی</div>
           <div class="page-sub">OVERVIEW & STATISTICS</div>
         </div>
+
+        <!-- Mini Statistics Row -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-bottom:24px">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--surface-elevated)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">ترافیک کل</div>
+              <div class="stat-value" id="stat-total-traffic">—</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--surface-elevated)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">ترافیک امروز</div>
+              <div class="stat-value" id="stat-daily-traffic">—</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--surface-elevated)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">درخواست‌ها</div>
+              <div class="stat-value" id="stat-requests">—</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--surface-elevated)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand-light)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">آپ‌تایم</div>
+              <div class="stat-value" id="stat-uptime">—</div>
+            </div>
+          </div>
+        </div>
+
         <div class="grid">
           <div class="card span-12">
             <div class="card-title">لینک اشتراک (Subscription)</div>
@@ -2136,8 +2213,8 @@ function getDashboardUI(hasDB) {
             <div class="chart-container">
               <canvas id="chart-total" width="160" height="160"></canvas>
               <div class="chart-legend">
-                <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--chart-upload)"></div>آپلود</div>
-                <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--chart-download)"></div>دانلود</div>
+                <div><div style="width:10px;height:10px;border-radius:3px;background:var(--brand)"></div>آپلود</div>
+                <div><div style="width:10px;height:10px;border-radius:3px;background:var(--blue)"></div>دانلود</div>
               </div>
             </div>
           </div>
@@ -2146,18 +2223,18 @@ function getDashboardUI(hasDB) {
             <div class="chart-container">
               <canvas id="chart-daily" width="160" height="160"></canvas>
               <div class="chart-legend">
-                <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--chart-upload)"></div>آپلود</div>
-                <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--chart-download)"></div>دانلود</div>
+                <div><div style="width:10px;height:10px;border-radius:3px;background:var(--brand)"></div>آپلود</div>
+                <div><div style="width:10px;height:10px;border-radius:3px;background:var(--blue)"></div>دانلود</div>
               </div>
             </div>
           </div>
           <div class="card span-4">
             <div class="card-title">جزئیات مصرف</div>
             <div class="meter-group">
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>آپلود کل</span><span id="meter-upload-total" style="font-family:var(--font-mono)">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-total-fill"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>دانلود کل</span><span id="meter-download-total" style="font-family:var(--font-mono)">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-total-fill"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>آپلود امروز</span><span id="meter-upload-daily" style="font-family:var(--font-mono)">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-daily-fill"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>دانلود امروز</span><span id="meter-download-daily" style="font-family:var(--font-mono)">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-daily-fill"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px"><span>آپلود کل</span><span id="meter-upload-total" style="font-family:var(--font-mono);font-weight:600">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-total-fill"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px"><span>دانلود کل</span><span id="meter-download-total" style="font-family:var(--font-mono);font-weight:600">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-total-fill"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px"><span>آپلود امروز</span><span id="meter-upload-daily" style="font-family:var(--font-mono);font-weight:600">—</span></div><div class="meter-track"><div class="meter-fill upload" id="meter-upload-daily-fill"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px"><span>دانلود امروز</span><span id="meter-download-daily" style="font-family:var(--font-mono);font-weight:600">—</span></div><div class="meter-track"><div class="meter-fill download" id="meter-download-daily-fill"></div></div></div>
             </div>
           </div>
           <div class="card span-6">
@@ -2359,6 +2436,13 @@ function getDashboardUI(hasDB) {
       document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(data.account.subscriptionUrl);
       document.getElementById('runtime-info').innerHTML='<div class="info-grid"><span class="muted">شناسه دستگاه</span><span>'+data.deviceId+'</span><span class="muted">نسخه</span><span>'+data.version+'</span><span class="muted">درخواست‌ها (کل)</span><span>'+(s.totalRequests||0).toLocaleString()+'</span><span class="muted">درخواست‌ها (امروز)</span><span>'+(s.dailyRequests||0).toLocaleString()+'</span></div>';
       document.getElementById('account-summary').innerHTML='<div class="info-grid"><span class="muted">نام</span><span>'+(data.account.name||'حساب پیش‌فرض')+'</span><span class="muted">وضعیت</span><span>'+(isPaused?'متوقف':'فعال')+'</span><span class="muted">محدودیت ترافیک</span><span>ندارد</span><span class="muted">انقضا</span><span>ندارد</span></div>';
+      // Update Mini Statistics
+      document.getElementById('stat-total-traffic').textContent=s.totalGB+' GB';
+      document.getElementById('stat-daily-traffic').textContent=s.dailyGB+' GB';
+      document.getElementById('stat-requests').textContent=(s.totalRequests||0).toLocaleString();
+      var uptime=Math.floor((data.stats?.system?.uptimeSeconds??0)/60);
+      var hours=Math.floor(uptime/60);var mins=uptime%60;
+      document.getElementById('stat-uptime').textContent=hours>0?hours+'ساعت '+mins+'دقیقه':mins+' دقیقه';
       renderCharts(data);fillSettings();fillAccount();
       document.getElementById('api-examples').textContent='curl -H "Authorization: Bearer $MEZDIA_API_KEY" '+location.origin+baseRoute+'/api/config\\n\\n'+'curl -X PATCH -H "Authorization: Bearer $MEZDIA_API_KEY" -H "Content-Type: application/json" -d \\'{"mode":"both","isPaused":false}\\' '+location.origin+baseRoute+'/api/config\\n\\n'+'curl -X PATCH -H "Authorization: Bearer $MEZDIA_API_KEY" -H "Content-Type: application/json" -d \\'{"account":{"name":"Primary","status":"active"}}\\' '+location.origin+baseRoute+'/api/account';
       if(refreshTimer)clearInterval(refreshTimer);refreshTimer=setInterval(async function(){try{var r=await fetch(baseRoute+'/api/auth',{method:'POST',headers:headers(),body:JSON.stringify({key:sessionKey})});if(r.ok){var d=await r.json();config=d.config;account=d.account;window._lastRenderData=d;renderCharts(d)}}catch(e){}},60000)}
@@ -2406,7 +2490,7 @@ function serveSubscriptionInfoPage(account, host, url, sysUsageCache, activeDevi
     const snap = accountUsageSnapshot();
     const totalGb = (snap.total / 1073741824).toFixed(2);
     const status = sysConfig.isPaused || account.isPaused ? "متوقف" : "فعال";
-    const html = `<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>اشتراک ${BRAND_NAME}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#0b1120;color:#f1f5f9;font-family:'Vazirmatn',system-ui,sans-serif;padding:32px;line-height:1.8}.card{max-width:640px;margin:40px auto;background:rgba(15,23,42,0.6);border:1px solid rgba(148,163,184,0.08);border-radius:16px;padding:26px}h1{font-size:18px;margin:0 0 16px;display:flex;align-items:center;gap:10px}.mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#3b82f6);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}code{background:rgba(15,23,42,0.6);border:1px solid rgba(148,163,184,0.08);border-radius:6px;padding:4px 8px;word-break:break-all;direction:ltr;display:inline-block;font-size:12px;font-family:'JetBrains Mono',monospace}.row{margin:12px 0;color:#94a3b8;font-size:13px}.row strong{color:#f1f5f9}</style></head><body><div class="card"><h1><span class="mark">M</span> ${BRAND_NAME}</h1><p class="row">نام حساب: <strong>${account.name || "پیش‌فرض"}</strong></p><p class="row">وضعیت: <strong>${status}</strong></p><p class="row">ترافیک مصرفی: <strong>${totalGb} گیگابایت</strong></p><p class="row">لینک اشتراک:</p><p><code>https://${host}/${sysConfig.apiRoute}</code></p></div></body></html>`;
+    const html = `<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>اشتراک ${BRAND_NAME}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#0b1437;color:#ffffff;font-family:'DM Sans','Vazirmatn',system-ui,sans-serif;padding:32px;line-height:1.8}.card{max-width:640px;margin:40px auto;background:#111c44;border:1px solid rgba(163,174,208,0.12);border-radius:20px;padding:28px;box-shadow:0 3.5px 5.5px rgba(0,0,0,0.07)}h1{font-size:20px;margin:0 0 18px;display:flex;align-items:center;gap:12px;font-weight:700}.mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#422AFB,#7551FF);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-family:'DM Sans',monospace;font-size:18px;box-shadow:0 4px 14px 0 rgba(66,42,251,0.39)}code{background:#1B2559;border:1px solid rgba(163,174,208,0.12);border-radius:8px;padding:5px 10px;word-break:break-all;direction:ltr;display:inline-block;font-size:12px;font-family:'JetBrains Mono',monospace}.row{margin:14px 0;color:#A3AED0;font-size:14px}.row strong{color:#ffffff}</style></head><body><div class="card"><h1><span class="mark">M</span> ${BRAND_NAME}</h1><p class="row">نام حساب: <strong>${account.name || "پیش‌فرض"}</strong></p><p class="row">وضعیت: <strong>${status}</strong></p><p class="row">ترافیک مصرفی: <strong>${totalGb} گیگابایت</strong></p><p class="row">لینک اشتراک:</p><p><code>https://${host}/${sysConfig.apiRoute}</code></p></div></body></html>`;
     return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
 }
 

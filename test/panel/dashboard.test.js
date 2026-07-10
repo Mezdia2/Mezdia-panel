@@ -12,11 +12,11 @@ beforeAll(() => {
   const src = readFileSync(WORKER_PATH, "utf-8");
   const lines = src.split("\n");
 
-  // Extract getDashboardUI (lines 1872-2382)
-  const dashboardFn = lines.slice(1871, 2382).join("\n");
+  // Extract getDashboardUI (lines 1872-2466)
+  const dashboardFn = lines.slice(1871, 2466).join("\n");
 
-  // Extract serveSubscriptionInfoPage (lines 2405-2411)
-  const subPageFn = lines.slice(2404, 2411).join("\n");
+  // Extract serveSubscriptionInfoPage (lines 2489-2495)
+  const subPageFn = lines.slice(2488, 2495).join("\n");
 
   // Build mock context with all globals the functions need
   const mockContext = {
@@ -73,18 +73,20 @@ describe("getDashboardUI", () => {
     expect(html).toContain("<title>Mezdia Panel</title>");
   });
 
-  it("loads Vazirmatn and JetBrains Mono fonts", () => {
+  it("loads DM Sans, Vazirmatn and JetBrains Mono fonts", () => {
     const html = getDashboardUI(true);
+    expect(html).toContain("DM+Sans");
     expect(html).toContain("Vazirmatn");
     expect(html).toContain("JetBrains+Mono");
   });
 
-  it("contains the new blue accent color palette", () => {
+  it("contains the Horizon UI Chakra color palette", () => {
     const html = getDashboardUI(true);
-    // Dark theme blue accent
-    expect(html).toContain("#3b82f6");
-    expect(html).toContain("#0b1120");
-    // No more violet/pink blobs
+    // New Horizon UI Chakra colors
+    expect(html).toContain("#422AFB");
+    expect(html).toContain("#0b1437");
+    expect(html).toContain("#111c44");
+    // No more old blue/pink colors
     expect(html).not.toContain("#8b5cf6");
     expect(html).not.toContain("#ec4899");
   });
@@ -187,19 +189,19 @@ describe("getDashboardUI", () => {
   it("has responsive styles", () => {
     const html = getDashboardUI(true);
     expect(html).toContain("@media");
-    expect(html).toContain("max-width:900px");
+    expect(html).toContain("max-width:1024px");
   });
 
   it("includes the nav footer label", () => {
     const html = getDashboardUI(true);
     expect(html).toContain("MEZDIA");
-    expect(html).toContain("TUNNEL NODE");
+    expect(html).toContain("PANEL");
   });
 
-  it("has login card with glassmorphism", () => {
+  it("has login card with shadow styling", () => {
     const html = getDashboardUI(true);
     expect(html).toContain(".login-card");
-    expect(html).toContain("backdrop-filter");
+    expect(html).toContain("box-shadow");
   });
 });
 
@@ -370,7 +372,7 @@ describe("serveSubscriptionInfoPage", () => {
     expect(res.headers.get("Cache-Control")).toBe("no-store");
   });
 
-  it("uses the new blue design colors", async () => {
+  it("uses the new Horizon UI Chakra design colors", async () => {
     const res = serveSubscriptionInfoPage(
       mockAccount,
       "worker.test.dev",
@@ -380,11 +382,10 @@ describe("serveSubscriptionInfoPage", () => {
       mockSysConfig
     );
     const html = await res.text();
-    expect(html).toContain("#0b1120");
-    expect(html).toContain("#3b82f6");
-    expect(html).toContain("#2563eb");
-    // No old teal/violet colors
-    expect(html).not.toContain("#22d3aa");
-    expect(html).not.toContain("#7c6cf5");
+    // New Horizon UI Chakra colors
+    expect(html).toContain("#0b1437");
+    expect(html).toContain("#422AFB");
+    expect(html).toContain("#7551FF");
+    expect(html).toContain("#111c44");
   });
 });

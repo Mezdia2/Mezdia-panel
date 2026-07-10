@@ -15,7 +15,7 @@ vi.mock("../src/lib/telegram.js", () => ({
 
 vi.mock("../src/handlers/router.js", () => ({
   routeMessage: vi.fn(async () => {}),
-  routeCallback: vi.fn(async () => {}),
+  routeCallbackQuery: vi.fn(async () => {}),
 }));
 
 describe("index.js (Worker entry point)", () => {
@@ -131,7 +131,7 @@ describe("index.js (Worker entry point)", () => {
       expect(routeMessage).toHaveBeenCalled();
     });
 
-    it("ignores callback_query updates (migrated to reply keyboards)", async () => {
+    it("handles callback_query updates via routeCallbackQuery", async () => {
       const update = {
         callback_query: { id: "cb-1", data: "menu:main", from: { id: 123 }, message: { chat: { id: 123 }, message_id: 1 } },
       };
@@ -146,8 +146,8 @@ describe("index.js (Worker entry point)", () => {
       const res = await worker.fetch(req, env, ctx);
       expect(res.status).toBe(200);
       await Promise.all(ctx._waiting);
-      const { routeMessage } = await import("../src/handlers/router.js");
-      expect(routeMessage).not.toHaveBeenCalled();
+      const { routeCallbackQuery } = await import("../src/handlers/router.js");
+      expect(routeCallbackQuery).toHaveBeenCalled();
     });
   });
 
