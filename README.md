@@ -1,87 +1,80 @@
-# ربات دیپلوی Mezdia
+# Mezdia Deploy Bot
 
-ربات تلگرامی که روی Cloudflare Workers اجرا می‌شود و به کاربران اجازه می‌دهد
-با ارسال یک API Token از حساب کلادفلر خودشان، به‌صورت کاملاً خودکار یک نسخه
-از پنل Mezdia (پروکسی VLESS/Trojan روی Workers + پایگاه‌داده D1 + پنل تنظیمات
-Persian) روی همان حساب دیپلوی و مدیریت کنند.
+A Telegram bot running on Cloudflare Workers that allows users to fully automatically deploy and manage an instance of the Mezdia panel (VLESS/Trojan proxy on Workers + D1 database + Persian settings panel) on their own Cloudflare account by submitting their own API Token.
 
-هر کاربر می‌تواند چند حساب کلادفلر اضافه کند و در هرکدام چند ورکر جدا داشته
-باشد. تمام داده‌های ربات (کاربران، حساب‌های ذخیره‌شده، دیپلوی‌ها، وضعیت
-مکالمه) در یک Workers KV namespace ذخیره می‌شود.
+Each user can add multiple Cloudflare accounts and have several separate workers per account. All bot data (users, stored accounts, deployments, conversation state) is stored in a single Workers KV namespace.
 
-## ساختار پروژه
+## Project Structure
 
 ```
 mezdia-bot/
-├── wrangler.toml           تنظیمات دیپلوی خود ربات
+├── wrangler.toml           Bot's own deployment config
 ├── package.json
 ├── src/
-│   ├── index.js             نقطه ورود Worker (وب‌هوک تلگرام)
-│   ├── config.js             ثابت‌های مشترک
+│   ├── index.js             Worker entry point (Telegram webhook)
+│   ├── config.js            Shared constants
 │   ├── lib/
-│   │   ├── telegram.js       ارتباط با Telegram Bot API
-│   │   ├── kv.js              لایه‌ی دیتابیس (Workers KV)
-│   │   ├── cloudflare.js     ارتباط با Cloudflare REST API
-│   │   ├── provision.js      منطق دیپلوی/بروزرسانی/حذف پنل
-│   │   └── ids.js             تولید شناسه و رمز تصادفی
+│   │   ├── telegram.js      Telegram Bot API communication
+│   │   ├── kv.js            Database layer (Workers KV)
+│   │   ├── cloudflare.js    Cloudflare REST API communication
+│   │   ├── provision.js     Deploy/update/delete panel logic
+│   │   └── ids.js           Random ID and password generation
 │   ├── ui/
-│   │   ├── text.js            تمام متن‌های فارسی ربات
-│   │   └── keyboards.js       دکمه‌های شیشه‌ای (inline keyboards)
+│   │   ├── text.js          All bot text strings (Persian)
+│   │   └── keyboards.js     Inline keyboards
 │   ├── handlers/
-│   │   ├── router.js          مسیریابی پیام‌ها و کال‌بک‌ها
+│   │   ├── router.js        Message and callback routing
 │   │   ├── start.js
-│   │   ├── accounts.js        مدیریت حساب‌های کلادفلر
-│   │   └── deployments.js     مدیریت ورکرهای دیپلوی‌شده
+│   │   ├── accounts.js      Cloudflare account management
+│   │   └── deployments.js   Deployed worker management
 │   └── panel/
-│       └── worker-template.txt   سورس کامل ورکری که هر بار دیپلوی می‌شود
+│       └── worker-template.txt   Full source of the worker deployed each time
 ```
 
-## پیش‌نیازها
+## Prerequisites
 
-- حساب Cloudflare (برای خود ربات — جدا از حساب‌های کاربران)
-- Node.js نسخه ۱۸ به بالا
-- یک ربات تلگرام ساخته‌شده با [@BotFather](https://t.me/BotFather) و توکن آن
+- A Cloudflare account (for the bot itself — separate from users' accounts)
+- Node.js 18+
+- A Telegram bot created via [@BotFather](https://t.me/BotFather) and its token
 
-## نصب و دیپلوی
+## Installation & Deployment
 
 ```bash
 cd mezdia-bot
 npm install
 
-# ورود به حساب کلادفلر
+# Login to your Cloudflare account
 npx wrangler login
 
-# ساخت KV namespace برای دیتابیس ربات
+# Create KV namespace for the bot database
 npx wrangler kv namespace create BOT_DB
-# مقدار id برگشتی را داخل wrangler.toml جای REPLACE_WITH_YOUR_KV_NAMESPACE_ID بگذارید
+# Put the returned id in wrangler.toml in place of REPLACE_WITH_YOUR_KV_NAMESPACE_ID
 
-# تنظیم سکرت‌ها
+# Set secrets
 npx wrangler secret put TELEGRAM_BOT_TOKEN
-# توکنی که از BotFather گرفتید را وارد کنید
+# Enter the token you got from BotFather
 
 npx wrangler secret put TELEGRAM_WEBHOOK_SECRET
-# یک رشته‌ی تصادفی دلخواه بسازید و وارد کنید (مثلاً با: openssl rand -hex 24)
+# Generate and enter a random string (e.g. with: openssl rand -hex 24)
 
 npx wrangler secret put ADMIN_SETUP_KEY
-# یک رشته‌ی تصادفی دیگر برای محافظت از مسیر /install
+# Another random string to protect the /install route
 
-# دیپلوی خود ربات
+# Deploy the bot itself
 npx wrangler deploy
 ```
 
-پس از دیپلوی، آدرس ورکر ربات را (چیزی شبیه
-`https://mezdia-deploy-bot.<your-subdomain>.workers.dev`) بردارید و وب‌هوک
-تلگرام را با یکی از دو روش زیر ثبت کنید:
+After deployment, get the bot worker URL (something like `https://mezdia-deploy-bot.<your-subdomain>.workers.dev`) and register the Telegram webhook using one of the following methods:
 
-### روش ۱ — از طریق خود ربات (ساده‌تر)
+### Method 1 — Via the bot itself (easier)
 
-فقط این آدرس را در مرورگر باز کنید:
+Just open this URL in your browser:
 
 ```
 https://mezdia-deploy-bot.<your-subdomain>.workers.dev/install?key=<ADMIN_SETUP_KEY>
 ```
 
-### روش ۲ — دستی با curl
+### Method 2 — Manually with curl
 
 ```bash
 curl -X POST "https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/setWebhook" \
@@ -92,60 +85,41 @@ curl -X POST "https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/setWebhook" \
   }'
 ```
 
-همین! حالا کافیست در تلگرام به ربات پیام `/start` بدهید.
+That's it! Now send `/start` to the bot on Telegram.
 
-## کاربران چه دسترسی‌ای باید به ربات بدهند؟
+## What permissions do users need to grant the bot?
 
-هر کاربر باید از داخل حساب کلادفلر خودش یک **Custom API Token** بسازد
-(نه Global API Key) با این دسترسی‌ها در سطح Account:
+Each user must create a **Custom API Token** (not Global API Key) from inside their Cloudflare account with these Account-level permissions:
 
-| دسترسی | سطح |
+| Permission | Level |
 |---|---|
 | Workers Scripts | Edit |
 | D1 | Edit |
 | Account Settings | Read |
 
-راهنمای کامل داخل خود ربات (دکمه «افزودن حساب کلادفلر») به فارسی نمایش داده
-می‌شود.
+Full instructions are displayed in Persian inside the bot (by pressing the "Add Cloudflare Account" button).
 
-توکن هر کاربر فقط داخل KV namespace همین ربات، مرتبط با شناسه تلگرام خودش،
-ذخیره می‌شود و هیچ کاربر دیگری به آن دسترسی ندارد.
+Each user's token is stored only in the bot's KV namespace, linked to their own Telegram ID, and no other user has access to it.
 
-## ورکری که هر بار دیپلوی می‌شود
+## The worker deployed each time
 
-فایل `src/panel/worker-template.txt` سورس کامل پنل Mezdia است — همان چیزی که
-Cloudflare API هنگام «دیپلوی ورکر جدید» عیناً روی حساب کاربر آپلود می‌کند.
-این نسخه نسبت به نسخه‌ی اصلی:
+The file `src/panel/worker-template.txt` is the full source of the Mezdia panel — the exact same thing that the Cloudflare API uploads onto the user's account when deploying a new worker. Compared to the original version:
 
-- لایه‌ی فروش/محدودیت (سقف ترافیک، تاریخ انقضا، غیرفعال‌سازی خودکار، حذف
-  خودکار ورکر پس از پایان اشتراک) به‌طور کامل حذف شده — هر ورکر همیشه فعال
-  می‌ماند مگر کاربر خودش آن را از داخل ربات متوقف کند.
-- پنل تنظیمات (`/…/dash`) کاملاً بازطراحی شده: فارسی، راست‌به‌چپ، و با ظاهری
-  مدرن‌تر (فونت وزیرمتن، QR کد لینک اشتراک، دکمه‌های کپی و…).
-- کدهای مرده/غیرضروری (شمارنده‌های تشخیصی درون‌حافظه‌ای، فیلدهای بلااستفاده)
-  حذف شده‌اند.
+- The sales/limitation layer (traffic cap, expiry date, auto-deactivation, auto-deletion after subscription end) has been completely removed — every worker stays active unless the user stops it from within the bot.
+- The settings panel (`/.../dash`) has been completely redesigned: Persian, right-to-left, with a more modern look (Vazirmatn font, subscription link QR code, copy buttons, etc.).
+- Dead/unnecessary code (in-memory diagnostic counters, unused fields) has been removed.
 
-اگر بعداً خودتان تغییری در این فایل دادید، کافیست دوباره `wrangler deploy`
-را برای **ربات** بزنید — دفعه‌ی بعد که کاربری «بروزرسانی ورکر» را از منوی
-یک دیپلوی موجود بزند، همان نسخه‌ی جدید روی حساب او آپلود می‌شود، بدون از
-دست رفتن پایگاه‌داده یا تنظیماتش.
+If you later make changes to this file, just run `wrangler deploy` again for the **bot** — the next time a user clicks "Update Worker" from an existing deployment's menu, the new version will be uploaded to their account without losing their database or settings.
 
-## معماری دیپلوی (خلاصه‌ی فنی)
+## Deployment architecture (technical summary)
 
-هنگام «دیپلوی ورکر جدید»، ربات این مراحل را روی حساب کلادفلر خود کاربر
-(با توکنی که او داده) انجام می‌دهد:
+When "Deploy New Worker" is triggered, the bot performs these steps on the user's Cloudflare account (using the token they provided):
 
-1. ساخت یک پایگاه‌داده D1 اختصاصی
-2. اطمینان از فعال بودن زیردامنه‌ی `workers.dev` روی آن حساب (در صورت نبود،
-   یکی می‌سازد)
-3. آپلود سورس ورکر با اتصال (binding) پایگاه‌داده‌ی D1 با نام `IOT_DB` و یک
-   کلید API تصادفی به نام `MEZDIA_API_KEY`
-4. فعال‌سازی مسیر `workers.dev` برای همان اسکریپت
-5. یک درخواست به API خود ورکر تازه‌دیپلوی‌شده برای تصادفی‌سازی رمز پنل و
-   مسیر امن (به‌جای مقادیر پیش‌فرض)
-6. دریافت لینک اشتراک نهایی و ارسال همه‌ی اطلاعات به کاربر در تلگرام
+1. Creates a dedicated D1 database
+2. Ensures the `workers.dev` subdomain is active on that account (creates one if missing)
+3. Uploads the worker source with a D1 database binding named `IOT_DB` and a random API key named `MEZDIA_API_KEY`
+4. Enables the `workers.dev` route for that script
+5. Makes a request to the newly deployed worker's own API to randomize the panel password and secure path (instead of defaults)
+6. Gets the final subscription link and sends all info to the user on Telegram
 
-تمام عملیات مدیریتی بعدی (توقف/فعال‌سازی، بازنشانی ترافیک، مشاهده‌ی آمار)
-دیگر نیازی به تماس با Cloudflare API ندارند — ربات مستقیماً با API داخلی
-همان ورکر دیپلوی‌شده (با همان `MEZDIA_API_KEY`) صحبت می‌کند. فقط «بروزرسانی
-ورکر» و «حذف ورکر» دوباره Cloudflare API را صدا می‌زنند.
+All subsequent management operations (stop/activate, reset traffic, view stats) no longer need to call the Cloudflare API — the bot communicates directly with the deployed worker's internal API (using `MEZDIA_API_KEY`). Only "Update Worker" and "Delete Worker" call the Cloudflare API again.
