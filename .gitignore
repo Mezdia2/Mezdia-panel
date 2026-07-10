@@ -5,3 +5,4 @@ node_modules/
 .opencode/
 dist-fresh/
 dist-test/
+opencode.json
