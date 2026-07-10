@@ -22,4 +22,4 @@ export const SCRIPT_NAME_PREFIX = "mz-";
 
 // Current panel version — bump this when deploying a new panel worker template.
 // Used for auto-update notifications to users.
-export const PANEL_VERSION = "3.3.1";
+export const PANEL_VERSION = "3.3.2";

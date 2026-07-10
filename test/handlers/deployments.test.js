@@ -24,6 +24,9 @@ vi.mock("../../src/lib/telegram.js", () => ({
   code: vi.fn((s) => `<code>${s}</code>`),
   kb: vi.fn((rows) => ({ inline_keyboard: rows })),
   btn: vi.fn((text, data) => ({ text, callback_data: data })),
+  replyKb: vi.fn((rows) => ({ keyboard: rows, resize_keyboard: true })),
+  replyBtn: vi.fn((text) => ({ text })),
+  removeKb: vi.fn(() => ({ remove_keyboard: true })),
 }));
 
 vi.mock("../../src/lib/provision.js", () => ({
@@ -112,9 +115,8 @@ describe("deployments.js", () => {
         state: "awaiting_deploy_label",
         data: { accountId: "a1" },
       });
-      // Session should be cleared
       const session = await env.BOT_DB.get("session:12345");
-      expect(session).toBeNull();
+      expect(JSON.parse(session).state).toBe("kb_deployment_detail");
       // Deployment should be saved
       const deps = JSON.parse(await env.BOT_DB.get("deployments:12345"));
       expect(deps).toHaveLength(1);
@@ -192,8 +194,8 @@ describe("deployments.js", () => {
         ])
       );
       await showDeploymentDetail(env, 12345, 12345, 1, "d1");
-      const { sendMessage } = await import("../../src/lib/telegram.js");
-      const text = sendMessage.mock.calls[0][2];
+      const { editMessageText } = await import("../../src/lib/telegram.js");
+      const text = editMessageText.mock.calls[0][3];
       expect(text).toContain("Panel 1");
     });
 
@@ -300,8 +302,8 @@ describe("deployments.js", () => {
         ])
       );
       await updateWorker(env, 12345, 12345, 1, "d1");
-      const { sendMessage } = await import("../../src/lib/telegram.js");
-      const text = sendMessage.mock.calls[sendMessage.mock.calls.length - 1][2];
+      const { editMessageText } = await import("../../src/lib/telegram.js");
+      const text = editMessageText.mock.calls[editMessageText.mock.calls.length - 1][3];
       expect(text).toContain("بروزرسانی شد");
     });
   });

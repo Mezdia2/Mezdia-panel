@@ -17,9 +17,14 @@ import {
   SCRIPT_NAME_PREFIX,
 } from "../config.js";
 import panelSource from "../panel/worker-template.txt";
+import { protectPanelSource } from "./panel-protection.js";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function deploymentPanelSource() {
+  return protectPanelSource(panelSource);
 }
 
 // Calls an endpoint on an already-deployed panel worker, authenticating with
@@ -76,7 +81,7 @@ export async function deployNewPanel(account, label) {
     account.token,
     account.cfAccountId,
     scriptName,
-    panelSource,
+    deploymentPanelSource(),
     [
       { type: "d1", name: PANEL_D1_BINDING, id: databaseId },
       { type: "secret_text", name: PANEL_API_KEY_BINDING, text: apiKey },
@@ -136,7 +141,7 @@ export async function redeployPanel(account, deployment) {
     account.token,
     account.cfAccountId,
     deployment.scriptName,
-    panelSource,
+    deploymentPanelSource(),
     [
       { type: "d1", name: PANEL_D1_BINDING, id: deployment.databaseId },
       { type: "secret_text", name: PANEL_API_KEY_BINDING, text: deployment.apiKey },

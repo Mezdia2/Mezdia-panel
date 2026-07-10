@@ -6,13 +6,15 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "predeploy": "node scripts/protect-worker-entry.js",
+    "deploy": "wrangler deploy --config wrangler.deploy.toml",
     "tail": "wrangler tail",
     "kv:create": "wrangler kv namespace create BOT_DB",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "devDependencies": {
+    "esbuild": "^0.28.1",
     "vitest": "^2.1.9",
     "wrangler": "^4.107.1"
   }

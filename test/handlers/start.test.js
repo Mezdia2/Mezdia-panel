@@ -10,6 +10,9 @@ vi.mock("../../src/lib/telegram.js", () => ({
   code: vi.fn((s) => `<code>${s}</code>`),
   kb: vi.fn((rows) => ({ inline_keyboard: rows })),
   btn: vi.fn((text, data) => ({ text, callback_data: data })),
+  replyKb: vi.fn((rows) => ({ keyboard: rows, resize_keyboard: true })),
+  replyBtn: vi.fn((text) => ({ text })),
+  removeKb: vi.fn(() => ({ remove_keyboard: true })),
 }));
 
 describe("start.js", () => {
@@ -39,13 +42,12 @@ describe("start.js", () => {
       expect(text).toContain("ساده‌ترین مسیر");
     });
 
-    it("edits message when messageId is provided", async () => {
+    it("sends menu even when legacy messageId argument is provided", async () => {
       await showMainMenu(env, 12345, 42);
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      expect(editMessageText).toHaveBeenCalledWith(
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      expect(sendMessage).toHaveBeenCalledWith(
         env,
         12345,
-        42,
         expect.any(String),
         expect.any(Object)
       );
@@ -68,10 +70,10 @@ describe("start.js", () => {
       expect(text).toContain("/cancel");
     });
 
-    it("edits message when messageId is provided", async () => {
+    it("sends help even when legacy messageId argument is provided", async () => {
       await showHelp(env, 12345, 42);
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      expect(editMessageText).toHaveBeenCalled();
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      expect(sendMessage).toHaveBeenCalled();
     });
   });
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { routeMessage, routeCallback } from "../../src/handlers/router.js";
+import { routeMessage, routeCallbackQuery as routeCallback } from "../../src/handlers/router.js";
 import { createMockEnv, createMockMessage, createMockCallbackQuery } from "../helpers.js";
 
 vi.mock("../../src/lib/telegram.js", () => ({
@@ -12,6 +12,9 @@ vi.mock("../../src/lib/telegram.js", () => ({
   kb: vi.fn((rows) => ({ inline_keyboard: rows })),
   btn: vi.fn((text, data) => ({ text, callback_data: data })),
   urlBtn: vi.fn((text, url) => ({ text, url })),
+  replyKb: vi.fn((rows) => ({ keyboard: rows, resize_keyboard: true })),
+  replyBtn: vi.fn((text) => ({ text })),
+  removeKb: vi.fn(() => ({ remove_keyboard: true })),
 }));
 
 vi.mock("../../src/handlers/start.js", () => ({
@@ -59,14 +62,14 @@ describe("router.js", () => {
       const msg = createMockMessage("/start");
       await routeMessage(env, msg);
       const { showMainMenu } = await import("../../src/handlers/start.js");
-      expect(showMainMenu).toHaveBeenCalledWith(env, 12345, null, true);
+      expect(showMainMenu).toHaveBeenCalledWith(env, 12345, 12345, true);
     });
 
     it("handles /help command", async () => {
       const msg = createMockMessage("/help");
       await routeMessage(env, msg);
       const { showHelp } = await import("../../src/handlers/start.js");
-      expect(showHelp).toHaveBeenCalledWith(env, 12345, null);
+      expect(showHelp).toHaveBeenCalledWith(env, 12345, 12345);
     });
 
     it("handles /cancel command", async () => {
@@ -133,92 +136,50 @@ describe("router.js", () => {
   });
 
   describe("routeCallback", () => {
-    it("routes menu:main to showMainMenu", async () => {
+    it("falls back to unknown message for unsupported legacy menu callback", async () => {
       const cb = createMockCallbackQuery("menu:main");
       await routeCallback(env, cb);
-      const { showMainMenu } = await import("../../src/handlers/start.js");
-      expect(showMainMenu).toHaveBeenCalled();
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      expect(sendMessage.mock.calls[0][2]).toContain("این گزینه دیگر معتبر نیست");
     });
 
-    it("routes menu:accounts to listAccountsScreen", async () => {
-      const cb = createMockCallbackQuery("menu:accounts");
-      await routeCallback(env, cb);
-      const { listAccountsScreen } = await import("../../src/handlers/accounts.js");
-      expect(listAccountsScreen).toHaveBeenCalled();
-    });
-
-    it("routes menu:help to showHelp", async () => {
-      const cb = createMockCallbackQuery("menu:help");
-      await routeCallback(env, cb);
-      const { showHelp } = await import("../../src/handlers/start.js");
-      expect(showHelp).toHaveBeenCalled();
-    });
-
-    it("routes acct:add to startAddAccount", async () => {
-      const cb = createMockCallbackQuery("acct:add");
-      await routeCallback(env, cb);
-      const { startAddAccount } = await import("../../src/handlers/accounts.js");
-      expect(startAddAccount).toHaveBeenCalled();
-    });
-
-    it("routes acct:view to showAccountDetail", async () => {
-      const cb = createMockCallbackQuery("acct:view:acc1");
-      await routeCallback(env, cb);
-      const { showAccountDetail } = await import("../../src/handlers/accounts.js");
-      expect(showAccountDetail).toHaveBeenCalled();
-    });
-
-    it("routes acct:deploy to startDeploy", async () => {
-      const cb = createMockCallbackQuery("acct:deploy:acc1");
-      await routeCallback(env, cb);
-      const { startDeploy } = await import("../../src/handlers/deployments.js");
-      expect(startDeploy).toHaveBeenCalled();
-    });
-
-    it("routes dep:view to showDeploymentDetail", async () => {
-      const cb = createMockCallbackQuery("dep:view:dep1");
-      await routeCallback(env, cb);
-      const { showDeploymentDetail } = await import("../../src/handlers/deployments.js");
-      expect(showDeploymentDetail).toHaveBeenCalled();
-    });
-
-    it("routes dep:stats to showStats", async () => {
-      const cb = createMockCallbackQuery("dep:stats:dep1");
+    it("routes stats callback to showStats", async () => {
+      const cb = createMockCallbackQuery("stats:dep1");
       await routeCallback(env, cb);
       const { showStats } = await import("../../src/handlers/deployments.js");
       expect(showStats).toHaveBeenCalled();
     });
 
-    it("routes dep:pause to pauseDeployment", async () => {
-      const cb = createMockCallbackQuery("dep:pause:dep1");
+    it("routes pause callback to pauseDeployment", async () => {
+      const cb = createMockCallbackQuery("pause:dep1");
       await routeCallback(env, cb);
       const { pauseDeployment } = await import("../../src/handlers/deployments.js");
       expect(pauseDeployment).toHaveBeenCalled();
     });
 
-    it("routes dep:resume to resumeDeployment", async () => {
-      const cb = createMockCallbackQuery("dep:resume:dep1");
+    it("routes resume callback to resumeDeployment", async () => {
+      const cb = createMockCallbackQuery("resume:dep1");
       await routeCallback(env, cb);
       const { resumeDeployment } = await import("../../src/handlers/deployments.js");
       expect(resumeDeployment).toHaveBeenCalled();
     });
 
-    it("routes dep:reset to resetTraffic", async () => {
-      const cb = createMockCallbackQuery("dep:reset:dep1");
+    it("routes reset callback to resetTraffic", async () => {
+      const cb = createMockCallbackQuery("reset:dep1");
       await routeCallback(env, cb);
       const { resetTraffic } = await import("../../src/handlers/deployments.js");
       expect(resetTraffic).toHaveBeenCalled();
     });
 
-    it("routes dep:update to updateWorker", async () => {
-      const cb = createMockCallbackQuery("dep:update:dep1");
+    it("routes update callback to updateWorker", async () => {
+      const cb = createMockCallbackQuery("update:dep1");
       await routeCallback(env, cb);
       const { updateWorker } = await import("../../src/handlers/deployments.js");
       expect(updateWorker).toHaveBeenCalled();
     });
 
-    it("routes dep:delete to confirmDeleteDeploymentScreen", async () => {
-      const cb = createMockCallbackQuery("dep:delete:dep1");
+    it("routes delete callback to confirmDeleteDeploymentScreen", async () => {
+      const cb = createMockCallbackQuery("del:dep1");
       await routeCallback(env, cb);
       const { confirmDeleteDeploymentScreen } = await import("../../src/handlers/deployments.js");
       expect(confirmDeleteDeploymentScreen).toHaveBeenCalled();

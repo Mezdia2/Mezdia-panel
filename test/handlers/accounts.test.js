@@ -19,6 +19,9 @@ vi.mock("../../src/lib/telegram.js", () => ({
   kb: vi.fn((rows) => ({ inline_keyboard: rows })),
   btn: vi.fn((text, data) => ({ text, callback_data: data })),
   urlBtn: vi.fn((text, url) => ({ text, url })),
+  replyKb: vi.fn((rows) => ({ keyboard: rows, resize_keyboard: true })),
+  replyBtn: vi.fn((text) => ({ text })),
+  removeKb: vi.fn(() => ({ remove_keyboard: true })),
 }));
 
 vi.mock("../../src/lib/cloudflare.js", () => ({
@@ -47,10 +50,11 @@ describe("accounts.js", () => {
       expect(session.state).toBe("awaiting_cf_token");
     });
 
-    it("edits message with ask token prompt", async () => {
+    it("sends ask token prompt", async () => {
       await startAddAccount(env, 12345, 12345, 1);
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      expect(editMessageText).toHaveBeenCalled();
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      expect(sendMessage).toHaveBeenCalledTimes(2);
+      expect(sendMessage.mock.calls[1][2]).toContain("API Token");
     });
   });
 
@@ -97,7 +101,7 @@ describe("accounts.js", () => {
       await handleTokenMessage(env, 12345, 12345, "multi-token");
       const sessionRaw = await env.BOT_DB.get("session:12345");
       const session = JSON.parse(sessionRaw);
-      expect(session.state).toBe("awaiting_cf_account_choice");
+      expect(session.state).toBe("awaiting_cf_account_pick");
       expect(session.data.candidates).toHaveLength(2);
     });
   });
@@ -107,7 +111,7 @@ describe("accounts.js", () => {
       await env.BOT_DB.put(
         "session:12345",
         JSON.stringify({
-          state: "awaiting_cf_account_choice",
+          state: "awaiting_cf_account_pick",
           data: {
             token: "my-token",
             candidates: [{ id: "cf-1", name: "Chosen Account" }],
@@ -115,7 +119,7 @@ describe("accounts.js", () => {
         })
       );
       await handleAccountPick(env, 12345, 12345, 1, "cf-1", {
-        state: "awaiting_cf_account_choice",
+        state: "awaiting_cf_account_pick",
         data: {
           token: "my-token",
           candidates: [{ id: "cf-1", name: "Chosen Account" }],
@@ -129,17 +133,16 @@ describe("accounts.js", () => {
       await env.BOT_DB.put(
         "session:12345",
         JSON.stringify({
-          state: "awaiting_cf_account_choice",
+          state: "awaiting_cf_account_pick",
           data: { token: "tok", candidates: [] },
         })
       );
       await handleAccountPick(env, 12345, 12345, 1, "nonexistent", {
-        state: "awaiting_cf_account_choice",
+        state: "awaiting_cf_account_pick",
         data: { token: "tok", candidates: [] },
       });
-      const { editMessageText } = await import("../../src/lib/telegram.js");
-      // Should have been called with an error message
-      expect(editMessageText).toHaveBeenCalled();
+      const { sendMessage } = await import("../../src/lib/telegram.js");
+      expect(sendMessage.mock.calls[0][2]).toContain("موردی پیدا نشد");
     });
   });
 

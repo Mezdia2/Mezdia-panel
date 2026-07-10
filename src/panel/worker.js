@@ -5,7 +5,7 @@ import { connect } from "cloudflare:sockets";
 
 /* ---- src/config.js ---- */
 const BRAND_NAME = "Mezdia Panel";
-const CURRENT_VERSION = "3.3.1";
+const CURRENT_VERSION = "3.3.2";
 
 const SYSTEM_DEFAULTS = {
     name: "Mezdia Panel",

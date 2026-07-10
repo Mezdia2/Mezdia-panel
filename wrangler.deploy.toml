@@ -1,0 +1,12 @@
+name = "mezdia-deploy-bot"
+main = "dist/deploy/index.js"
+compatibility_date = "2024-01-01"
+
+[[rules]]
+type = "Text"
+globs = ["**/*.md", "**/*.txt"]
+fallthrough = true
+
+[[kv_namespaces]]
+binding = "BOT_DB"
+id = "c7275162b5c445dcaa90a588d5cd9601"
